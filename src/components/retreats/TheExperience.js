@@ -42,13 +42,13 @@ export default function TheExperience() {
   ];
 
   return (
-    <section id="destinations" className="w-full pl-8 py-16 font-sans overflow-hidden">
+    <section id="destinations" className="w-full pl-4 md:pl-8 py-16 font-sans overflow-hidden">
       <motion.div 
         initial={{ opacity: 0, y: 30 }}
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true, margin: "-100px" }}
         transition={{ duration: 0.8, ease: "easeOut" }}
-        className="max-w-7xl mx-auto pr-8 mb-12"
+        className="max-w-7xl mx-auto pr-4 md:pr-8 mb-12"
       >
         <span className="text-sm tracking-[0.2em] uppercase text-gray-500 block mb-4">Destinations</span>
         <h2 className="text-4xl md:text-5xl font-light uppercase text-black">
@@ -61,12 +61,12 @@ export default function TheExperience() {
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true, margin: "-100px" }}
         transition={{ duration: 0.8, delay: 0.2, ease: "easeOut" }}
-        className="flex overflow-x-auto gap-8 pb-8 snap-x snap-mandatory hide-scrollbar pr-8"
+        className="flex overflow-x-auto gap-4 md:gap-8 pb-8 snap-x snap-mandatory hide-scrollbar pr-4 md:pr-8"
       >
         {experiences.map((exp) => (
           <div 
             key={exp.id} 
-            className="min-w-[85vw] md:min-w-[400px] max-w-[400px] flex-shrink-0 snap-start group cursor-pointer"
+            className="w-[85vw] md:w-auto md:min-w-[400px] md:max-w-[400px] flex-shrink-0 snap-start group cursor-pointer"
           >
             <Link href={exp.link} className="block w-full">
               {/* Image Container */}
