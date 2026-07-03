@@ -94,9 +94,9 @@ export default function Navbar() {
       );
     }
     return (
-      <Link 
-        key={link.name} 
-        href={href} 
+      <Link
+        key={link.name}
+        href={href}
         onClick={(e) => {
           if (typeof window !== 'undefined' && window !== window.parent) {
             e.preventDefault();
@@ -104,7 +104,7 @@ export default function Navbar() {
           } else {
             closeMenu();
           }
-        }} 
+        }}
         className={className}
       >
         {link.name}
@@ -143,8 +143,8 @@ export default function Navbar() {
             </Link>
           </div>
 
-          <Link 
-            href={`/${currentLang}`} 
+          <Link
+            href={`/${currentLang}`}
             onClick={(e) => {
               if (typeof window !== 'undefined' && window !== window.parent) {
                 e.preventDefault();
@@ -153,7 +153,7 @@ export default function Navbar() {
             }}
             className="flex-shrink-0"
           >
-            <Image src={globalContent?.logo_url || logo} alt="Aruna Logo" className="h-16 w-auto object-contain drop-shadow-md" priority unoptimized={!!globalContent?.logo_url} width={150} height={64} />
+            <Image src={globalContent?.logo_url || logo} alt="Aruna Logo" className="h-16 2xl:h-24 w-auto object-contain drop-shadow-md" priority unoptimized={!!globalContent?.logo_url} width={150} height={64} />
           </Link>
 
           <div className="flex-1 flex justify-start pl-8">
