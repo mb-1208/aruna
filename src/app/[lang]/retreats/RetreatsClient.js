@@ -45,7 +45,7 @@ export default function RetreatsClient({ initialContent }) {
   const content = { ...initialContent, ...langContent };
 
   return (
-    <main className="min-h-screen font-sans overflow-x-hidden">
+    <main className="min-h-screen font-sans">
       <Navbar />
 
       <RetreatHero 
