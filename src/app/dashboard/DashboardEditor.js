@@ -818,26 +818,6 @@ export default function DashboardEditor({ initialData }) {
           </div>
         )}
 
-        {currentMenu === "access" && (
-          <div className="flex flex-col h-full bg-white">
-            <div className="flex border-b border-gray-100 text-xs uppercase tracking-widest font-medium items-center">
-              <button 
-                onClick={() => setCurrentMenu("main")}
-                className="px-4 py-4 text-gray-400 hover:text-black transition-colors"
-                title="Back to Main Menu"
-              >
-                <IconArrowLeft size={18} />
-              </button>
-              <div className="h-6 w-px bg-gray-200 mx-1"></div>
-              <div className="px-4 py-4 font-bold">Access Management</div>
-            </div>
-            <div className="flex-1 overflow-y-auto p-6 bg-white space-y-6">
-              <div className="text-sm text-gray-500">
-                Manage your admin users and their access permissions from the main panel on the right.
-              </div>
-            </div>
-          </div>
-        )}
 
         {currentMenu === "localization" && (
           <div className="flex flex-col h-full bg-white">
