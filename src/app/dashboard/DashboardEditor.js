@@ -363,6 +363,7 @@ export default function DashboardEditor({ initialData }) {
 
   const handleLogout = async () => {
     try {
+      const supabase = createClient();
       const { error } = await supabase.auth.signOut();
       if (error) throw error;
       window.location.reload(); // Refresh the page to redirect to login
