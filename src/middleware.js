@@ -47,9 +47,12 @@ export async function middleware(request) {
   }
 
   // Prevent direct access to /dashboard from the main domain
-  if (url.pathname.startsWith('/dashboard') && !isAdminHost) {
+  // Allow access if it's a .vercel.app preview domain for easier testing
+  const isVercelDomain = hostname.endsWith('.vercel.app');
+  if (url.pathname.startsWith('/dashboard') && !isAdminHost && !isVercelDomain) {
     return NextResponse.redirect(new URL('/', request.url));
   }
+
 
   // --- i18n Logic for Main Domain ---
   if (!isAdminHost) {
