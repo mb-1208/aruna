@@ -175,7 +175,7 @@ export default function Navbar() {
         {/* Mobile Logo (Visible only on Mobile) */}
         <div className="lg:hidden flex items-center">
           <Link href={`/${currentLang}`}>
-            <Image src={globalContent?.logo_url || logo} alt="Aruna Logo" className="h-12 w-auto object-contain drop-shadow-md" priority unoptimized={!!globalContent?.logo_url} width={120} height={48} />
+            <Image src={globalContent?.logo_url || logo} alt="Aruna Logo" className="h-16 w-auto object-contain drop-shadow-md" priority unoptimized={!!globalContent?.logo_url} width={120} height={48} />
           </Link>
         </div>
 

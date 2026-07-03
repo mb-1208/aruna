@@ -14,7 +14,7 @@ export default function Footer() {
   const { currentLang, globalContent } = useLanguage();
   const lang = currentLang;
   const socialLinks = globalContent?.social_links || {};
-  
+
   const [email, setEmail] = useState("");
   const [status, setStatus] = useState("idle");
   const [message, setMessage] = useState("");
@@ -23,10 +23,10 @@ export default function Footer() {
     e.preventDefault();
     if (!email) return;
     setStatus("loading");
-    
+
     const isRetreats = pathname.includes("/retreats");
     const subscribeTitle = isRetreats ? (foot.retreats_newsletter_title || foot.newsletter_title) : foot.newsletter_title;
-    
+
     const result = await subscribeEmail(email, "Footer", subscribeTitle);
     setStatus(result.success ? "success" : "error");
     setMessage(result.message || result.error);
@@ -71,7 +71,7 @@ export default function Footer() {
         {/* Column 1: Logo & Info */}
         <div className="flex-1 md:pr-12 mb-12 md:mb-0">
           <Link href={`/${lang}`} className="inline-block mb-2">
-            <Image src={globalContent?.logo_url || logo} alt="Aruna Logo" className="h-20 w-auto opacity-80" unoptimized priority width={180} height={80} />
+            <Image src={globalContent?.logo_url || logo} alt="Aruna Logo" className="h-20 2xl:h-44 w-auto opacity-80" unoptimized priority width={180} height={80} />
           </Link>
           <p className="pl-2 text-[#d2b799] text-lg leading-relaxed mb-8">
             {foot.description}
@@ -173,8 +173,8 @@ export default function Footer() {
         {/* Column 3: Stay Connected */}
         <div className="flex-1">
           <h4 className="text-lg mb-6 tracking-wide">
-            {pathname.includes("/retreats") 
-              ? (foot.retreats_newsletter_title || foot.newsletter_title) 
+            {pathname.includes("/retreats")
+              ? (foot.retreats_newsletter_title || foot.newsletter_title)
               : foot.newsletter_title}
           </h4>
           <p className="text-base text-[#d2b799] mb-6">
