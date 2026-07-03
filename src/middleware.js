@@ -5,80 +5,78 @@ export async function middleware(request) {
   const url = request.nextUrl.clone();
   const hostname = request.headers.get('host') || '';
 
-  // For local development, map admin.localhost:3000 to dashboard.
-  // For production, map admin.arunaretreats.com to dashboard.
   const isAdminHost = hostname.startsWith('admin.localhost') || hostname.startsWith('admin.');
+  const isVercelDomain = hostname.endsWith('.vercel.app');
 
-  // Ignore /api routes for rewrites to prevent overriding api endpoints
   if (url.pathname.startsWith('/api')) {
       return NextResponse.next();
   }
 
-  // Handle Supabase Auth Session
   const { supabaseResponse, user } = await updateSession(request);
 
+  // If using subdomain, rewrite paths to /dashboard
   if (isAdminHost) {
-    // Prevent unauthenticated access to the dashboard
-    // Exclude the login API route and login page from the check
-    if (!user && url.pathname !== '/login' && !url.pathname.startsWith('/api/')) {
-      const loginUrl = new URL('/login', request.url);
+    if (url.pathname === '/') {
+      url.pathname = '/dashboard';
+    } else if (!url.pathname.startsWith('/dashboard')) {
+      url.pathname = `/dashboard${url.pathname}`;
+    }
+  }
+
+  // Now, if it's a dashboard path (either naturally or via rewrite)
+  if (url.pathname.startsWith('/dashboard')) {
+    // Block direct access if not admin host AND not vercel
+    if (!isAdminHost && !isVercelDomain) {
+      return NextResponse.redirect(new URL('/', request.url));
+    }
+
+    // Check auth
+    if (!user && url.pathname !== '/dashboard/login' && !url.pathname.startsWith('/api/')) {
+      // If admin host, they see the login page at /login natively.
+      // If direct vercel, they see it at /dashboard/login.
+      const loginUrl = new URL(isAdminHost ? '/login' : '/dashboard/login', request.url);
       return NextResponse.redirect(loginUrl);
     }
 
-    // If logged in and trying to access /login, redirect to root (which rewrites to /dashboard)
-    if (user && url.pathname === '/login') {
-      const dashboardUrl = new URL('/', request.url);
+    // If logged in and trying to login, redirect back
+    if (user && url.pathname === '/dashboard/login') {
+      const dashboardUrl = new URL(isAdminHost ? '/' : '/dashboard', request.url);
       return NextResponse.redirect(dashboardUrl);
     }
 
-    // Rewrite admin subdomain paths to /dashboard/... internally
-    if (url.pathname === '/') {
-      url.pathname = '/dashboard';
-    } else {
-      url.pathname = `/dashboard${url.pathname}`;
+    // If it was rewritten, return rewrite response
+    if (isAdminHost) {
+      const rewriteResponse = NextResponse.rewrite(url);
+      supabaseResponse.cookies.getAll().forEach(cookie => {
+        rewriteResponse.cookies.set(cookie.name, cookie.value, cookie);
+      });
+      return rewriteResponse;
     }
-    
-    // Copy cookies from supabaseResponse to the rewritten response
-    const rewriteResponse = NextResponse.rewrite(url);
-    supabaseResponse.cookies.getAll().forEach(cookie => {
-      rewriteResponse.cookies.set(cookie.name, cookie.value, cookie);
-    });
-    return rewriteResponse;
-  }
 
-  // Prevent direct access to /dashboard from the main domain
-  // Allow access if it's a .vercel.app preview domain for easier testing
-  const isVercelDomain = hostname.endsWith('.vercel.app');
-  if (url.pathname.startsWith('/dashboard') && !isAdminHost && !isVercelDomain) {
-    return NextResponse.redirect(new URL('/', request.url));
+    // Direct access allowed, skip i18n
+    return supabaseResponse;
   }
-
 
   // --- i18n Logic for Main Domain ---
-  if (!isAdminHost) {
-    // Ignore files with extensions (like images, fonts)
-    if (url.pathname.includes('.')) {
-      return supabaseResponse;
-    }
+  if (url.pathname.includes('.')) {
+    return supabaseResponse;
+  }
 
-    const locales = ['en', 'es'];
-    const defaultLocale = 'en';
+  const locales = ['en', 'es'];
+  const defaultLocale = 'en';
+  const pathnameHasLocale = locales.some(
+    (locale) => url.pathname.startsWith(`/${locale}/`) || url.pathname === `/${locale}`
+  );
 
-    const pathnameHasLocale = locales.some(
-      (locale) => url.pathname.startsWith(`/${locale}/`) || url.pathname === `/${locale}`
-    );
-
-    if (!pathnameHasLocale) {
-      url.pathname = `/${defaultLocale}${url.pathname}`;
-      const redirectResponse = NextResponse.redirect(url);
-      
-      // Copy cookies to the new response
-      supabaseResponse.cookies.getAll().forEach(cookie => {
-        redirectResponse.cookies.set(cookie.name, cookie.value, cookie);
-      });
-      
-      return redirectResponse;
-    }
+  if (!pathnameHasLocale) {
+    url.pathname = `/${defaultLocale}${url.pathname}`;
+    const redirectResponse = NextResponse.redirect(url);
+    
+    supabaseResponse.cookies.getAll().forEach(cookie => {
+      redirectResponse.cookies.set(cookie.name, cookie.value, cookie);
+    });
+    
+    return redirectResponse;
   }
 
   return supabaseResponse;
@@ -86,12 +84,6 @@ export async function middleware(request) {
 
 export const config = {
   matcher: [
-    /*
-     * Match all paths except:
-     * - _next/static (static files)
-     * - _next/image (image optimization files)
-     * - favicon.ico (favicon file)
-     */
     '/((?!_next/static|_next/image|favicon.ico).*)',
   ],
 };
