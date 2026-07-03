@@ -30,7 +30,11 @@ export default function LoginForm() {
       setError(errorMessage);
       setLoading(false);
     } else {
-      router.push('/');
+      if (window.location.pathname.startsWith('/dashboard')) {
+        router.push('/dashboard');
+      } else {
+        router.push('/');
+      }
       router.refresh();
     }
   };
