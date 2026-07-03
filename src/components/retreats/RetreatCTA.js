@@ -1,14 +1,40 @@
 "use client";
 
 import { motion } from "framer-motion";
+import { useState } from "react";
+import { subscribeEmail } from "@/app/actions/newsletter";
 
-export default function RetreatCTA() {
+export default function RetreatCTA({ title, text, image, boxTitle, emailLabel, buttonText, source = "Retreats CTA" }) {
+  const [email, setEmail] = useState("");
+  const [status, setStatus] = useState("idle");
+  const [message, setMessage] = useState("");
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    if (!email) return;
+    setStatus("loading");
+    // Strip HTML from title for the details field
+    const cleanTitle = (title || "DON'T WANNA MISS A THING?").replace(/<[^>]*>?/gm, ' ');
+    const result = await subscribeEmail(email, source, cleanTitle);
+    
+    setStatus(result.success ? "success" : "error");
+    setMessage(result.message || result.error);
+    
+    if (result.success) {
+      setTimeout(() => {
+        setEmail("");
+        setStatus("idle");
+        setMessage("");
+      }, 5000);
+    }
+  };
+
   return (
     <section className="relative w-full h-auto min-h-[500px] flex items-center overflow-hidden font-sans">
       {/* Background Image */}
       <div
         className="absolute inset-0 bg-cover bg-center"
-        style={{ backgroundImage: 'url("http://placehold.co/1920x800.png")' }}
+        style={{ backgroundImage: `url("${image || 'http://placehold.co/1920x800.png'}")` }}
       />
       {/* Dark Overlay */}
       <div className="absolute inset-0 bg-black/30" />
@@ -24,9 +50,10 @@ export default function RetreatCTA() {
           transition={{ duration: 0.8, ease: "easeOut" }}
           className="flex-1 text-center md:text-left"
         >
-          <h2 className="text-white text-4xl md:text-5xl lg:text-6xl font-light uppercase tracking-wide drop-shadow-md">
-            DON'T WANNA MISS<br className="hidden md:block" />A THING?
-          </h2>
+          <h2 
+            className="text-white text-4xl md:text-5xl lg:text-6xl font-light uppercase tracking-wide drop-shadow-md"
+            dangerouslySetInnerHTML={{ __html: title || "DON'T WANNA MISS<br className=\"hidden md:block\" />A THING?" }}
+          />
         </motion.div>
 
         {/* Right Side: Subscription Box */}
@@ -38,32 +65,43 @@ export default function RetreatCTA() {
           className="w-full max-w-md bg-white p-8 md:p-12 shadow-2xl"
         >
           <h3 className="text-2xl font-light uppercase text-center mb-4 tracking-widest text-black">
-            GET IN TOUCH
+            {boxTitle || "GET IN TOUCH"}
           </h3>
           <p className="text-center text-sm text-gray-600 mb-8 leading-relaxed">
-            Add this email form so that they will be the first to know your details & early booking.
+            {text || "Add this email form so that they will be the first to know your details & early booking."}
           </p>
 
-          <form className="flex flex-col gap-6" onSubmit={(e) => e.preventDefault()}>
-            <div className="flex flex-col gap-2">
-              <label htmlFor="cta-email" className="text-xs uppercase tracking-widest text-gray-500">
-                Email
-              </label>
-              <input
-                type="email"
-                id="cta-email"
-                required
-                className="w-full border-b border-gray-300 py-2 focus:outline-none focus:border-black transition-colors bg-transparent text-black"
-              />
+          {status === "success" ? (
+            <div className="text-center py-6 text-green-600 font-medium tracking-wide">
+              {message}
             </div>
+          ) : (
+            <form className="flex flex-col gap-6" onSubmit={handleSubmit}>
+              <div className="flex flex-col gap-2">
+                <label htmlFor="cta-email" className="text-xs uppercase tracking-widest text-gray-500">
+                  {emailLabel || "Email"}
+                </label>
+                <input
+                  type="email"
+                  id="cta-email"
+                  required
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  disabled={status === "loading"}
+                  className="w-full border-b border-gray-300 py-2 focus:outline-none focus:border-black transition-colors bg-transparent text-black disabled:opacity-50"
+                />
+              </div>
 
-            <button
-              type="submit"
-              className="w-full bg-black text-white py-4 text-sm tracking-widest uppercase hover:bg-gray-800 transition-colors mt-2"
-            >
-              Subscribe
-            </button>
-          </form>
+              <button
+                type="submit"
+                disabled={status === "loading"}
+                className="w-full bg-black text-white py-4 text-sm tracking-widest uppercase hover:bg-gray-800 transition-colors mt-2 disabled:opacity-50"
+              >
+                {status === "loading" ? "..." : (buttonText || "Subscribe")}
+              </button>
+              {status === "error" && <div className="text-red-500 text-sm text-center">{message}</div>}
+            </form>
+          )}
         </motion.div>
 
       </div>

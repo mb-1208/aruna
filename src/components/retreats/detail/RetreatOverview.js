@@ -3,7 +3,7 @@
 import Image from "next/image";
 import { motion } from "framer-motion";
 
-export default function RetreatOverview() {
+export default function RetreatOverview({ title, description, imageUrl }) {
   return (
     <section className="w-full max-w-7xl mx-auto px-8 py-24 md:py-32 font-sans">
       <div className="flex flex-col md:flex-row gap-16 items-center">
@@ -16,10 +16,10 @@ export default function RetreatOverview() {
           className="flex-1 text-center md:text-left"
         >
           <h2 className="text-3xl md:text-4xl font-light uppercase tracking-wide mb-8 text-black">
-            DESTINATION A
+            {title}
           </h2>
-          <p className="text-gray-600 leading-relaxed text-base md:text-lg">
-            Experience a curated escape designed to harmonize your mind, body, and spirit. Tucked away in a serene sanctuary, this retreat invites you to unplug from the demands of modern life and reconnect with your inner self through mindful movement, nourishing rituals, and moments of profound stillness. Whether you seek quiet reflection or holistic healing, allow this space to become your home for rejuvenation.
+          <p className="text-gray-600 leading-relaxed text-base md:text-lg whitespace-pre-wrap">
+            {description}
           </p>
         </motion.div>
 
@@ -33,8 +33,8 @@ export default function RetreatOverview() {
         >
           <div className="relative w-full aspect-[4/3] md:aspect-square lg:aspect-[4/3] overflow-hidden bg-gray-100">
             <Image 
-              src="http://placehold.co/800x600.png" 
-              alt="Retreat Overview" 
+              src={imageUrl || "http://placehold.co/800x600.png"} 
+              alt={title || "Retreat Overview"} 
               fill 
               className="object-cover transition-transform duration-700 hover:scale-105" 
               unoptimized 

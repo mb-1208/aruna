@@ -1,9 +1,10 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { useLanguage } from "@/contexts/LanguageContext";
 import Link from "next/link";
 import Image from "next/image";
-import { usePathname } from "next/navigation";
+import { useRouter, usePathname } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
 import logo from "../assets/logo.webp";
 import {
@@ -18,9 +19,10 @@ import {
 
 export default function Navbar() {
   const pathname = usePathname();
+  const router = useRouter();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isLangDropdownOpen, setIsLangDropdownOpen] = useState(false);
-  const [currentLang, setCurrentLang] = useState("EN");
+  const { currentLang, globalContent, isMounted } = useLanguage();
   const [isScrolled, setIsScrolled] = useState(false);
 
   useEffect(() => {
@@ -34,28 +36,52 @@ export default function Navbar() {
 
   const closeMenu = () => setIsMobileMenuOpen(false);
 
-  const leftLinks = pathname.startsWith("/retreats")
+  const lang = currentLang;
+  const socialLinks = globalContent?.social_links || {};
+  const navContent = globalContent?.navbar?.[lang] || {
+    travel: 'Travel',
+    retreats: 'Retreats',
+    services: 'Services',
+    about: 'About',
+    reviews: 'Reviews',
+    faq: 'FAQ',
+    destinations: 'Destinations',
+    gallery: 'Gallery'
+  };
+
+  const leftLinks = pathname.includes("/retreats")
     ? [
-      { name: "Destinations", hash: "#destinations", targetPath: "/retreats" },
-      { name: "Reviews", hash: "#reviews", targetPath: "/retreats" },
-      { name: "Gallery", hash: "#gallery", targetPath: "/retreats" },
-      { name: "FAQ", hash: "#faq", targetPath: "/retreats" }
+      { name: navContent.destinations || 'Destinations', hash: "#destinations", targetPath: "/retreats" },
+      { name: navContent.reviews || 'Reviews', hash: "#reviews", targetPath: "/retreats" },
+      { name: navContent.gallery || 'Gallery', hash: "#gallery", targetPath: "/retreats" },
+      { name: navContent.faq || 'FAQ', hash: "#faq", targetPath: "/retreats" }
     ]
     : [
-      { name: "Services", hash: "#services", targetPath: "/travel" },
-      { name: "About", hash: "#about", targetPath: "/travel" },
-      { name: "Reviews", hash: "#reviews", targetPath: "/travel" },
-      { name: "FAQ", hash: "#faq", targetPath: "/travel" }
+      { name: navContent.services || 'Services', hash: "#services", targetPath: "/travel" },
+      { name: navContent.about || 'About', hash: "#about", targetPath: "/travel" },
+      { name: navContent.reviews || 'Reviews', hash: "#reviews", targetPath: "/travel" },
+      { name: navContent.faq || 'FAQ', hash: "#faq", targetPath: "/travel" }
     ];
 
-  const handleLangChange = (lang) => {
-    setCurrentLang(lang);
+
+  const handleLangChange = (newLang) => {
+    const lang = newLang.toLowerCase();
+    const segments = pathname.split('/');
+    if (segments[1] === 'en' || segments[1] === 'es') {
+      segments[1] = lang;
+    } else {
+      segments.splice(1, 0, lang);
+    }
+    const newPath = segments.join('/');
+
     setIsLangDropdownOpen(false);
+    router.push(newPath);
   };
 
   const renderNavLink = (link, isMobile = false) => {
-    const isSamePage = pathname === link.targetPath || (pathname === '/' && link.targetPath === '/');
-    const href = isSamePage ? link.hash : `${link.targetPath}${link.hash}`;
+    const targetLocalized = link.targetPath === '/' ? `/${currentLang}` : `/${currentLang}${link.targetPath}`;
+    const isSamePage = pathname === targetLocalized || pathname === `${targetLocalized}/`;
+    const href = isSamePage ? link.hash : `${targetLocalized}${link.hash}`;
     const className = isMobile
       ? "text-gray-600 hover:text-black transition-colors"
       : "hover:opacity-70 transition-opacity";
@@ -68,7 +94,19 @@ export default function Navbar() {
       );
     }
     return (
-      <Link key={link.name} href={href} onClick={closeMenu} className={className}>
+      <Link 
+        key={link.name} 
+        href={href} 
+        onClick={(e) => {
+          if (typeof window !== 'undefined' && window !== window.parent) {
+            e.preventDefault();
+            window.location.href = href;
+          } else {
+            closeMenu();
+          }
+        }} 
+        className={className}
+      >
         {link.name}
       </Link>
     );
@@ -80,54 +118,75 @@ export default function Navbar() {
         initial={{ opacity: 0, y: -20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.8, ease: "easeOut" }}
-        className={`fixed top-0 left-0 right-0 z-[60] flex items-center justify-between px-6 md:px-8 py-4 md:py-6 text-white font-sans transition-all duration-300 ${isScrolled ? "bg-black/40 backdrop-blur-md border-b border-white/10" : "bg-transparent"}`}
+        className={`fixed top-0 left-0 right-0 z-[60] flex items-center justify-between px-6 lg:px-8 py-4 lg:py-6 text-white font-sans transition-colors duration-300 border-b ${isScrolled ? "bg-black/40 backdrop-blur-md border-white/10" : "bg-transparent border-transparent"}`}
       >
 
         {/* Left Links (Desktop) */}
-        <div className="hidden md:flex gap-8 items-center text-sm tracking-widest capitalize w-1/3">
+        <div className="hidden lg:flex gap-8 items-center text-sm tracking-widest capitalize w-1/3">
           {leftLinks.map(link => renderNavLink(link, false))}
         </div>
 
         {/* Center Group: Travel - Logo - Retreats (Desktop) */}
-        <div className="hidden md:flex absolute left-1/2 -translate-x-1/2 items-center w-[340px] text-sm tracking-widest capitalize">
+        <div className="hidden lg:flex absolute left-1/2 -translate-x-1/2 items-center w-[340px] 2xl:w-full text-sm tracking-widest capitalize">
           <div className="flex-1 flex justify-end pr-8">
             <Link
-              href="/travel"
-              className={`hover:opacity-70 transition-all ${pathname === "/travel" ? "border-b border-white pb-1" : "pb-1 border-b border-transparent"}`}
+              href={`/${currentLang}/travel`}
+              onClick={(e) => {
+                if (typeof window !== 'undefined' && window !== window.parent) {
+                  e.preventDefault();
+                  window.location.href = `/${currentLang}/travel`;
+                }
+              }}
+              className={`hover:opacity-70 transition-all ${pathname === `/${currentLang}/travel` ? "border-b border-white pb-1" : "pb-1 border-b border-transparent"}`}
             >
-              Travel
+              {navContent.travel || 'Travel'}
             </Link>
           </div>
 
-          <Link href="/" className="flex-shrink-0">
-            <Image src={logo} alt="Aruna Logo" className="h-16 w-auto object-contain drop-shadow-md" priority />
+          <Link 
+            href={`/${currentLang}`} 
+            onClick={(e) => {
+              if (typeof window !== 'undefined' && window !== window.parent) {
+                e.preventDefault();
+                window.location.href = `/${currentLang}`;
+              }
+            }}
+            className="flex-shrink-0"
+          >
+            <Image src={globalContent?.logo_url || logo} alt="Aruna Logo" className="h-16 w-auto object-contain drop-shadow-md" priority unoptimized={!!globalContent?.logo_url} width={150} height={64} />
           </Link>
 
           <div className="flex-1 flex justify-start pl-8">
             <Link
-              href="/retreats"
-              className={`hover:opacity-70 transition-all ${pathname.startsWith("/retreats") ? "border-b border-white pb-1" : "pb-1 border-b border-transparent"}`}
+              href={`/${currentLang}/retreats`}
+              onClick={(e) => {
+                if (typeof window !== 'undefined' && window !== window.parent) {
+                  e.preventDefault();
+                  window.location.href = `/${currentLang}/retreats`;
+                }
+              }}
+              className={`hover:opacity-70 transition-all ${pathname.startsWith(`/${currentLang}/retreats`) ? "border-b border-white pb-1" : "pb-1 border-b border-transparent"}`}
             >
-              Retreats
+              {navContent.retreats || 'Retreats'}
             </Link>
           </div>
         </div>
 
         {/* Mobile Logo (Visible only on Mobile) */}
-        <div className="md:hidden flex items-center">
-          <Link href="/">
-            <Image src={logo} alt="Aruna Logo" className="h-12 w-auto object-contain drop-shadow-md" priority />
+        <div className="lg:hidden flex items-center">
+          <Link href={`/${currentLang}`}>
+            <Image src={globalContent?.logo_url || logo} alt="Aruna Logo" className="h-12 w-auto object-contain drop-shadow-md" priority unoptimized={!!globalContent?.logo_url} width={120} height={48} />
           </Link>
         </div>
 
         {/* Right Links & Icons (Desktop) */}
-        <div className="hidden md:flex gap-6 items-center text-sm tracking-widest capitalize justify-end w-1/3">
+        <div className="hidden lg:flex gap-6 items-center text-sm tracking-widest capitalize justify-end w-1/3">
           {/* Social Icons */}
           <div className="flex gap-3 items-center">
-            <a href="#" className="hover:opacity-70 transition-opacity"><IconBrandWhatsapp size={18} stroke={1.5} /></a>
-            <a href="#" className="hover:opacity-70 transition-opacity"><IconBrandInstagram size={18} stroke={1.5} /></a>
-            <a href="#" className="hover:opacity-70 transition-opacity"><IconBrandTiktok size={18} stroke={1.5} /></a>
-            <a href="#" className="hover:opacity-70 transition-opacity"><IconBrandFacebook size={18} stroke={1.5} /></a>
+            <a href={socialLinks.whatsapp || "#"} className="hover:opacity-70 transition-opacity" target="_blank" rel="noopener noreferrer"><IconBrandWhatsapp size={18} stroke={1.5} /></a>
+            <a href={socialLinks.instagram || "#"} className="hover:opacity-70 transition-opacity" target="_blank" rel="noopener noreferrer"><IconBrandInstagram size={18} stroke={1.5} /></a>
+            <a href={socialLinks.tiktok || "#"} className="hover:opacity-70 transition-opacity" target="_blank" rel="noopener noreferrer"><IconBrandTiktok size={18} stroke={1.5} /></a>
+            <a href={socialLinks.facebook || "#"} className="hover:opacity-70 transition-opacity" target="_blank" rel="noopener noreferrer"><IconBrandFacebook size={18} stroke={1.5} /></a>
           </div>
 
           {/* Language/Currency Dropdown */}
@@ -136,7 +195,7 @@ export default function Navbar() {
               onClick={() => setIsLangDropdownOpen(!isLangDropdownOpen)}
               className="bg-white text-black rounded-full px-3 py-1 hover:bg-gray-200 transition-colors flex items-center gap-1 uppercase cursor-pointer font-medium"
             >
-              {currentLang} <IconChevronDown size={14} className={`transform transition-transform ${isLangDropdownOpen ? 'rotate-180' : ''}`} />
+              {isMounted ? currentLang.toUpperCase() : "EN"} <IconChevronDown size={14} className={`transform transition-transform ${isLangDropdownOpen ? 'rotate-180' : ''}`} />
             </button>
 
             <AnimatePresence>
@@ -156,7 +215,7 @@ export default function Navbar() {
         </div>
 
         {/* Mobile Hamburger Button */}
-        <div className="md:hidden flex items-center">
+        <div className="lg:hidden flex items-center">
           <button onClick={() => setIsMobileMenuOpen(true)} className="text-white focus:outline-none pr-4">
             <IconMenu2 size={28} />
           </button>
@@ -193,11 +252,11 @@ export default function Navbar() {
 
                 <hr className="border-gray-200 my-4" />
 
-                <Link href="/travel" onClick={closeMenu} className={`hover:text-black transition-colors ${pathname === "/travel" ? "text-black font-bold" : "text-gray-600"}`}>
-                  Travel
+                <Link href={`/${currentLang}/travel`} onClick={closeMenu} className={`hover:text-black transition-colors ${pathname === `/${currentLang}/travel` ? "text-black font-bold" : "text-gray-600"}`}>
+                  {navContent.travel || 'Travel'}
                 </Link>
-                <Link href="/retreats" onClick={closeMenu} className={`hover:text-black transition-colors ${pathname.startsWith("/retreats") ? "text-black font-bold" : "text-gray-600"}`}>
-                  Retreats
+                <Link href={`/${currentLang}/retreats`} onClick={closeMenu} className={`hover:text-black transition-colors ${pathname.startsWith(`/${currentLang}/retreats`) ? "text-black font-bold" : "text-gray-600"}`}>
+                  {navContent.retreats || 'Retreats'}
                 </Link>
 
                 <hr className="border-gray-200 my-4" />
@@ -206,13 +265,13 @@ export default function Navbar() {
                 <div className="flex items-center gap-4 text-sm text-gray-600">
                   <button
                     onClick={() => handleLangChange("EN")}
-                    className={`${currentLang === "EN" ? "text-black border-b border-black" : "hover:text-black"} transition-all pb-1`}
+                    className={`${currentLang === "en" ? "text-black border-b border-black" : "hover:text-black"} transition-all pb-1`}
                   >
                     EN
                   </button>
                   <button
                     onClick={() => handleLangChange("ES")}
-                    className={`${currentLang === "ES" ? "text-black border-b border-black" : "hover:text-black"} transition-all pb-1`}
+                    className={`${currentLang === "es" ? "text-black border-b border-black" : "hover:text-black"} transition-all pb-1`}
                   >
                     ES
                   </button>
@@ -221,10 +280,10 @@ export default function Navbar() {
 
               {/* Mobile Social Icons */}
               <div className="mt-auto flex gap-6 items-center text-gray-600">
-                <a href="#" className="hover:text-black transition-colors"><IconBrandWhatsapp size={24} stroke={1.5} /></a>
-                <a href="#" className="hover:text-black transition-colors"><IconBrandInstagram size={24} stroke={1.5} /></a>
-                <a href="#" className="hover:text-black transition-colors"><IconBrandTiktok size={24} stroke={1.5} /></a>
-                <a href="#" className="hover:text-black transition-colors"><IconBrandFacebook size={24} stroke={1.5} /></a>
+                <a href={socialLinks.whatsapp || "#"} className="hover:text-black transition-colors" target="_blank" rel="noopener noreferrer"><IconBrandWhatsapp size={24} stroke={1.5} /></a>
+                <a href={socialLinks.instagram || "#"} className="hover:text-black transition-colors" target="_blank" rel="noopener noreferrer"><IconBrandInstagram size={24} stroke={1.5} /></a>
+                <a href={socialLinks.tiktok || "#"} className="hover:text-black transition-colors" target="_blank" rel="noopener noreferrer"><IconBrandTiktok size={24} stroke={1.5} /></a>
+                <a href={socialLinks.facebook || "#"} className="hover:text-black transition-colors" target="_blank" rel="noopener noreferrer"><IconBrandFacebook size={24} stroke={1.5} /></a>
               </div>
             </motion.div>
           </div>

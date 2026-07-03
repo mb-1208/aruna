@@ -3,8 +3,8 @@
 import Image from "next/image";
 import { motion } from "framer-motion";
 
-export default function PhotoMosaic() {
-  const images = [
+export default function PhotoMosaic({ images: propImages, title }) {
+  const images = propImages && propImages.length === 6 ? propImages : [
     "http://placehold.co/800x800.png", 
     "http://placehold.co/800x800.png", 
     "http://placehold.co/800x800.png", 
@@ -35,15 +35,15 @@ export default function PhotoMosaic() {
       <div className="absolute inset-0 bg-black/20 pointer-events-none" />
 
       {/* Floating Text */}
-      <div className="absolute inset-0 flex items-center justify-center pointer-events-none z-10">
+      <div className="absolute inset-0 flex items-center justify-center p-8 text-center pointer-events-none z-10">
         <motion.h2 
           initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 1, ease: "easeOut" }}
-          className="text-white text-4xl md:text-6xl lg:text-7xl font-light uppercase tracking-wide drop-shadow-md text-center px-4"
+          className="text-4xl md:text-5xl lg:text-6xl font-light uppercase tracking-wide text-white drop-shadow-xl max-w-sm md:max-w-none"
         >
-          What Awaits You
+          {title || "What Awaits You"}
         </motion.h2>
       </div>
     </section>

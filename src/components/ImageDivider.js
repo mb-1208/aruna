@@ -3,7 +3,7 @@
 import Image from "next/image";
 import { motion } from "framer-motion";
 
-export default function ImageDivider() {
+export default function ImageDivider({ image }) {
   return (
     <motion.section 
       initial={{ opacity: 0 }}
@@ -13,7 +13,7 @@ export default function ImageDivider() {
       className="w-full relative h-[600px] overflow-hidden"
     >
       <Image
-        src="http://placehold.co/1920x600.png"
+        src={image || "http://placehold.co/1920x600.png"}
         alt="Travel Destination Divider"
         fill
         className="object-cover"

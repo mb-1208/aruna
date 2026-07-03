@@ -3,7 +3,7 @@
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 
-export default function ContactPage() {
+export default function ContactClient({ data }) {
   const handleSubmit = (e) => {
     e.preventDefault();
     const formData = new FormData(e.target);
@@ -19,6 +19,15 @@ export default function ContactPage() {
     window.location.href = mailtoLink;
   };
 
+  const labels = data?.labels || {
+    name: "Name",
+    email: "Email",
+    phone: "Phone",
+    subject: "Subject",
+    comment: "Comment",
+    button: "Send Message"
+  };
+
   return (
     <main className="min-h-screen bg-white font-sans text-black flex flex-col">
       <Navbar />
@@ -28,7 +37,7 @@ export default function ContactPage() {
         {/* Background Image */}
         <div
           className="absolute inset-0 bg-cover bg-center"
-          style={{ backgroundImage: 'url("http://placehold.co/1920x800.png")' }}
+          style={{ backgroundImage: `url("${data?.heroImage || 'http://placehold.co/1920x800.png'}")` }}
         />
         {/* Dark Overlay */}
         <div className="absolute inset-0 bg-black/20" />
@@ -36,12 +45,12 @@ export default function ContactPage() {
 
       {/* Content Section */}
       <section className="w-full max-w-4xl mx-auto px-8 py-20 font-sans flex-1">
-        <h1 className="text-4xl md:text-5xl font-light uppercase mb-12">GET IN TOUCH</h1>
+        <h1 className="text-4xl md:text-5xl font-light uppercase mb-12">{data?.title || "GET IN TOUCH"}</h1>
 
         <form onSubmit={handleSubmit} className="space-y-6 w-full max-w-3xl">
           {/* Name */}
           <div className="flex flex-col gap-2">
-            <label htmlFor="name" className="text-sm text-gray-800">Name</label>
+            <label htmlFor="name" className="text-sm text-gray-800">{labels.name}</label>
             <input 
               type="text" 
               id="name" 
@@ -54,7 +63,7 @@ export default function ContactPage() {
           {/* Email and Phone */}
           <div className="flex flex-col md:flex-row gap-6">
             <div className="flex flex-col gap-2 flex-1">
-              <label htmlFor="email" className="text-sm text-gray-800">Email</label>
+              <label htmlFor="email" className="text-sm text-gray-800">{labels.email}</label>
               <input 
                 type="email" 
                 id="email" 
@@ -64,7 +73,7 @@ export default function ContactPage() {
               />
             </div>
             <div className="flex flex-col gap-2 flex-1">
-              <label htmlFor="phone" className="text-sm text-gray-800">Phone</label>
+              <label htmlFor="phone" className="text-sm text-gray-800">{labels.phone}</label>
               <input 
                 type="tel" 
                 id="phone" 
@@ -77,7 +86,7 @@ export default function ContactPage() {
 
           {/* Subject */}
           <div className="flex flex-col gap-2">
-            <label htmlFor="subject" className="text-sm text-gray-800">Subject</label>
+            <label htmlFor="subject" className="text-sm text-gray-800">{labels.subject}</label>
             <input 
               type="text" 
               id="subject" 
@@ -89,7 +98,7 @@ export default function ContactPage() {
 
           {/* Comment */}
           <div className="flex flex-col gap-2">
-            <label htmlFor="comment" className="text-sm text-gray-800">Comment</label>
+            <label htmlFor="comment" className="text-sm text-gray-800">{labels.comment}</label>
             <textarea 
               id="comment" 
               name="comment"
@@ -105,7 +114,7 @@ export default function ContactPage() {
               type="submit" 
               className="bg-black text-white px-10 py-3 text-sm tracking-wide hover:bg-gray-800 transition-colors"
             >
-              Send Message
+              {labels.button}
             </button>
           </div>
         </form>

@@ -3,12 +3,13 @@
 import Image from "next/image";
 import { motion } from "framer-motion";
 
-export default function RetreatLocation() {
+export default function RetreatLocation({ title, text, images }) {
   const locationImages = [
     "http://placehold.co/600x800.png",
     "http://placehold.co/600x800.png",
     "http://placehold.co/600x800.png"
   ];
+  const displayImages = (images && images.length > 0) ? images : locationImages;
 
   return (
     <section id="centers" className="w-full py-16 md:py-24 font-sans bg-white overflow-hidden">
@@ -19,12 +20,12 @@ export default function RetreatLocation() {
         transition={{ duration: 0.8, ease: "easeOut" }}
         className="text-3xl md:text-5xl font-light uppercase text-center text-black mb-12"
       >
-        LOCATION
+        {title || "LOCATION"}
       </motion.h2>
 
       {/* Image Gallery */}
       <div className="w-full grid grid-cols-1 md:grid-cols-3 gap-0 mb-16">
-        {locationImages.map((src, idx) => (
+        {displayImages.map((src, idx) => (
           <motion.div 
             key={idx} 
             initial={{ opacity: 0, scale: 0.95 }}
@@ -53,7 +54,7 @@ export default function RetreatLocation() {
         className="max-w-4xl mx-auto px-8 text-center"
       >
         <p className="leading-relaxed text-lg md:text-xl font-medium">
-          Nestled amidst lush, untouched landscapes, our retreat location offers the perfect balance of comfort and connection to nature. Here, every detail is intentional, and every space is carefully designed for you.
+          {text || "Nestled amidst lush, untouched landscapes, our retreat location offers the perfect balance of comfort and connection to nature. Here, every detail is intentional, and every space is carefully designed for you."}
         </p>
       </motion.div>
     </section>

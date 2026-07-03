@@ -2,8 +2,9 @@
 
 import { motion } from "framer-motion";
 
-export default function RetreatPricing() {
-  const packages = [
+export default function RetreatPricing({ title, subtitle, packages }) {
+  // Use dummy packages as requested to maintain the original look
+  const defaultPackages = [
     {
       nights: "5 NIGHTS",
       price: "Rp 10.000.000",
@@ -48,6 +49,8 @@ export default function RetreatPricing() {
     }
   ];
 
+  const displayPackages = (packages && packages.length > 0) ? packages : defaultPackages;
+
   return (
     <section className="w-full max-w-7xl mx-auto px-8 py-16 md:py-24 font-sans">
       <motion.div 
@@ -57,14 +60,14 @@ export default function RetreatPricing() {
         transition={{ duration: 0.8, ease: "easeOut" }}
         className="mb-16"
       >
-        <span className="text-sm tracking-[0.2em] uppercase text-gray-500 block mb-4">Itinerary & Pricing</span>
+        <span className="text-sm tracking-[0.2em] uppercase text-gray-500 block mb-4">{subtitle || "Itinerary & Pricing"}</span>
         <h2 className="text-3xl md:text-5xl font-light uppercase text-black">
-          UNLOCK THE JOURNEY
+          {title || "UNLOCK THE JOURNEY"}
         </h2>
       </motion.div>
 
       <div className="flex flex-col gap-16">
-        {packages.map((pkg, index) => (
+        {displayPackages.map((pkg, index) => (
           <motion.div 
             key={index} 
             initial={{ opacity: 0, y: 30 }}
@@ -78,9 +81,11 @@ export default function RetreatPricing() {
               <h3 className="text-2xl font-light uppercase tracking-widest text-black mb-2">
                 {pkg.nights}
               </h3>
-              <p className="text-lg text-gray-600">
-                {pkg.price}
-              </p>
+              {pkg.price && (
+                <p className="text-lg text-gray-600">
+                  {pkg.price}
+                </p>
+              )}
             </div>
 
             {/* Right Column: Inclusions */}

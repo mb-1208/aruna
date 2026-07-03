@@ -3,36 +3,41 @@
 import Link from "next/link";
 import { motion } from "framer-motion";
 
-export default function ServicesGallery() {
-  const services = [
-    {
-      id: 1,
-      title: "Service A",
-      subtitle: "Explore",
-      image: "http://placehold.co/600x800.png",
-      link: "/services/a",
-    },
-    {
-      id: 2,
-      title: "Service B",
-      subtitle: "Explore",
-      image: "http://placehold.co/600x800/444444/FFFFFF.png",
-      link: "/services/b",
-    },
-    {
-      id: 3,
-      title: "Service C",
-      subtitle: "Explore",
-      image: "http://placehold.co/600x800.png",
-      link: "/services/c",
-    },
-  ];
+export default function ServicesGallery({ data, fallbackData, currentLang }) {
+  // If data from DB is empty, use the fallback data from site_content (which is old structure)
+  const servicesSource = data && data.length > 0 ? data : fallbackData;
+  const lang = currentLang || 'en';
+
+  const services = (servicesSource || []).map((srv, index) => {
+    // If it's a database product (has slug, type='service', content JSON)
+    if (srv.slug) {
+      const content = srv.content || {};
+      const title = lang === 'es' ? (content.title_es || srv.title) : srv.title;
+      // You can add subtitle logic if it exists in DB, or fallback to Explore
+      return {
+        id: srv.id || index,
+        title: title || "Service",
+        subtitle: lang === 'es' ? "Hablemos de tu viaje" : "Let's Plan Your Journey",
+        image: content.cover_image || content.hero_image || "http://placehold.co/600x800.png",
+        link: `/${lang}/services/${srv.slug}`,
+      };
+    }
+    
+    // Fallback for old JSON data structure from site_content
+    return {
+      id: srv.id || index,
+      title: srv.title || "Service",
+      subtitle: srv.subtitle || (lang === 'es' ? "Hablemos de tu viaje" : "Let's Plan Your Journey"),
+      image: srv.image || "http://placehold.co/600x800.png",
+      link: srv.link || "#",
+    };
+  });
 
   return (
     <section id="services" className="w-full flex flex-col md:flex-row">
       {services.map((service, index) => (
         <motion.div 
-          key={service.id} 
+          key={service.id || `service-${index}`} 
           initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, margin: "-100px" }}
