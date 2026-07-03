@@ -394,8 +394,17 @@ export default function DashboardEditor({ initialData }) {
 
   return (
     <>
+      <div className="flex lg:hidden fixed inset-0 z-[9999] bg-white flex-col items-center justify-center p-8 text-center">
+        <IconDeviceDesktop size={64} className="text-gray-300 mb-6" />
+        <h2 className="text-2xl font-bold tracking-widest uppercase mb-4 text-black">Desktop Only</h2>
+        <p className="text-gray-500 max-w-md mx-auto leading-relaxed">
+          The Aruna CMS dashboard is highly detailed and requires a larger screen for the best experience. 
+          Please access it from a desktop or laptop device.
+        </p>
+      </div>
+
       {/* Sidebar Editor */}
-      <div className="w-[400px] h-full bg-white border-r border-gray-200 flex flex-col shadow-xl z-10 flex-shrink-0">
+      <div className="hidden lg:flex flex-col w-[400px] h-full bg-white border-r border-gray-200 shadow-xl z-10 flex-shrink-0">
         {/* Header */}
         <div className="p-6 border-b border-gray-200 flex justify-between items-center bg-gray-50">
           <h1 className="text-xl font-bold tracking-widest uppercase">Aruna CMS</h1>
@@ -1506,7 +1515,7 @@ export default function DashboardEditor({ initialData }) {
         </div>
 
         {/* Iframe Container */}
-        <div ref={previewContainerRef} className="flex-1 w-full h-full overflow-hidden relative bg-gray-100">
+        <div ref={previewContainerRef} className="hidden lg:flex flex-1 w-full h-full overflow-hidden relative bg-gray-100">
           {(() => {
             let targetWidth = 1440;
             let targetHeight = 900;
