@@ -28,9 +28,9 @@ export default function HomeClient({ content }) {
         className="absolute top-2 2xl:top-6 left-1/2 -translate-x-1/2 z-20 pointer-events-none"
       >
         {logoImage ? (
-          <Image src={logoImage} alt="Aruna Logo" width={200} height={96} className="h-34 w-auto drop-shadow-md" unoptimized priority />
+          <Image src={logoImage} alt="Aruna Logo" width={200} height={96} className="h-24 2xl:h-34 w-auto drop-shadow-md" unoptimized priority />
         ) : (
-          <Image src={logo} alt="Aruna Logo" className="h-34 w-auto drop-shadow-md" priority />
+          <Image src={logo} alt="Aruna Logo" className="h-24 2xl:h-34 w-auto drop-shadow-md" priority />
         )}
       </motion.div>
 
