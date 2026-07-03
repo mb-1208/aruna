@@ -23,13 +23,25 @@
 }
 
 /* Brand Palette Override for Backgrounds & Borders ONLY (Trial) */
-.bg-white { background-color: var(--color-brand-light-orange) !important; }
-.bg-black { background-color: var(--color-brand-dark-brown) !important; }
-.border-white { border-color: var(--color-brand-light-orange) !important; }
-.border-black { border-color: var(--color-brand-dark-brown) !important; }
-.hover\:bg-white:hover { background-color: var(--color-brand-light-orange) !important; }
-.hover\:bg-black:hover { background-color: var(--color-brand-dark-brown) !important; }
-.hover\:text-black:hover { color: var(--color-brand-dark-brown) !important; }
+.aruna-public .bg-white { background-color: var(--color-brand-light-orange) !important; }
+.aruna-public .bg-black { background-color: var(--color-brand-dark-brown) !important; }
+.aruna-public .border-white { border-color: var(--color-brand-light-orange) !important; }
+.aruna-public .border-black { border-color: var(--color-brand-dark-brown) !important; }
+.aruna-public .hover\:bg-white:hover { background-color: var(--color-brand-light-orange) !important; }
+.aruna-public .hover\:bg-black:hover { background-color: var(--color-brand-dark-brown) !important; }
+.aruna-public .hover\:text-black:hover { color: var(--color-brand-dark-brown) !important; }
+
+/* Enforce Original Colors for CMS */
+.cms-admin-panel {
+  --background: #f9fafb;
+}
+.cms-admin-panel .bg-white { background-color: #ffffff !important; }
+.cms-admin-panel .bg-black { background-color: #000000 !important; }
+.cms-admin-panel .border-white { border-color: #ffffff !important; }
+.cms-admin-panel .border-black { border-color: #000000 !important; }
+.cms-admin-panel .hover\:bg-white:hover { background-color: #ffffff !important; }
+.cms-admin-panel .hover\:bg-black:hover { background-color: #000000 !important; }
+.cms-admin-panel .hover\:text-black:hover { color: #000000 !important; }
 
 /* @media (prefers-color-scheme: dark) {
   :root {

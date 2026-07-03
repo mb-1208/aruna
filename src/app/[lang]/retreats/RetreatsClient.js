@@ -3,6 +3,7 @@
 import Navbar from "@/components/Navbar";
 import RetreatHero from "@/components/retreats/RetreatHero";
 import RetreatIntro from "@/components/retreats/RetreatIntro";
+import AboutSection from "@/components/AboutSection";
 import TheExperience from "@/components/retreats/TheExperience";
 import ImageDivider from "@/components/ImageDivider";
 import RetreatQuote from "@/components/retreats/RetreatQuote";
@@ -57,6 +58,14 @@ export default function RetreatsClient({ initialContent }) {
         subtitle={content.introSubtitle}
         title={content.introTitle}
         buttonText={content.introButtonText || (currentLang === 'es' ? "Encuentra el retiro para ti" : "Find Your Retreat")}
+      />
+
+      <AboutSection 
+        subtitle={content.aboutSubtitle}
+        title={content.aboutTitle}
+        text={content.aboutText}
+        quote={content.aboutQuote}
+        image={content.aboutImage}
       />
 
       <TheExperience 

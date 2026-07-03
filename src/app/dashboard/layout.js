@@ -14,7 +14,7 @@ export const metadata = {
 export default function DashboardLayout({ children }) {
   return (
     <html lang="en" className={`${inter.variable} antialiased h-full`}>
-      <body className="min-h-full m-0 bg-gray-50 text-black">
+      <body className="min-h-full m-0 bg-gray-50 text-black cms-admin-panel">
         {children}
       </body>
     </html>

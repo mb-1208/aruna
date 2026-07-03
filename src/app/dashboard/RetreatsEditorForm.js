@@ -117,6 +117,14 @@ export default function RetreatsEditorForm({ content, setContent }) {
         <Input label="Modal Text" type="textarea" value={content.introModalText} onChange={(val) => updateContent('introModalText', val)} />
       </Section>
 
+      <Section title="About Section">
+        <Input label="Subtitle" value={content.aboutSubtitle} onChange={(val) => updateContent('aboutSubtitle', val)} />
+        <Input label="Title" type="textarea" value={content.aboutTitle} onChange={(val) => updateContent('aboutTitle', val)} />
+        <Input label="Description" type="textarea" value={content.aboutText} onChange={(val) => updateContent('aboutText', val)} />
+        <Input label="Quote Text" type="textarea" value={content.aboutQuote} onChange={(val) => updateContent('aboutQuote', val)} />
+        <ImageUpload label="About Image" hint="800x1200 (Portrait)" value={content.aboutImage} onChange={(val) => updateContent('aboutImage', val)} />
+      </Section>
+
       <Section title="The Experience (Destinations) Header">
         <Input label="Subtitle" value={content.experienceSubtitle} onChange={(val) => updateContent('experienceSubtitle', val)} />
         <Input label="Title" value={content.experienceTitle} onChange={(val) => updateContent('experienceTitle', val)} />

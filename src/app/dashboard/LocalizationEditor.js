@@ -114,6 +114,10 @@ export default function LocalizationEditor({
               <ReadOnlyField label="Intro Subtitle" value={retreatsContent?.introSubtitle} />
               <ReadOnlyField label="Intro Title" value={retreatsContent?.introTitle} />
               <ReadOnlyField label="Intro Button Text" value={retreatsContent?.introButtonText} />
+              <ReadOnlyField label="About Subtitle" value={retreatsContent?.aboutSubtitle} />
+              <ReadOnlyField label="About Title" value={retreatsContent?.aboutTitle} />
+              <ReadOnlyField label="About Text" value={retreatsContent?.aboutText} isTextarea />
+              <ReadOnlyField label="About Quote" value={retreatsContent?.aboutQuote} isTextarea />
               <ReadOnlyField label="Experience Subtitle" value={retreatsContent?.experienceSubtitle} />
               <ReadOnlyField label="Experience Title" value={retreatsContent?.experienceTitle} />
               <ReadOnlyField label="Quote Subtitle" value={retreatsContent?.quoteSubtitle} />
@@ -265,6 +269,10 @@ export default function LocalizationEditor({
               <EditField label="Intro Subtitle" value={esRetreatsContent?.introSubtitle} onChange={(val) => setEsRetreatsContent({...esRetreatsContent, introSubtitle: val})} />
               <EditField label="Intro Title" value={esRetreatsContent?.introTitle} onChange={(val) => setEsRetreatsContent({...esRetreatsContent, introTitle: val})} />
               <EditField label="Intro Button Text" value={esRetreatsContent?.introButtonText} onChange={(val) => setEsRetreatsContent({...esRetreatsContent, introButtonText: val})} />
+              <EditField label="About Subtitle" value={esRetreatsContent?.aboutSubtitle} onChange={(val) => setEsRetreatsContent({...esRetreatsContent, aboutSubtitle: val})} />
+              <EditField label="About Title" value={esRetreatsContent?.aboutTitle} onChange={(val) => setEsRetreatsContent({...esRetreatsContent, aboutTitle: val})} />
+              <EditField label="About Text" isTextarea value={esRetreatsContent?.aboutText} onChange={(val) => setEsRetreatsContent({...esRetreatsContent, aboutText: val})} />
+              <EditField label="About Quote" isTextarea value={esRetreatsContent?.aboutQuote} onChange={(val) => setEsRetreatsContent({...esRetreatsContent, aboutQuote: val})} />
               <EditField label="Experience Subtitle" value={esRetreatsContent?.experienceSubtitle} onChange={(val) => setEsRetreatsContent({...esRetreatsContent, experienceSubtitle: val})} />
               <EditField label="Experience Title" value={esRetreatsContent?.experienceTitle} onChange={(val) => setEsRetreatsContent({...esRetreatsContent, experienceTitle: val})} />
               <EditField label="Quote Subtitle" value={esRetreatsContent?.quoteSubtitle} onChange={(val) => setEsRetreatsContent({...esRetreatsContent, quoteSubtitle: val})} />

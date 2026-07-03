@@ -42,7 +42,7 @@ export default async function RootLayout({ children, params }) {
       lang={lang}
       className={`${inter.variable} ${playfair.variable} ${questrial.variable} h-full antialiased`}
     >
-      <body className="min-h-full flex flex-col m-0">
+      <body className="min-h-full flex flex-col m-0 aruna-public">
         <LanguageProvider globalContent={globalContent} lang={lang}>
           {children}
         </LanguageProvider>
