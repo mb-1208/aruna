@@ -58,6 +58,14 @@ export default async function RetreatDetailPage({ params }) {
     .eq('id', 'global_settings')
     .single();
     
+  const { data: retreatsPageData } = await supabase
+    .from('site_content')
+    .select('id, content')
+    .in('id', ['retreats_page', 'retreats_page_es']);
+    
+  const retreatsPageEn = retreatsPageData?.find(d => d.id === 'retreats_page')?.content || {};
+  const retreatsPageEs = retreatsPageData?.find(d => d.id === 'retreats_page_es')?.content || {};
+    
   const ctaContent = globalData?.content?.cta || { en: {}, es: {} };
 
   if (!dest) {
@@ -74,19 +82,38 @@ export default async function RetreatDetailPage({ params }) {
   const overview = isEs ? (content.overview_es || content.overview) : content.overview;
   const pricingTitle = isEs ? (content.pricing_title_es || content.pricing_title) : content.pricing_title;
   const pricingSubtitle = isEs ? (content.pricing_subtitle_es || content.pricing_subtitle) : content.pricing_subtitle;
-  const packages = (content.packages || []).map(p => ({
+  const basePackages = content.packages || [];
+  const packages = basePackages.map(p => ({
     nights: isEs ? (p.nights_es || p.nights) : p.nights,
     price: isEs ? (p.price_es || p.price) : p.price,
+    dates: isEs ? (p.dates_es || p.dates || []) : (p.dates || []),
+    rooms: isEs ? (p.rooms_es || p.rooms || []) : (p.rooms || []),
     inclusions: isEs ? (p.inclusions_es || p.inclusions || []) : (p.inclusions || []),
   }));
   const locationTitle = isEs ? (content.location_title_es || content.location_title) : content.location_title;
   const locationText = isEs ? (content.location_text_es || content.location_text) : content.location_text;
   const locationImages = content.location_images;
   const heroBookButton = isEs ? (content.hero_book_button_es || content.hero_book_button) : content.hero_book_button;
-  const faqs = (content.faqs || []).map(f => ({
+  let finalFaqs = (content.faqs || []).map(f => ({
     question: isEs ? (f.question_es || f.question) : f.question,
     answer: isEs ? (f.answer_es || f.answer) : f.answer,
   }));
+
+  let finalFaqTitle = isEs ? "¿TIENES PREGUNTAS?" : "HAVE QUESTIONS?";
+  let finalFaqSubtitle = isEs ? "PREGUNTAS FRECUENTES" : "FREQUENTLY ASKED QUESTIONS";
+  const retreatsPageContent = isEs ? retreatsPageEs : retreatsPageEn;
+
+  if (finalFaqs.length === 0) {
+    if (retreatsPageContent.faqItems && retreatsPageContent.faqItems.length > 0) {
+      finalFaqs = retreatsPageContent.faqItems;
+    } else {
+      finalFaqs = detailFaqs[isEs ? 'es' : 'en'] || detailFaqs.en;
+    }
+  }
+
+  // Always use the main page's FAQ title and subtitle if available
+  if (retreatsPageContent.faqTitle) finalFaqTitle = retreatsPageContent.faqTitle;
+  if (retreatsPageContent.faqSubtitle) finalFaqSubtitle = retreatsPageContent.faqSubtitle;
 
   return (
     <main className="min-h-screen font-sans overflow-x-hidden">
@@ -100,7 +127,13 @@ export default async function RetreatDetailPage({ params }) {
         date={displayDate}
         bgImage={content.hero_image || "http://placehold.co/1920x1080.png"}
         bookNowText={heroBookButton}
+        whatsappNumber={content.whatsapp_number}
+        isComingSoon={content.status === 'coming_soon'}
+        lang={lang}
       />
+
+      {content.status !== 'coming_soon' && (
+        <>
 
       {/* Overview Section */}
       <RetreatOverview 
@@ -114,6 +147,9 @@ export default async function RetreatDetailPage({ params }) {
         title={pricingTitle}
         subtitle={pricingSubtitle}
         packages={packages}
+        whatsappNumber={content.whatsapp_number}
+        retreatTitle={displayTitle}
+        lang={lang}
       />
 
       {/* Location */}
@@ -124,10 +160,10 @@ export default async function RetreatDetailPage({ params }) {
       />
 
       {/* FAQ Section */}
-      <FAQ
-        data={(faqs && faqs.length > 0) ? faqs : detailFaqs[isEs ? 'es' : 'en']}
-        title={isEs ? "LO QUE NECESITAS SABER" : "WHAT YOU NEED TO KNOW"}
-        subtitle={isEs ? "Preguntas Frecuentes" : "Frequently Asked Questions"}
+      <FAQ 
+        data={finalFaqs} 
+        title={finalFaqTitle}
+        subtitle={finalFaqSubtitle}
       />
 
       {/* Call To Action */}
@@ -137,8 +173,11 @@ export default async function RetreatDetailPage({ params }) {
         text={isEs ? (ctaContent.es.text || "Agregue este formulario de correo electrónico para que sean los primeros en conocer sus detalles y reservas anticipadas.") : (ctaContent.en.text || "Add this email form so that they will be the first to know your details & early booking.")}
         buttonText={isEs ? (ctaContent.es.buttonText || "SUSCRIBIRSE") : (ctaContent.en.buttonText || "SUBSCRIBE")}
         emailLabel={isEs ? (ctaContent.es.emailLabel || "CORREO ELECTRÓNICO") : (ctaContent.en.emailLabel || "EMAIL")}
+        image={ctaContent.en.image}
         source="Retreat Details CTA"
       />
+      </>
+      )}
 
       {/* Footer */}
       <Footer />

@@ -194,7 +194,8 @@ export default function DashboardEditor({ initialData }) {
           footer: data.content.footer || { en: {}, es: {} },
           promo: data.content.promo || { en: {}, es: {} },
           cta: data.content.cta || { en: {}, es: {} },
-          logo_url: data.content.logo_url || ''
+          logo_url: data.content.logo_url || '',
+          footer_logo_url: data.content.footer_logo_url || ''
         });
       }
     } catch (err) {
@@ -766,19 +767,14 @@ export default function DashboardEditor({ initialData }) {
                     }} className="w-full border border-gray-300 rounded p-2 text-sm" />
                   </div>
                   
-                  {review.category === 'travel' && (
-                    <>
-
-                      <DashboardImageUpload 
-                        label="Background Image (Upload)" 
-                        hint="400x600 (Portrait)" 
-                        value={review.bgImage} 
-                        onChange={(val) => {
-                          const newRev = [...reviews]; newRev[index].bgImage = val; setReviews(newRev);
-                        }} 
-                      />
-                    </>
-                  )}
+                  <DashboardImageUpload 
+                    label="Background Image (Upload)" 
+                    hint="400x600 (Portrait)" 
+                    value={review.bgImage} 
+                    onChange={(val) => {
+                      const newRev = [...reviews]; newRev[index].bgImage = val; setReviews(newRev);
+                    }} 
+                  />
                 </div>
               ))}
               <div className="flex gap-4 pt-4 border-t border-gray-200">
@@ -976,10 +972,16 @@ export default function DashboardEditor({ initialData }) {
                       </h3>
                       <div className="space-y-6">
                         <DashboardImageUpload 
-                          label="Upload Logo" 
+                          label="Main Logo (Header)" 
                           hint="PNG or SVG with transparent background." 
                           value={globalContent?.logo_url} 
                           onChange={(val) => setGlobalContent({...globalContent, logo_url: val})} 
+                        />
+                        <DashboardImageUpload 
+                          label="Footer Logo" 
+                          hint="PNG or SVG with transparent background (Used in Footer)." 
+                          value={globalContent?.footer_logo_url} 
+                          onChange={(val) => setGlobalContent({...globalContent, footer_logo_url: val})} 
                         />
                       </div>
                     </div>
@@ -1119,7 +1121,24 @@ export default function DashboardEditor({ initialData }) {
                       </h3>
                       <div className="space-y-8">
                         <div>
-                          <h4 className="font-bold mb-4">Promo Popup</h4>
+                          <div className="flex items-center justify-between mb-4">
+                            <h4 className="font-bold">Promo Popup</h4>
+                            <label className="flex items-center cursor-pointer">
+                              <div className="relative">
+                                <input 
+                                  type="checkbox" 
+                                  className="sr-only" 
+                                  checked={globalContent?.promo?.enabled !== false} 
+                                  onChange={(e) => setGlobalContent({...globalContent, promo: {...(globalContent?.promo || {}), enabled: e.target.checked}})} 
+                                />
+                                <div className={`block w-10 h-6 rounded-full transition-colors ${globalContent?.promo?.enabled !== false ? 'bg-black' : 'bg-gray-300'}`}></div>
+                                <div className={`dot absolute left-1 top-1 bg-white w-4 h-4 rounded-full transition-transform ${globalContent?.promo?.enabled !== false ? 'transform translate-x-4' : ''}`}></div>
+                              </div>
+                              <div className="ml-3 text-xs font-bold uppercase tracking-widest text-gray-500 w-16">
+                                {globalContent?.promo?.enabled !== false ? 'Enabled' : 'Disabled'}
+                              </div>
+                            </label>
+                          </div>
                           <div className="space-y-4">
                             {['title', 'description', 'button', 'placeholder'].map(key => (
                               <div key={`promo-${key}`}>
@@ -1146,6 +1165,12 @@ export default function DashboardEditor({ initialData }) {
                                 )}
                               </div>
                             ))}
+                            <DashboardImageUpload 
+                              label="Background Image" 
+                              hint="1920x800 (Landscape)" 
+                              value={globalContent?.cta?.en?.image} 
+                              onChange={(val) => setGlobalContent({...globalContent, cta: {...globalContent.cta, en: {...(globalContent?.cta?.en || {}), image: val}}})} 
+                            />
                           </div>
                         </div>
                       </div>

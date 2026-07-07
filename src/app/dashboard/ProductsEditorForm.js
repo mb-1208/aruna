@@ -110,8 +110,8 @@ export default function ProductsEditorForm({ products, setProducts }) {
 
   const updatePackage = (idx, key, value) => {
     const pkgs = [...(products[activeProductId].content?.packages || [])];
-    if (key === 'inclusions' || key === 'inclusions_es') {
-      pkgs[idx][key] = value.split(',').map(s => s.trim());
+    if (['inclusions', 'inclusions_es', 'dates', 'dates_es', 'rooms', 'rooms_es'].includes(key)) {
+      pkgs[idx][key] = value.split('\n').map(s => s.trim()).filter(Boolean);
     } else {
       pkgs[idx][key] = value;
     }
@@ -176,11 +176,20 @@ export default function ProductsEditorForm({ products, setProducts }) {
                   value={products[activeProductId].title} 
                   onChange={(val) => {
                     updateProduct(activeProductId, 'title', val);
-                    // Auto-generate slug if it's a new product (slug starts with 'new-product-')
-                    if (products[activeProductId].slug.startsWith('new-product-')) {
-                      const newSlug = val.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)+/g, '');
-                      updateProduct(activeProductId, 'slug', newSlug || `new-product-${Date.now()}`);
-                    }
+                    
+                    // Robust auto-generate slug
+                    const newSlug = val
+                      .toString()
+                      .normalize('NFD')
+                      .replace(/[\u0300-\u036f]/g, '') // Remove accents/diacritics
+                      .toLowerCase()
+                      .replace(/\s+/g, '-')            // Replace spaces with -
+                      .replace(/[^\w\-]+/g, '')        // Remove all non-word chars
+                      .replace(/\-\-+/g, '-')          // Replace multiple - with single -
+                      .replace(/^-+/, '')              // Trim - from start of text
+                      .replace(/-+$/, '');             // Trim - from end of text
+                      
+                    updateProduct(activeProductId, 'slug', newSlug || `new-product-${Date.now()}`);
                   }} 
                 />
                 <Input label="Title (ES)" value={products[activeProductId].content?.title_es} onChange={(val) => updateContent(activeProductId, 'title_es', val)} />
@@ -207,6 +216,20 @@ export default function ProductsEditorForm({ products, setProducts }) {
                     <option value="service">Service</option>
                   </select>
                 </div>
+                {products[activeProductId].type === 'retreat' && (
+                  <div className="mb-4">
+                    <label className="block text-xs font-bold uppercase tracking-widest text-gray-500 mb-2">Status</label>
+                    <select 
+                      value={products[activeProductId].content?.status || 'active'}
+                      onChange={(e) => updateContent(activeProductId, 'status', e.target.value)}
+                      className="w-full border border-gray-200 rounded-lg p-3 text-sm focus:outline-none focus:border-black transition-colors"
+                    >
+                      <option value="active">Active</option>
+                      <option value="coming_soon">Coming Soon</option>
+                    </select>
+                  </div>
+                )}
+                <Input label="WhatsApp Number" value={products[activeProductId].content?.whatsapp_number} onChange={(val) => updateContent(activeProductId, 'whatsapp_number', val)} />
               </div>
 
               <div className="grid grid-cols-2 gap-4">
@@ -234,7 +257,9 @@ export default function ProductsEditorForm({ products, setProducts }) {
               </div>
             </div>
 
-            <div className="border border-gray-200 rounded-xl p-6 bg-white shadow-sm space-y-6">
+            {products[activeProductId].content?.status !== 'coming_soon' && (
+              <>
+                <div className="border border-gray-200 rounded-xl p-6 bg-white shadow-sm space-y-6">
               <h3 className="text-lg font-bold border-b border-gray-100 pb-4 mb-4">Overview Section</h3>
               <div className="grid grid-cols-2 gap-4">
                 <Input label="Overview Content (EN)" type="textarea" value={products[activeProductId].content?.overview} onChange={(val) => updateContent(activeProductId, 'overview', val)} />
@@ -282,21 +307,73 @@ export default function ProductsEditorForm({ products, setProducts }) {
                       <Input label="Price (ES)" value={pkg.price_es} onChange={(val) => updatePackage(idx, 'price_es', val)} />
                     </div>
 
+                    <div className="grid grid-cols-2 gap-4 mb-4">
+                      <div>
+                        <label className="block text-xs font-bold uppercase tracking-widest text-gray-500 mb-1">Available Dates (EN)</label>
+                        <p className="text-[10px] text-gray-400 mb-2 italic">Format: Date Title: Date Range (STATUS). One item per line.</p>
+                        <textarea 
+                          rows={3} 
+                          value={(pkg.dates || []).join('\n')} 
+                          onChange={(e) => updatePackage(idx, 'dates', e.target.value)} 
+                          placeholder="Example: Easter Retreat 2027: March 20th - 30th (SPOTS AVAILABLE)"
+                          className="w-full border border-gray-200 rounded-lg p-3 text-sm focus:outline-none focus:border-black transition-colors" 
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-xs font-bold uppercase tracking-widest text-gray-500 mb-1">Available Dates (ES)</label>
+                        <p className="text-[10px] text-gray-400 mb-2 italic">Format: Date Title: Date Range (STATUS). One item per line.</p>
+                        <textarea 
+                          rows={3} 
+                          value={(pkg.dates_es || []).join('\n')} 
+                          onChange={(e) => updatePackage(idx, 'dates_es', e.target.value)} 
+                          placeholder="Example: Semana Santa 2027: Del 20 al 30 de marzo (PLAZAS DISPONIBLES)"
+                          className="w-full border border-gray-200 rounded-lg p-3 text-sm focus:outline-none focus:border-black transition-colors" 
+                        />
+                      </div>
+                    </div>
+
+                    <div className="grid grid-cols-2 gap-4 mb-4">
+                      <div>
+                        <label className="block text-xs font-bold uppercase tracking-widest text-gray-500 mb-1">Room Options (EN)</label>
+                        <p className="text-[10px] text-gray-400 mb-2 italic">List room types here. One item per line.</p>
+                        <textarea 
+                          rows={2} 
+                          value={(pkg.rooms || []).join('\n')} 
+                          onChange={(e) => updatePackage(idx, 'rooms', e.target.value)} 
+                          placeholder="Example: Room: Choose between a private double room..."
+                          className="w-full border border-gray-200 rounded-lg p-3 text-sm focus:outline-none focus:border-black transition-colors" 
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-xs font-bold uppercase tracking-widest text-gray-500 mb-1">Room Options (ES)</label>
+                        <p className="text-[10px] text-gray-400 mb-2 italic">List room types here. One item per line.</p>
+                        <textarea 
+                          rows={2} 
+                          value={(pkg.rooms_es || []).join('\n')} 
+                          onChange={(e) => updatePackage(idx, 'rooms_es', e.target.value)} 
+                          placeholder="Example: Habitación: Elige entre habitación doble..."
+                          className="w-full border border-gray-200 rounded-lg p-3 text-sm focus:outline-none focus:border-black transition-colors" 
+                        />
+                      </div>
+                    </div>
+
                     <div className="grid grid-cols-2 gap-4">
                       <div>
-                        <label className="block text-xs font-bold uppercase tracking-widest text-gray-500 mb-2">Included Items (EN - Comma Separated)</label>
+                        <label className="block text-xs font-bold uppercase tracking-widest text-gray-500 mb-1">Included Items (EN)</label>
+                        <p className="text-[10px] text-gray-400 mb-2 italic">General inclusions. One item per line (Press Enter for new line).</p>
                         <textarea 
                           rows={4} 
-                          value={(pkg.inclusions || []).join(', ')} 
+                          value={(pkg.inclusions || []).join('\n')} 
                           onChange={(e) => updatePackage(idx, 'inclusions', e.target.value)} 
                           className="w-full border border-gray-200 rounded-lg p-3 text-sm focus:outline-none focus:border-black transition-colors" 
                         />
                       </div>
                       <div>
-                        <label className="block text-xs font-bold uppercase tracking-widest text-gray-500 mb-2">Included Items (ES - Comma Separated)</label>
+                        <label className="block text-xs font-bold uppercase tracking-widest text-gray-500 mb-1">Included Items (ES)</label>
+                        <p className="text-[10px] text-gray-400 mb-2 italic">General inclusions. One item per line (Press Enter for new line).</p>
                         <textarea 
                           rows={4} 
-                          value={(pkg.inclusions_es || []).join(', ')} 
+                          value={(pkg.inclusions_es || []).join('\n')} 
                           onChange={(e) => updatePackage(idx, 'inclusions_es', e.target.value)} 
                           className="w-full border border-gray-200 rounded-lg p-3 text-sm focus:outline-none focus:border-black transition-colors" 
                         />
@@ -380,6 +457,8 @@ export default function ProductsEditorForm({ products, setProducts }) {
                 )}
               </div>
             </div>
+            </>
+          )}
           </>
         ) : (
           <div className="flex items-center justify-center h-64 text-gray-400 border-2 border-dashed border-gray-200 rounded-xl">

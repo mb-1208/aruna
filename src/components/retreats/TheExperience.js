@@ -4,6 +4,9 @@ import Image from "next/image";
 import Link from "next/link";
 import { IconArrowUpRight } from "@tabler/icons-react";
 import { motion } from "framer-motion";
+import { Swiper, SwiperSlide } from 'swiper/react';
+import { Mousewheel } from 'swiper/modules';
+import 'swiper/css';
 
 export default function TheExperience({ subtitle, title, destinations, currentLang }) {
   const defaultExperiences = [
@@ -79,41 +82,59 @@ export default function TheExperience({ subtitle, title, destinations, currentLa
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true, margin: "-100px" }}
         transition={{ duration: 0.8, delay: 0.2, ease: "easeOut" }}
-        className="flex overflow-x-auto gap-4 md:gap-8 pb-8 snap-x snap-mandatory hide-scrollbar pr-4 md:pr-8"
+        className="w-full pb-8 pr-4 md:pr-8 cursor-grab active:cursor-grabbing"
       >
-        {mappedExperiences.map((exp) => (
-          <div 
-            key={exp.id} 
-            className="w-[85vw] md:w-auto md:min-w-[400px] md:max-w-[400px] flex-shrink-0 snap-start group cursor-pointer"
-          >
-            <Link href={exp.link} className="block w-full">
-              {/* Image Container */}
-              <div className="relative w-full aspect-square mb-6 overflow-hidden bg-gray-100">
-                <Image
-                  src={exp.image_url || "http://placehold.co/800x800.png"}
-                  alt={exp.title}
-                  fill
-                  className="object-cover transition-transform duration-700 group-hover:scale-105"
-                  unoptimized
-                />
-              </div>
+        <Swiper
+          modules={[Mousewheel]}
+          spaceBetween={16}
+          slidesPerView={1.2}
+          grabCursor={true}
+          mousewheel={{
+            forceToAxis: true,
+          }}
+          breakpoints={{
+            768: {
+              slidesPerView: 2.25,
+              spaceBetween: 32,
+            },
+            1024: {
+              slidesPerView: 3.25,
+              spaceBetween: 32,
+            },
+          }}
+          className="w-full h-full"
+        >
+          {mappedExperiences.map((exp) => (
+            <SwiperSlide key={exp.id} className="h-auto">
+              <Link href={exp.link} className="block w-full h-full group select-none" draggable={false}>
+                {/* Image Container */}
+                <div className="relative w-full aspect-square mb-6 overflow-hidden bg-gray-100 pointer-events-none">
+                  <Image
+                    src={exp.image_url || "http://placehold.co/800x800.png"}
+                    alt={exp.title}
+                    fill
+                    className="object-cover transition-transform duration-700 group-hover:scale-105"
+                    unoptimized
+                  />
+                </div>
 
-              {/* Title & Arrow */}
-              <div className="flex justify-between items-start mb-2 gap-4">
-                <h3 className="text-2xl font-medium tracking-wide text-black line-clamp-2">{exp.title}</h3>
-                <IconArrowUpRight size={24} className="text-black shrink-0 transform transition-transform group-hover:translate-x-1 group-hover:-translate-y-1" />
-              </div>
+                {/* Title & Arrow */}
+                <div className="flex justify-between items-start mb-2 gap-4">
+                  <h3 className="text-2xl font-medium tracking-wide text-black line-clamp-2">{exp.title}</h3>
+                  <IconArrowUpRight size={24} className="text-black shrink-0 transform transition-transform group-hover:translate-x-1 group-hover:-translate-y-1" />
+                </div>
 
-              {/* Date */}
-              <p className="text-sm uppercase tracking-widest text-gray-500 mb-4">{exp.date}</p>
+                {/* Date */}
+                <p className="text-sm uppercase tracking-widest text-gray-500 mb-4">{exp.date}</p>
 
-              {/* Description */}
-              <p className="text-gray-600 leading-relaxed text-sm md:text-base line-clamp-3">
-                {exp.description}
-              </p>
-            </Link>
-          </div>
-        ))}
+                {/* Description */}
+                <p className="text-gray-600 leading-relaxed text-sm md:text-base line-clamp-3">
+                  {exp.description}
+                </p>
+              </Link>
+            </SwiperSlide>
+          ))}
+        </Swiper>
       </motion.div>
     </section>
   );

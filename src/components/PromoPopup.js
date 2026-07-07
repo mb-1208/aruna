@@ -17,6 +17,8 @@ export default function PromoPopup() {
     button: "Sign Up Now"
   };
 
+  const isEnabled = globalContent?.promo?.enabled !== false;
+
   const [email, setEmail] = useState("");
   const [status, setStatus] = useState("idle");
   const [message, setMessage] = useState("");
@@ -43,7 +45,7 @@ export default function PromoPopup() {
     return () => clearTimeout(timer);
   }, []);
 
-  if (!isVisible) return null;
+  if (!isVisible || !isEnabled) return null;
 
   return (
     <div className="fixed bottom-6 right-6 md:bottom-10 md:right-10 z-50 bg-white p-8 w-[90%] max-w-[400px] shadow-2xl flex flex-col font-sans border border-gray-100 animate-in slide-in-from-bottom-10 fade-in duration-500">

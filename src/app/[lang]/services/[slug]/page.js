@@ -57,6 +57,14 @@ export default async function ServiceDetailPage({ params }) {
     .select('content')
     .eq('id', 'global_settings')
     .single();
+
+  const { data: travelPageData } = await supabase
+    .from('site_content')
+    .select('id, content')
+    .in('id', ['travel_page', 'travel_page_es']);
+    
+  const travelPageEn = travelPageData?.find(d => d.id === 'travel_page')?.content || {};
+  const travelPageEs = travelPageData?.find(d => d.id === 'travel_page_es')?.content || {};
     
   const ctaContent = globalData?.content?.cta || { en: {}, es: {} };
 
@@ -74,12 +82,39 @@ export default async function ServiceDetailPage({ params }) {
   const overview = isEs ? (content.overview_es || content.overview) : content.overview;
   const pricingTitle = isEs ? (content.pricing_title_es || content.pricing_title) : content.pricing_title;
   const pricingSubtitle = isEs ? (content.pricing_subtitle_es || content.pricing_subtitle) : content.pricing_subtitle;
-  const packages = isEs ? (content.packages_es || content.packages) : content.packages;
   const locationTitle = isEs ? (content.location_title_es || content.location_title) : content.location_title;
   const locationText = isEs ? (content.location_text_es || content.location_text) : content.location_text;
   const locationImages = content.location_images;
   const heroBookButton = isEs ? (content.hero_book_button_es || content.hero_book_button) : content.hero_book_button;
-  const faqs = isEs ? (content.faqs_es || content.faqs) : content.faqs;
+  const basePackages = content.packages || [];
+  const packages = basePackages.map(p => ({
+    nights: isEs ? (p.nights_es || p.nights) : p.nights,
+    price: isEs ? (p.price_es || p.price) : p.price,
+    dates: isEs ? (p.dates_es || p.dates || []) : (p.dates || []),
+    rooms: isEs ? (p.rooms_es || p.rooms || []) : (p.rooms || []),
+    inclusions: isEs ? (p.inclusions_es || p.inclusions || []) : (p.inclusions || []),
+  }));
+
+  let finalFaqs = (content.faqs || []).map(f => ({
+    question: isEs ? (f.question_es || f.question) : f.question,
+    answer: isEs ? (f.answer_es || f.answer) : f.answer,
+  }));
+
+  let finalFaqTitle = isEs ? "¿TIENES PREGUNTAS?" : "HAVE QUESTIONS?";
+  let finalFaqSubtitle = isEs ? "PREGUNTAS FRECUENTES" : "FREQUENTLY ASKED QUESTIONS";
+  const travelPageContent = isEs ? travelPageEs : travelPageEn;
+
+  if (finalFaqs.length === 0) {
+    if (travelPageContent.faqItems && travelPageContent.faqItems.length > 0) {
+      finalFaqs = travelPageContent.faqItems;
+    } else {
+      finalFaqs = detailFaqs[isEs ? 'es' : 'en'] || detailFaqs.en;
+    }
+  }
+
+  // Always use the main page's FAQ title and subtitle if available
+  if (travelPageContent.faqTitle) finalFaqTitle = travelPageContent.faqTitle;
+  if (travelPageContent.faqSubtitle) finalFaqSubtitle = travelPageContent.faqSubtitle;
 
   return (
     <main className="min-h-screen font-sans overflow-x-hidden">
@@ -93,7 +128,13 @@ export default async function ServiceDetailPage({ params }) {
         date={displayDate}
         bgImage={content.hero_image || "http://placehold.co/1920x1080.png"}
         bookNowText={heroBookButton}
+        whatsappNumber={content.whatsapp_number}
+        isComingSoon={content.status === 'coming_soon'}
+        lang={lang}
       />
+
+      {content.status !== 'coming_soon' && (
+        <>
 
       {/* Overview Section */}
       <RetreatOverview 
@@ -107,6 +148,9 @@ export default async function ServiceDetailPage({ params }) {
         title={pricingTitle}
         subtitle={pricingSubtitle}
         packages={packages}
+        whatsappNumber={content.whatsapp_number}
+        retreatTitle={displayTitle}
+        lang={lang}
       />
 
       {/* Location */}
@@ -118,9 +162,9 @@ export default async function ServiceDetailPage({ params }) {
 
       {/* FAQ Section */}
       <FAQ
-        data={(faqs && faqs.length > 0) ? faqs : detailFaqs[isEs ? 'es' : 'en']}
-        title={isEs ? "LO QUE NECESITAS SABER" : "WHAT YOU NEED TO KNOW"}
-        subtitle={isEs ? "Preguntas Frecuentes" : "Frequently Asked Questions"}
+        data={finalFaqs}
+        title={finalFaqTitle}
+        subtitle={finalFaqSubtitle}
       />
 
       {/* Call To Action */}
@@ -130,8 +174,11 @@ export default async function ServiceDetailPage({ params }) {
         text={isEs ? (ctaContent.es.text || "Agregue este formulario de correo electrónico para que sean los primeros en conocer sus detalles y reservas anticipadas.") : (ctaContent.en.text || "Add this email form so that they will be the first to know your details & early booking.")}
         buttonText={isEs ? (ctaContent.es.buttonText || "SUSCRIBIRSE") : (ctaContent.en.buttonText || "SUBSCRIBE")}
         emailLabel={isEs ? (ctaContent.es.emailLabel || "CORREO ELECTRÓNICO") : (ctaContent.en.emailLabel || "EMAIL")}
+        image={ctaContent.en.image}
         source="Travel Details CTA"
       />
+      </>
+      )}
 
       {/* Footer */}
       <Footer />

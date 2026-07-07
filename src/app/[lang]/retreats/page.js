@@ -13,7 +13,7 @@ export default async function RetreatsPage() {
   const esContent = data?.find(d => d.id === 'retreats_page_es')?.content || {};
   
   const { data: destinationsData } = await supabase.from('products').select('*').eq('type', 'retreat').order('created_at', { ascending: true }).order('id', { ascending: true });
-  const { data: reviewsData } = await supabase.from('reviews').select('*').order('created_at', { ascending: false });
+  const { data: reviewsData } = await supabase.from('reviews').select('*').order('sort_order', { ascending: true });
   
   const content = { ...enContent, es: esContent, destinations: destinationsData || [], reviews: reviewsData || [] };
 

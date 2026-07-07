@@ -121,28 +121,8 @@ export default function Navbar() {
         className={`fixed top-0 left-0 right-0 z-[60] flex items-center justify-between px-6 lg:px-8 py-4 lg:py-6 2xl:py-10 text-white font-sans transition-colors duration-300 border-b ${isScrolled ? "bg-[#5d422e]/40 backdrop-blur-md border-[#feeedf]/10" : "bg-transparent border-transparent"}`}
       >
 
-        {/* Left Links (Desktop) */}
+        {/* Left Links & Logo (Desktop) */}
         <div className="hidden lg:flex gap-8 items-center text-sm tracking-widest capitalize w-1/3">
-          {leftLinks.map(link => renderNavLink(link, false))}
-        </div>
-
-        {/* Center Group: Travel - Logo - Retreats (Desktop) */}
-        <div className="hidden lg:flex absolute left-1/2 -translate-x-1/2 items-center w-[340px] 2xl:w-full text-sm tracking-widest capitalize">
-          <div className="flex-1 flex justify-end pr-8">
-            <Link
-              href={`/${currentLang}/travel`}
-              onClick={(e) => {
-                if (typeof window !== 'undefined' && window !== window.parent) {
-                  e.preventDefault();
-                  window.location.href = `/${currentLang}/travel`;
-                }
-              }}
-              className={`hover:opacity-70 transition-all ${pathname === `/${currentLang}/travel` ? "border-b border-white pb-1" : "pb-1 border-b border-transparent"}`}
-            >
-              {navContent.travel || 'Travel'}
-            </Link>
-          </div>
-
           <Link
             href={`/${currentLang}`}
             onClick={(e) => {
@@ -151,25 +131,40 @@ export default function Navbar() {
                 window.location.href = `/${currentLang}`;
               }
             }}
-            className="flex-shrink-0"
+            className="flex-shrink-0 mr-4"
           >
-            <Image src={globalContent?.logo_url || logo} alt="Aruna Logo" className="h-16 2xl:h-24 w-auto object-contain drop-shadow-md" priority unoptimized={!!globalContent?.logo_url} width={150} height={64} />
+            <Image src={globalContent?.logo_url || logo} alt="Aruna Logo" className="h-16 w-auto object-contain drop-shadow-md" priority unoptimized={!!globalContent?.logo_url} width={120} height={48} />
+          </Link>
+          {leftLinks.map(link => renderNavLink(link, false))}
+        </div>
+
+        {/* Center Group: Travel - Retreats (Desktop) */}
+        <div className="hidden lg:flex absolute left-1/2 -translate-x-1/2 items-center gap-12 text-sm tracking-widest capitalize">
+          <Link
+            href={`/${currentLang}/travel`}
+            onClick={(e) => {
+              if (typeof window !== 'undefined' && window !== window.parent) {
+                e.preventDefault();
+                window.location.href = `/${currentLang}/travel`;
+              }
+            }}
+            className={`hover:opacity-70 transition-all ${pathname === `/${currentLang}/travel` || (pathname.startsWith(`/${currentLang}/travel`) && pathname !== `/${currentLang}/travel`) ? "border-b border-white pb-1" : "pb-1 border-b border-transparent"}`}
+          >
+            {navContent.travel || 'Travel'}
           </Link>
 
-          <div className="flex-1 flex justify-start pl-8">
-            <Link
-              href={`/${currentLang}/retreats`}
-              onClick={(e) => {
-                if (typeof window !== 'undefined' && window !== window.parent) {
-                  e.preventDefault();
-                  window.location.href = `/${currentLang}/retreats`;
-                }
-              }}
-              className={`hover:opacity-70 transition-all ${pathname.startsWith(`/${currentLang}/retreats`) ? "border-b border-white pb-1" : "pb-1 border-b border-transparent"}`}
-            >
-              {navContent.retreats || 'Retreats'}
-            </Link>
-          </div>
+          <Link
+            href={`/${currentLang}/retreats`}
+            onClick={(e) => {
+              if (typeof window !== 'undefined' && window !== window.parent) {
+                e.preventDefault();
+                window.location.href = `/${currentLang}/retreats`;
+              }
+            }}
+            className={`hover:opacity-70 transition-all ${pathname === `/${currentLang}/retreats` || (pathname.startsWith(`/${currentLang}/retreats`) && pathname !== `/${currentLang}/retreats`) ? "border-b border-white pb-1" : "pb-1 border-b border-transparent"}`}
+          >
+            {navContent.retreats || 'Retreats'}
+          </Link>
         </div>
 
         {/* Mobile Logo (Visible only on Mobile) */}

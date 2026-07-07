@@ -20,7 +20,7 @@ export default function RetreatHero({ title, image, scrollText }) {
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 1, delay: 0.2, ease: "easeOut" }}
-          className="text-white text-4xl md:text-6xl lg:text-7xl font-light uppercase max-w-4xl tracking-wide drop-shadow-lg"
+          className="text-white text-4xl md:text-6xl lg:text-7xl font-light uppercase max-w-5xl tracking-wide drop-shadow-lg"
           dangerouslySetInnerHTML={{ __html: title || "RECONNECT WITH YOURSELF IN TOTAL SERENITY" }}
         />
       </div>

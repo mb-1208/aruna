@@ -37,3 +37,37 @@ export async function subscribeEmail(email, source = "Unknown", details = "") {
     return { success: false, error: "An unexpected error occurred." };
   }
 }
+
+export async function joinWaitingList(email, productTitle) {
+  try {
+    const supabase = supabaseAdmin;
+    
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!email || !emailRegex.test(email)) {
+      return { success: false, error: "Invalid email address." };
+    }
+
+    const { error } = await supabase
+      .from("leads")
+      .insert([
+        { 
+          email: email.toLowerCase().trim(),
+          source: "Waiting List",
+          details: `Product: ${productTitle}`
+        }
+      ]);
+
+    if (error) {
+      console.error("Error inserting lead:", error);
+      if (error.code === '23505') {
+         return { success: true, message: "You are already on the waiting list!" };
+      }
+      return { success: false, error: "Failed to join waiting list. Please try again later." };
+    }
+
+    return { success: true, message: "Thank you for joining the waiting list!" };
+  } catch (err) {
+    console.error("Waiting list error:", err);
+    return { success: false, error: "An unexpected error occurred." };
+  }
+}

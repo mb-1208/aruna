@@ -71,7 +71,7 @@ export default function Footer() {
         {/* Column 1: Logo & Info */}
         <div className="flex-1 md:pr-12 mb-12 md:mb-0">
           <Link href={`/${lang}`} className="inline-block mb-2">
-            <Image src={globalContent?.logo_url || logo} alt="Aruna Logo" className="h-20 2xl:h-44 w-auto opacity-80" unoptimized priority width={180} height={80} />
+            <Image src={globalContent?.footer_logo_url || globalContent?.logo_url || logo} alt="Aruna Logo" className="h-20 2xl:h-44 w-auto opacity-80" unoptimized priority width={180} height={80} />
           </Link>
           <p className="pl-2 text-[#d2b799] text-lg leading-relaxed mb-8">
             {foot.description}
