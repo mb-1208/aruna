@@ -110,11 +110,56 @@ export default function ProductsEditorForm({ products, setProducts }) {
 
   const updatePackage = (idx, key, value) => {
     const pkgs = [...(products[activeProductId].content?.packages || [])];
-    if (['inclusions', 'inclusions_es', 'dates', 'dates_es', 'rooms', 'rooms_es'].includes(key)) {
-      pkgs[idx][key] = value.split('\n').map(s => s.trim()).filter(Boolean);
-    } else {
-      pkgs[idx][key] = value;
+    pkgs[idx][key] = value;
+    updateContent(activeProductId, 'packages', pkgs);
+  };
+
+  const addPackageArrayItem = (pkgIdx, key, defaultVal = "") => {
+    const pkgs = [...(products[activeProductId].content?.packages || [])];
+    const arr = [...(pkgs[pkgIdx][key] || [])];
+    arr.push(defaultVal);
+    pkgs[pkgIdx][key] = arr;
+    updateContent(activeProductId, 'packages', pkgs);
+  };
+
+  const updatePackageArrayItem = (pkgIdx, key, itemIdx, value) => {
+    const pkgs = [...(products[activeProductId].content?.packages || [])];
+    const arr = [...(pkgs[pkgIdx][key] || [])];
+    arr[itemIdx] = value;
+    pkgs[pkgIdx][key] = arr;
+    updateContent(activeProductId, 'packages', pkgs);
+  };
+
+  const updatePackageDateObject = (pkgIdx, key, itemIdx, field, value) => {
+    const pkgs = [...(products[activeProductId].content?.packages || [])];
+    const arr = [...(pkgs[pkgIdx][key] || [])];
+    if (typeof arr[itemIdx] === 'string') {
+      arr[itemIdx] = { title: arr[itemIdx], startDate: '', endDate: '', status: 'AVAILABLE' };
     }
+    arr[itemIdx] = { ...arr[itemIdx], [field]: value };
+    pkgs[pkgIdx][key] = arr;
+    updateContent(activeProductId, 'packages', pkgs);
+  };
+
+  const getUIStatus = (statusStr, lang) => {
+    if (!statusStr) return { type: lang === 'en' ? 'AVAILABLE' : 'DISPONIBLE', spots: '' };
+    
+    if (lang === 'en') {
+      const match = statusStr.match(/^ONLY (\d+) SPOTS AVAILABLE$/);
+      if (match) return { type: 'LIMITED_SPOTS', spots: match[1] };
+    } else {
+      const match = statusStr.match(/^SÓLO (\d+) PLAZAS DISPONIBLES$/);
+      if (match) return { type: 'LIMITED_SPOTS', spots: match[1] };
+    }
+    
+    return { type: statusStr, spots: '' };
+  };
+
+  const removePackageArrayItem = (pkgIdx, key, itemIdx) => {
+    const pkgs = [...(products[activeProductId].content?.packages || [])];
+    const arr = [...(pkgs[pkgIdx][key] || [])];
+    arr.splice(itemIdx, 1);
+    pkgs[pkgIdx][key] = arr;
     updateContent(activeProductId, 'packages', pkgs);
   };
 
@@ -307,76 +352,221 @@ export default function ProductsEditorForm({ products, setProducts }) {
                       <Input label="Price (ES)" value={pkg.price_es} onChange={(val) => updatePackage(idx, 'price_es', val)} />
                     </div>
 
-                    <div className="grid grid-cols-2 gap-4 mb-4">
-                      <div>
-                        <label className="block text-xs font-bold uppercase tracking-widest text-gray-500 mb-1">Available Dates (EN)</label>
-                        <p className="text-[10px] text-gray-400 mb-2 italic">Format: Date Title: Date Range (STATUS). One item per line.</p>
-                        <textarea 
-                          rows={3} 
-                          value={(pkg.dates || []).join('\n')} 
-                          onChange={(e) => updatePackage(idx, 'dates', e.target.value)} 
-                          placeholder="Example: Easter Retreat 2027: March 20th - 30th (SPOTS AVAILABLE)"
-                          className="w-full border border-gray-200 rounded-lg p-3 text-sm focus:outline-none focus:border-black transition-colors" 
-                        />
+                    <div className="grid grid-cols-1 xl:grid-cols-2 gap-8 mb-8">
+                      {/* Dates EN */}
+                      <div className="bg-white border border-gray-100 rounded-xl p-4 shadow-sm">
+                        <div className="flex justify-between items-center mb-4">
+                          <label className="block text-xs font-bold uppercase tracking-widest text-gray-500">Available Dates (EN)</label>
+                          <button onClick={() => addPackageArrayItem(idx, 'dates', { title: '', range: '', status: 'AVAILABLE' })} className="text-[10px] bg-black text-white px-2 py-1 rounded hover:bg-gray-800 uppercase tracking-widest font-bold">
+                            + Add Date
+                          </button>
+                        </div>
+                        <div className="space-y-3 max-h-60 overflow-y-auto pr-2 custom-scrollbar">
+                          {(pkg.dates || []).map((dateItem, dateIdx) => {
+                            const currentStatus = typeof dateItem === 'string' ? 'AVAILABLE' : (dateItem.status || 'AVAILABLE');
+                            const uiStatus = getUIStatus(currentStatus, 'en');
+                            
+                            return (
+                              <div key={dateIdx} className="flex flex-col gap-2 p-3 bg-gray-50 border border-gray-200 rounded-lg relative group">
+                                <button onClick={() => removePackageArrayItem(idx, 'dates', dateIdx)} className="absolute top-2 right-2 text-gray-400 hover:text-red-500"><IconTrash size={14} /></button>
+                                <div className="pr-6">
+                                  <input type="text" placeholder="Title (e.g. Easter Retreat 2027)" value={typeof dateItem === 'string' ? dateItem : (dateItem.title || '')} onChange={(e) => updatePackageDateObject(idx, 'dates', dateIdx, 'title', e.target.value)} className="w-full text-sm border-b border-gray-200 bg-transparent py-1 mb-2 focus:outline-none focus:border-black" />
+                                  <div className="flex gap-2 mb-2">
+                                    <div className="flex-1">
+                                      <label className="text-[10px] uppercase text-gray-500 font-bold mb-1 block">Start Date</label>
+                                      <input type="date" value={typeof dateItem === 'string' ? '' : (dateItem.startDate || '')} onChange={(e) => updatePackageDateObject(idx, 'dates', dateIdx, 'startDate', e.target.value)} className="w-full text-xs p-1.5 border border-gray-200 rounded focus:outline-none focus:border-black text-gray-700" />
+                                    </div>
+                                    <div className="flex-1">
+                                      <label className="text-[10px] uppercase text-gray-500 font-bold mb-1 block">End Date</label>
+                                      <input type="date" value={typeof dateItem === 'string' ? '' : (dateItem.endDate || '')} onChange={(e) => updatePackageDateObject(idx, 'dates', dateIdx, 'endDate', e.target.value)} className="w-full text-xs p-1.5 border border-gray-200 rounded focus:outline-none focus:border-black text-gray-700" />
+                                    </div>
+                                  </div>
+                                  <div className="flex gap-2 items-center">
+                                    <select 
+                                      value={uiStatus.type} 
+                                      onChange={(e) => {
+                                        const val = e.target.value;
+                                        if (val === 'LIMITED_SPOTS') {
+                                          updatePackageDateObject(idx, 'dates', dateIdx, 'status', `ONLY 4 SPOTS AVAILABLE`);
+                                        } else {
+                                          updatePackageDateObject(idx, 'dates', dateIdx, 'status', val);
+                                        }
+                                      }} 
+                                      className="w-full text-xs p-1.5 border border-gray-200 rounded focus:outline-none"
+                                    >
+                                      <option value="AVAILABLE">Available</option>
+                                      <option value="SPOTS AVAILABLE">Spots Available</option>
+                                      <option value="LIMITED_SPOTS">Limited Spots...</option>
+                                      <option value="PRIVATE GROUP">Private Group</option>
+                                      <option value="FULLY BOOKED">Fully Booked</option>
+                                    </select>
+                                    {uiStatus.type === 'LIMITED_SPOTS' && (
+                                      <div className="flex items-center gap-1">
+                                        <input 
+                                          type="number" 
+                                          min="1" 
+                                          className="w-16 text-xs p-1.5 border border-gray-200 rounded focus:outline-none text-center" 
+                                          value={uiStatus.spots}
+                                          onChange={(e) => updatePackageDateObject(idx, 'dates', dateIdx, 'status', `ONLY ${e.target.value} SPOTS AVAILABLE`)}
+                                        />
+                                        <span className="text-[10px] text-gray-500 font-bold">SPOTS</span>
+                                      </div>
+                                    )}
+                                  </div>
+                                </div>
+                              </div>
+                            );
+                          })}
+                          {(!pkg.dates || pkg.dates.length === 0) && <p className="text-xs text-gray-400 italic text-center py-2">No dates added yet.</p>}
+                        </div>
                       </div>
-                      <div>
-                        <label className="block text-xs font-bold uppercase tracking-widest text-gray-500 mb-1">Available Dates (ES)</label>
-                        <p className="text-[10px] text-gray-400 mb-2 italic">Format: Date Title: Date Range (STATUS). One item per line.</p>
-                        <textarea 
-                          rows={3} 
-                          value={(pkg.dates_es || []).join('\n')} 
-                          onChange={(e) => updatePackage(idx, 'dates_es', e.target.value)} 
-                          placeholder="Example: Semana Santa 2027: Del 20 al 30 de marzo (PLAZAS DISPONIBLES)"
-                          className="w-full border border-gray-200 rounded-lg p-3 text-sm focus:outline-none focus:border-black transition-colors" 
-                        />
+
+                      {/* Dates ES */}
+                      <div className="bg-white border border-gray-100 rounded-xl p-4 shadow-sm">
+                        <div className="flex justify-between items-center mb-4">
+                          <label className="block text-xs font-bold uppercase tracking-widest text-gray-500">Available Dates (ES)</label>
+                          <button onClick={() => addPackageArrayItem(idx, 'dates_es', { title: '', range: '', status: 'DISPONIBLE' })} className="text-[10px] bg-black text-white px-2 py-1 rounded hover:bg-gray-800 uppercase tracking-widest font-bold">
+                            + Add Date
+                          </button>
+                        </div>
+                        <div className="space-y-3 max-h-60 overflow-y-auto pr-2 custom-scrollbar">
+                          {(pkg.dates_es || []).map((dateItem, dateIdx) => {
+                            const currentStatus = typeof dateItem === 'string' ? 'DISPONIBLE' : (dateItem.status || 'DISPONIBLE');
+                            const uiStatus = getUIStatus(currentStatus, 'es');
+                            
+                            return (
+                              <div key={dateIdx} className="flex flex-col gap-2 p-3 bg-gray-50 border border-gray-200 rounded-lg relative group">
+                                <button onClick={() => removePackageArrayItem(idx, 'dates_es', dateIdx)} className="absolute top-2 right-2 text-gray-400 hover:text-red-500"><IconTrash size={14} /></button>
+                                <div className="pr-6">
+                                  <input type="text" placeholder="Title (e.g. Semana Santa 2027)" value={typeof dateItem === 'string' ? dateItem : (dateItem.title || '')} onChange={(e) => updatePackageDateObject(idx, 'dates_es', dateIdx, 'title', e.target.value)} className="w-full text-sm border-b border-gray-200 bg-transparent py-1 mb-2 focus:outline-none focus:border-black" />
+                                  <div className="flex gap-2 mb-2">
+                                    <div className="flex-1">
+                                      <label className="text-[10px] uppercase text-gray-500 font-bold mb-1 block">Start Date</label>
+                                      <input type="date" value={typeof dateItem === 'string' ? '' : (dateItem.startDate || '')} onChange={(e) => updatePackageDateObject(idx, 'dates_es', dateIdx, 'startDate', e.target.value)} className="w-full text-xs p-1.5 border border-gray-200 rounded focus:outline-none focus:border-black text-gray-700" />
+                                    </div>
+                                    <div className="flex-1">
+                                      <label className="text-[10px] uppercase text-gray-500 font-bold mb-1 block">End Date</label>
+                                      <input type="date" value={typeof dateItem === 'string' ? '' : (dateItem.endDate || '')} onChange={(e) => updatePackageDateObject(idx, 'dates_es', dateIdx, 'endDate', e.target.value)} className="w-full text-xs p-1.5 border border-gray-200 rounded focus:outline-none focus:border-black text-gray-700" />
+                                    </div>
+                                  </div>
+                                  <div className="flex gap-2 items-center">
+                                    <select 
+                                      value={uiStatus.type} 
+                                      onChange={(e) => {
+                                        const val = e.target.value;
+                                        if (val === 'LIMITED_SPOTS') {
+                                          updatePackageDateObject(idx, 'dates_es', dateIdx, 'status', `SÓLO 4 PLAZAS DISPONIBLES`);
+                                        } else {
+                                          updatePackageDateObject(idx, 'dates_es', dateIdx, 'status', val);
+                                        }
+                                      }} 
+                                      className="w-full text-xs p-1.5 border border-gray-200 rounded focus:outline-none"
+                                    >
+                                      <option value="DISPONIBLE">Disponible</option>
+                                      <option value="PLAZAS DISPONIBLES">Plazas Disponibles</option>
+                                      <option value="LIMITED_SPOTS">Plazas Limitadas...</option>
+                                      <option value="GRUPO PRIVADO">Grupo Privado</option>
+                                      <option value="COMPLETO">Completo</option>
+                                    </select>
+                                    {uiStatus.type === 'LIMITED_SPOTS' && (
+                                      <div className="flex items-center gap-1">
+                                        <input 
+                                          type="number" 
+                                          min="1" 
+                                          className="w-16 text-xs p-1.5 border border-gray-200 rounded focus:outline-none text-center" 
+                                          value={uiStatus.spots}
+                                          onChange={(e) => updatePackageDateObject(idx, 'dates_es', dateIdx, 'status', `SÓLO ${e.target.value} PLAZAS DISPONIBLES`)}
+                                        />
+                                        <span className="text-[10px] text-gray-500 font-bold">PLAZAS</span>
+                                      </div>
+                                    )}
+                                  </div>
+                                </div>
+                              </div>
+                            );
+                          })}
+                          {(!pkg.dates_es || pkg.dates_es.length === 0) && <p className="text-xs text-gray-400 italic text-center py-2">No dates added yet.</p>}
+                        </div>
                       </div>
                     </div>
 
-                    <div className="grid grid-cols-2 gap-4 mb-4">
-                      <div>
-                        <label className="block text-xs font-bold uppercase tracking-widest text-gray-500 mb-1">Room Options (EN)</label>
-                        <p className="text-[10px] text-gray-400 mb-2 italic">List room types here. One item per line.</p>
-                        <textarea 
-                          rows={2} 
-                          value={(pkg.rooms || []).join('\n')} 
-                          onChange={(e) => updatePackage(idx, 'rooms', e.target.value)} 
-                          placeholder="Example: Room: Choose between a private double room..."
-                          className="w-full border border-gray-200 rounded-lg p-3 text-sm focus:outline-none focus:border-black transition-colors" 
-                        />
+                    <div className="grid grid-cols-1 xl:grid-cols-2 gap-8 mb-8">
+                      {/* Rooms EN */}
+                      <div className="bg-white border border-gray-100 rounded-xl p-4 shadow-sm">
+                        <div className="flex justify-between items-center mb-4">
+                          <label className="block text-xs font-bold uppercase tracking-widest text-gray-500">Room Options (EN)</label>
+                          <button onClick={() => addPackageArrayItem(idx, 'rooms', '')} className="text-[10px] bg-black text-white px-2 py-1 rounded hover:bg-gray-800 uppercase tracking-widest font-bold">
+                            + Add Room
+                          </button>
+                        </div>
+                        <div className="space-y-2 max-h-60 overflow-y-auto pr-2 custom-scrollbar">
+                          {(pkg.rooms || []).map((room, roomIdx) => (
+                            <div key={roomIdx} className="flex items-center gap-2">
+                              <input type="text" value={room} onChange={(e) => updatePackageArrayItem(idx, 'rooms', roomIdx, e.target.value)} placeholder="e.g. Room: Private double room..." className="flex-1 text-sm p-2 border border-gray-200 rounded focus:outline-none focus:border-black" />
+                              <button onClick={() => removePackageArrayItem(idx, 'rooms', roomIdx)} className="text-gray-400 hover:text-red-500 p-2"><IconTrash size={16} /></button>
+                            </div>
+                          ))}
+                          {(!pkg.rooms || pkg.rooms.length === 0) && <p className="text-xs text-gray-400 italic text-center py-2">No rooms added yet.</p>}
+                        </div>
                       </div>
-                      <div>
-                        <label className="block text-xs font-bold uppercase tracking-widest text-gray-500 mb-1">Room Options (ES)</label>
-                        <p className="text-[10px] text-gray-400 mb-2 italic">List room types here. One item per line.</p>
-                        <textarea 
-                          rows={2} 
-                          value={(pkg.rooms_es || []).join('\n')} 
-                          onChange={(e) => updatePackage(idx, 'rooms_es', e.target.value)} 
-                          placeholder="Example: Habitación: Elige entre habitación doble..."
-                          className="w-full border border-gray-200 rounded-lg p-3 text-sm focus:outline-none focus:border-black transition-colors" 
-                        />
+
+                      {/* Rooms ES */}
+                      <div className="bg-white border border-gray-100 rounded-xl p-4 shadow-sm">
+                        <div className="flex justify-between items-center mb-4">
+                          <label className="block text-xs font-bold uppercase tracking-widest text-gray-500">Room Options (ES)</label>
+                          <button onClick={() => addPackageArrayItem(idx, 'rooms_es', '')} className="text-[10px] bg-black text-white px-2 py-1 rounded hover:bg-gray-800 uppercase tracking-widest font-bold">
+                            + Add Room
+                          </button>
+                        </div>
+                        <div className="space-y-2 max-h-60 overflow-y-auto pr-2 custom-scrollbar">
+                          {(pkg.rooms_es || []).map((room, roomIdx) => (
+                            <div key={roomIdx} className="flex items-center gap-2">
+                              <input type="text" value={room} onChange={(e) => updatePackageArrayItem(idx, 'rooms_es', roomIdx, e.target.value)} placeholder="e.g. Habitación: Privada doble..." className="flex-1 text-sm p-2 border border-gray-200 rounded focus:outline-none focus:border-black" />
+                              <button onClick={() => removePackageArrayItem(idx, 'rooms_es', roomIdx)} className="text-gray-400 hover:text-red-500 p-2"><IconTrash size={16} /></button>
+                            </div>
+                          ))}
+                          {(!pkg.rooms_es || pkg.rooms_es.length === 0) && <p className="text-xs text-gray-400 italic text-center py-2">No rooms added yet.</p>}
+                        </div>
                       </div>
                     </div>
 
-                    <div className="grid grid-cols-2 gap-4">
-                      <div>
-                        <label className="block text-xs font-bold uppercase tracking-widest text-gray-500 mb-1">Included Items (EN)</label>
-                        <p className="text-[10px] text-gray-400 mb-2 italic">General inclusions. One item per line (Press Enter for new line).</p>
-                        <textarea 
-                          rows={4} 
-                          value={(pkg.inclusions || []).join('\n')} 
-                          onChange={(e) => updatePackage(idx, 'inclusions', e.target.value)} 
-                          className="w-full border border-gray-200 rounded-lg p-3 text-sm focus:outline-none focus:border-black transition-colors" 
-                        />
+                    <div className="grid grid-cols-1 xl:grid-cols-2 gap-8">
+                      {/* Inclusions EN */}
+                      <div className="bg-white border border-gray-100 rounded-xl p-4 shadow-sm">
+                        <div className="flex justify-between items-center mb-4">
+                          <label className="block text-xs font-bold uppercase tracking-widest text-gray-500">Included Items (EN)</label>
+                          <button onClick={() => addPackageArrayItem(idx, 'inclusions', '')} className="text-[10px] bg-black text-white px-2 py-1 rounded hover:bg-gray-800 uppercase tracking-widest font-bold">
+                            + Add Item
+                          </button>
+                        </div>
+                        <div className="space-y-2 max-h-60 overflow-y-auto pr-2 custom-scrollbar">
+                          {(pkg.inclusions || []).map((inc, incIdx) => (
+                            <div key={incIdx} className="flex items-start gap-2">
+                              <textarea rows={2} value={inc} onChange={(e) => updatePackageArrayItem(idx, 'inclusions', incIdx, e.target.value)} placeholder="e.g. Daily morning yoga classes" className="flex-1 text-sm p-2 border border-gray-200 rounded focus:outline-none focus:border-black" />
+                              <button onClick={() => removePackageArrayItem(idx, 'inclusions', incIdx)} className="text-gray-400 hover:text-red-500 p-2 mt-1"><IconTrash size={16} /></button>
+                            </div>
+                          ))}
+                          {(!pkg.inclusions || pkg.inclusions.length === 0) && <p className="text-xs text-gray-400 italic text-center py-2">No inclusions added yet.</p>}
+                        </div>
                       </div>
-                      <div>
-                        <label className="block text-xs font-bold uppercase tracking-widest text-gray-500 mb-1">Included Items (ES)</label>
-                        <p className="text-[10px] text-gray-400 mb-2 italic">General inclusions. One item per line (Press Enter for new line).</p>
-                        <textarea 
-                          rows={4} 
-                          value={(pkg.inclusions_es || []).join('\n')} 
-                          onChange={(e) => updatePackage(idx, 'inclusions_es', e.target.value)} 
-                          className="w-full border border-gray-200 rounded-lg p-3 text-sm focus:outline-none focus:border-black transition-colors" 
-                        />
+
+                      {/* Inclusions ES */}
+                      <div className="bg-white border border-gray-100 rounded-xl p-4 shadow-sm">
+                        <div className="flex justify-between items-center mb-4">
+                          <label className="block text-xs font-bold uppercase tracking-widest text-gray-500">Included Items (ES)</label>
+                          <button onClick={() => addPackageArrayItem(idx, 'inclusions_es', '')} className="text-[10px] bg-black text-white px-2 py-1 rounded hover:bg-gray-800 uppercase tracking-widest font-bold">
+                            + Add Item
+                          </button>
+                        </div>
+                        <div className="space-y-2 max-h-60 overflow-y-auto pr-2 custom-scrollbar">
+                          {(pkg.inclusions_es || []).map((inc, incIdx) => (
+                            <div key={incIdx} className="flex items-start gap-2">
+                              <textarea rows={2} value={inc} onChange={(e) => updatePackageArrayItem(idx, 'inclusions_es', incIdx, e.target.value)} placeholder="e.g. Clases diarias de yoga" className="flex-1 text-sm p-2 border border-gray-200 rounded focus:outline-none focus:border-black" />
+                              <button onClick={() => removePackageArrayItem(idx, 'inclusions_es', incIdx)} className="text-gray-400 hover:text-red-500 p-2 mt-1"><IconTrash size={16} /></button>
+                            </div>
+                          ))}
+                          {(!pkg.inclusions_es || pkg.inclusions_es.length === 0) && <p className="text-xs text-gray-400 italic text-center py-2">No inclusions added yet.</p>}
+                        </div>
                       </div>
                     </div>
                   </div>
