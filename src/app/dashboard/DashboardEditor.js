@@ -171,6 +171,8 @@ export default function DashboardEditor({ initialData }) {
   const [subscriberFilter, setSubscriberFilter] = useState("All");
   const [searchQuery, setSearchQuery] = useState("");
   const [dateFilter, setDateFilter] = useState("All");
+  const [customStartDate, setCustomStartDate] = useState("");
+  const [customEndDate, setCustomEndDate] = useState("");
   const [isRefreshingLeads, setIsRefreshingLeads] = useState(false);
   const [selectedLead, setSelectedLead] = useState(null);
 
@@ -1518,7 +1520,25 @@ export default function DashboardEditor({ initialData }) {
                       <option value="Today">Today</option>
                       <option value="7Days">Last 7 Days</option>
                       <option value="30Days">Last 30 Days</option>
+                      <option value="Custom">Custom Range</option>
                     </select>
+                    {dateFilter === "Custom" && (
+                      <div className="flex items-center gap-2">
+                        <input
+                          type="date"
+                          value={customStartDate}
+                          onChange={(e) => setCustomStartDate(e.target.value)}
+                          className="border border-gray-200 rounded-lg p-2 text-sm focus:outline-none focus:border-black transition-colors bg-white"
+                        />
+                        <span className="text-gray-400">-</span>
+                        <input
+                          type="date"
+                          value={customEndDate}
+                          onChange={(e) => setCustomEndDate(e.target.value)}
+                          className="border border-gray-200 rounded-lg p-2 text-sm focus:outline-none focus:border-black transition-colors bg-white"
+                        />
+                      </div>
+                    )}
                     <select
                       value={subscriberFilter}
                       onChange={(e) => setSubscriberFilter(e.target.value)}
@@ -1555,6 +1575,25 @@ export default function DashboardEditor({ initialData }) {
                           if (dateFilter === "Today") return diffDays <= 1;
                           if (dateFilter === "7Days") return diffDays <= 7;
                           if (dateFilter === "30Days") return diffDays <= 30;
+                          if (dateFilter === "Custom") {
+                            if (!customStartDate && !customEndDate) return true;
+                            
+                            // Reset time component of leadDate for accurate comparison
+                            const lDate = new Date(leadDate);
+                            lDate.setHours(0, 0, 0, 0);
+                            
+                            if (customStartDate) {
+                              const sDate = new Date(customStartDate);
+                              sDate.setHours(0, 0, 0, 0);
+                              if (lDate < sDate) return false;
+                            }
+                            if (customEndDate) {
+                              const eDate = new Date(customEndDate);
+                              eDate.setHours(23, 59, 59, 999);
+                              if (lDate > eDate) return false;
+                            }
+                            return true;
+                          }
                           return true;
                         })
                         .filter(l => {

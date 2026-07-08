@@ -9,10 +9,11 @@ import { Swiper, SwiperSlide } from 'swiper/react';
 import { Mousewheel } from 'swiper/modules';
 import 'swiper/css';
 
-export default function RetreatPricing({ title, subtitle, packages, whatsappNumber, retreatTitle, lang = 'en' }) {
+export default function RetreatPricing({ title, subtitle, packages, whatsappNumber, retreatTitle, englishTitle, lang = 'en' }) {
   const displayPackages = (packages && packages.length > 0) ? packages : [];
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [inquiryDate, setInquiryDate] = useState("");
+  const [inquiryDateEn, setInquiryDateEn] = useState("");
   const [formData, setFormData] = useState({ name: "", email: "", phone: "" });
   const [submitStatus, setSubmitStatus] = useState("idle");
   const [submitMessage, setSubmitMessage] = useState("");
@@ -28,8 +29,9 @@ export default function RetreatPricing({ title, subtitle, packages, whatsappNumb
   const btnSubmit = inquiryContent.btn_submit || (lang === 'es' ? 'Enviar Consulta' : 'Submit Inquiry');
   const btnWhatsapp = inquiryContent.btn_whatsapp || (lang === 'es' ? 'Consultar por WhatsApp' : 'Inquire via WhatsApp');
 
-  const handleOpenModal = (dateString) => {
+  const handleOpenModal = (dateString, enDateString) => {
     setInquiryDate(dateString);
+    setInquiryDateEn(enDateString);
     setIsModalOpen(true);
     setSubmitStatus("idle");
     setSubmitMessage("");
@@ -43,8 +45,8 @@ export default function RetreatPricing({ title, subtitle, packages, whatsappNumb
       name: formData.name,
       email: formData.email,
       phone: formData.phone,
-      retreatTitle: retreatTitle || "Unknown",
-      dateStr: inquiryDate
+      retreatTitle: englishTitle || retreatTitle || "Unknown",
+      dateStr: inquiryDateEn || inquiryDate
     });
     
     setSubmitStatus(result.success ? "success" : "error");
@@ -254,12 +256,14 @@ export default function RetreatPricing({ title, subtitle, packages, whatsappNumb
                           >
                             {dates.map((dateItem, i) => {
                               const parsed = parseDates(dateItem, lang);
+                              const parsedEn = parseDates(dateItem, 'en');
                               if (!parsed || !parsed.isValid) return null;
                               
                               const { mainText, status } = parsed;
                               const isFullyBooked = status.toLowerCase().includes('fully booked') || status.toLowerCase().includes('completo') || status.toLowerCase().includes('grupo cerrado') || status.toLowerCase().includes('private group');
                               
                               const dateStrForWa = mainText;
+                              const dateStrEnglish = parsedEn?.mainText || mainText;
                               
                               return (
                                 <SwiperSlide key={i} style={{ height: 'auto' }}>
@@ -282,7 +286,7 @@ export default function RetreatPricing({ title, subtitle, packages, whatsappNumb
                                     {!isFullyBooked ? (
                                       whatsappNumber && (
                                         <button
-                                          onClick={() => handleOpenModal(dateStrForWa)}
+                                          onClick={() => handleOpenModal(dateStrForWa, dateStrEnglish)}
                                           className="flex items-center justify-between w-full py-4 px-5 bg-black text-white text-xs font-bold tracking-widest uppercase rounded-xl hover:bg-gray-800 hover:shadow-lg transition-all duration-300 mt-auto transform group-hover:-translate-y-1"
                                         >
                                           <div className="flex items-center gap-2">
