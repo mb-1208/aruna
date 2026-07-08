@@ -11,6 +11,8 @@
   --color-foreground: var(--foreground);
   --font-sans: var(--font-questrial);
   --font-serif: var(--font-playfair);
+  --font-cormorant: var(--font-cormorant);
+  --font-sacramento: var(--font-sacramento);
   --font-inter: var(--font-inter);
   
   /* Brand Palette Trial */
@@ -19,7 +21,7 @@
   --color-brand-pastel-grey-orange: #d2b799;
   --color-brand-brown: #99611b;
   --color-brand-pastel-orange: #f3c99e;
-  --color-brand-dark-brown: #5d422e;
+  --color-brand-dark-brown: #d18529;
 }
 
 /* Brand Palette Override for Backgrounds & Borders ONLY (Trial) */
@@ -72,3 +74,4 @@ html {
   scrollbar-width: none;
   /* Firefox */
 }
+/* Force Reload */

@@ -36,7 +36,7 @@ export default function RetreatIntro({ title, subtitle, buttonText }) {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.8, delay: 0.2, ease: "easeOut" }}
-          className="text-2xl md:text-5xl font-light leading-tight uppercase text-black"
+          className="text-3xl md:text-6xl font-light font-cormorant leading-tight uppercase text-brand-dark-brown"
           dangerouslySetInnerHTML={{ __html: title || "ESCAPE THE NOISE AND RECONNECT WITH YOUR INNER SELF. ARUNA RETREATS OFFERS CURATED WELLNESS JOURNEYS DESIGNED TO RESTORE YOUR MIND, BODY, AND SPIRIT IN NATURE'S MOST TRANQUIL SANCTUARIES." }}
         />
       </section>

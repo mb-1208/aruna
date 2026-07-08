@@ -26,7 +26,7 @@ export default function CTA({ title, text, buttonText, image }) {
           transition={{ duration: 0.8, ease: "easeOut" }}
           className="text-center md:text-left"
         >
-          <h2 className="text-white text-4xl md:text-5xl font-light uppercase mb-6" dangerouslySetInnerHTML={{ __html: title || "Ready For Your Next<br class=\"hidden md:block\" /> Bespoke Adventure?" }} />
+          <h2 className="text-white text-5xl md:text-6xl font-light font-cormorant uppercase mb-6" dangerouslySetInnerHTML={{ __html: title || "Ready For Your Next<br class=\"hidden md:block\" /> Bespoke Adventure?" }} />
           <Link href={`/${currentLang}/contact`} className="inline-flex items-center justify-center bg-white text-black px-12 py-3 rounded-full text-sm font-medium tracking-widest uppercase hover:bg-gray-200 transition-colors">
             {buttonText || "Contact"}
           </Link>
@@ -40,7 +40,7 @@ export default function CTA({ title, text, buttonText, image }) {
           transition={{ duration: 0.8, delay: 0.2, ease: "easeOut" }}
           className="text-white text-center md:text-right"
         >
-          <p className="text-2xl font-light uppercase tracking-widest" dangerouslySetInnerHTML={{ __html: text || "10% Off<br />First Trip" }} />
+          <p className="text-lg md:text-[1.5rem] font-light font-cormorant uppercase tracking-widest" dangerouslySetInnerHTML={{ __html: text || "10% Off<br />First Trip" }} />
         </motion.div>
       </div>
     </section>

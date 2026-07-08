@@ -15,7 +15,7 @@ export default function RetreatOverview({ title, description, imageUrl }) {
           transition={{ duration: 0.8, ease: "easeOut" }}
           className="flex-1 text-center md:text-left"
         >
-          <h2 className="text-3xl md:text-4xl font-light uppercase tracking-wide mb-8 text-black">
+          <h2 className="text-4xl md:text-5xl font-light font-cormorant uppercase tracking-wide mb-8 text-brand-dark-brown">
             {title}
           </h2>
           <p className="text-gray-600 leading-relaxed text-base md:text-lg whitespace-pre-wrap">

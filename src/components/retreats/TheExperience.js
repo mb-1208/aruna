@@ -74,7 +74,7 @@ export default function TheExperience({ subtitle, title, destinations, currentLa
         className="max-w-7xl mx-auto pr-4 md:pr-8 mb-12"
       >
         <span className="text-sm tracking-[0.2em] uppercase text-gray-500 block mb-4">{subtitle || "Destinations"}</span>
-        <h2 className="text-4xl md:text-5xl font-light uppercase text-black" dangerouslySetInnerHTML={{ __html: title || "THE EXPERIENCE" }} />
+        <h2 className="text-5xl md:text-6xl font-light font-cormorant uppercase text-brand-dark-brown" dangerouslySetInnerHTML={{ __html: title || "THE EXPERIENCE" }} />
       </motion.div>
 
       <motion.div 

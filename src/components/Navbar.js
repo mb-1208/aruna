@@ -118,7 +118,7 @@ export default function Navbar() {
         initial={{ opacity: 0, y: -20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.8, ease: "easeOut" }}
-        className={`fixed top-0 left-0 right-0 z-[60] flex items-center justify-between px-6 lg:px-8 py-4 lg:py-6 2xl:py-10 text-white font-sans transition-colors duration-300 border-b ${isScrolled ? "bg-[#5d422e]/40 backdrop-blur-md border-[#feeedf]/10" : "bg-transparent border-transparent"}`}
+        className={`fixed top-0 left-0 right-0 z-[60] flex items-center justify-between px-6 lg:px-8 py-4 lg:py-6 2xl:py-10 text-white font-sans transition-colors duration-300 border-b ${isScrolled ? "bg-[#d18529]/40 backdrop-blur-md border-[#feeedf]/10" : "bg-transparent border-transparent"}`}
       >
 
         {/* Left Links & Logo (Desktop) */}
@@ -227,7 +227,7 @@ export default function Navbar() {
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
               onClick={closeMenu}
-              className="absolute inset-0 bg-[#5d422e]/60 backdrop-blur-sm"
+              className="absolute inset-0 bg-[#d18529]/60 backdrop-blur-sm"
             />
 
             {/* Menu Panel */}

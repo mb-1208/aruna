@@ -100,7 +100,7 @@ export default function Testimonials({ subtitle, title, subtext, reviews, curren
       >
         <div>
           <span className="text-sm tracking-[0.2em] uppercase text-gray-500 block mb-4">{subtitle || "Stories From Our Travelers"}</span>
-          <h2 className="text-4xl md:text-5xl font-light uppercase max-w-lg" dangerouslySetInnerHTML={{ __html: title || "Stories From<br />Our Travelers" }} />
+          <h2 className="text-5xl md:text-7xl font-sacramento capitalize text-brand-dark-brown max-w-lg" dangerouslySetInnerHTML={{ __html: title || "Stories From<br />Our Travelers" }} />
         </div>
         <div className="flex flex-col items-start md:items-end justify-between gap-6 max-w-sm text-left md:text-right">
           {subtext && <p className="text-gray-600 text-base leading-relaxed">{subtext}</p>}

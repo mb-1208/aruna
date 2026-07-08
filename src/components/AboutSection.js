@@ -16,7 +16,7 @@ export default function AboutSection({ subtitle, title, text, quote, image }) {
       >
         <div>
           <span className="text-sm tracking-[0.2em] uppercase text-gray-500 block mb-4">{subtitle || "About Us"}</span>
-          <h2 className="text-4xl 2xl:text-5xl font-light uppercase" dangerouslySetInnerHTML={{ __html: title || "Find Serenity In<br />Every Journey" }} />
+          <h2 className="text-5xl 2xl:text-6xl font-light font-cormorant text-brand-dark-brown uppercase" dangerouslySetInnerHTML={{ __html: title || "Find Serenity In<br />Every Journey" }} />
         </div>
 
         <div className="text-gray-700 space-y-6 leading-relaxed max-w-lg">
@@ -44,8 +44,8 @@ export default function AboutSection({ subtitle, title, text, quote, image }) {
           />
         </div>
         {/* Founder Quote */}
-        <div className="mt-8 max-w-[600px] bg-white pt-6 md:pl-12">
-          <p className="text-base leading-relaxed text-gray-600">
+        <div className="mt-8 w-full max-w-[600px]">
+          <p className="text-3xl font-sacramento leading-relaxed text-brand-dark-brown text-justify">
             {quote || "\"Hello! I am Jessica, the founder of Aruna. Having traveled extensively, I believe true luxury is finding peace in the world's most beautiful corners. I created Aruna to blend world-class adventure with soul-restoring tranquility, crafting deeply personal, transformative journeys just for you.\""}
           </p>
         </div>

@@ -100,7 +100,7 @@ export default function RetreatPricing({ title, subtitle, packages, whatsappNumb
         className="mb-16"
       >
         <span className="text-sm tracking-[0.2em] uppercase text-gray-500 block mb-4">{subtitle || "Itinerary & Pricing"}</span>
-        <h2 className="text-3xl md:text-5xl font-light uppercase text-black">
+        <h2 className="text-5xl md:text-6xl font-light font-cormorant uppercase text-brand-dark-brown">
           {title || "UNLOCK THE JOURNEY"}
         </h2>
       </motion.div>
@@ -156,7 +156,7 @@ export default function RetreatPricing({ title, subtitle, packages, whatsappNumb
                 className="flex flex-col border-t border-gray-200 pt-12"
               >
                 <div className="mb-12">
-                  <h3 className="text-3xl font-light uppercase tracking-widest text-black mb-2">
+                  <h3 className="text-4xl font-light font-cormorant uppercase tracking-widest text-brand-dark-brown mb-2">
                     {pkg.nights}
                   </h3>
                   {pkg.price && (
@@ -239,7 +239,7 @@ export default function RetreatPricing({ title, subtitle, packages, whatsappNumb
                                             <IconBrandWhatsapp size={18} />
                                             <span>{lang === 'es' ? 'Consultar' : 'Inquire'}</span>
                                           </div>
-                                          <IconChevronRight size={18} className="text-gray-400 group-hover:text-white group-hover:translate-x-1 transition-all" />
+                                          <IconChevronRight size={18} className="text-white group-hover:translate-x-1 transition-all" />
                                         </button>
                                       )
                                     ) : (

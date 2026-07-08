@@ -49,7 +49,7 @@ export default function FAQ({ data, title, subtitle }) {
         <span className="text-sm tracking-[0.2em] uppercase text-gray-500 block mb-4">
           {subtitle || "Frequently Asked Questions"}
         </span>
-        <h2 className="text-4xl md:text-5xl font-light uppercase">
+        <h2 className="text-5xl md:text-6xl font-light font-cormorant uppercase text-brand-dark-brown">
           {title || "What You Need To Know"}
         </h2>
       </motion.div>
@@ -71,7 +71,7 @@ export default function FAQ({ data, title, subtitle }) {
                 onClick={() => toggleFAQ(index)}
                 className="w-full flex justify-between items-center py-6 text-left focus:outline-none group cursor-pointer"
               >
-                <span className="text-lg font-medium text-gray-900 group-hover:text-gray-600 transition-colors">
+                <span className="text-2xl font-bold font-cormorant text-gray-900 group-hover:text-brand-dark-brown transition-colors">
                   {faq.question}
                 </span>
                 <IconChevronDown

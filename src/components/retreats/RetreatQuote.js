@@ -78,16 +78,16 @@ export default function RetreatQuote({ subtitle, title, reviews: initialReviews,
     <section id="reviews" className="w-full max-w-5xl mx-auto px-8 py-24 md:py-32 font-sans text-center relative">
       <div className="md:mb-8">
         <span className="text-sm tracking-[0.2em] uppercase text-gray-500 block mb-4">{subtitle || "Reviews"}</span>
-        <h2 className="text-3xl md:text-4xl font-light uppercase text-black" dangerouslySetInnerHTML={{ __html: title || "WHAT THEY SAY" }} />
+        <h2 className="text-4xl md:text-5xl font-light font-cormorant uppercase text-brand-dark-brown" dangerouslySetInnerHTML={{ __html: title || "WHAT THEY SAY" }} />
       </div>
 
       <div className="pt-4 relative min-h-[300px] flex items-center justify-center">
         {reviews.length > 0 && (
           <div className="w-full relative px-4 md:px-12">
-            <button className="swiper-prev-button absolute left-2 md:left-4 top-1/2 -translate-y-1/2 z-10 text-gray-400 hover:text-black transition-colors">
+            <button className="swiper-prev-button absolute -left-2 md:left-4 top-1/2 -translate-y-1/2 z-10 text-gray-400 hover:text-black transition-colors">
               <IconChevronLeft size={36} stroke={1} />
             </button>
-            <button className="swiper-next-button absolute right-2 md:right-4 top-1/2 -translate-y-1/2 z-10 text-gray-400 hover:text-black transition-colors">
+            <button className="swiper-next-button absolute -right-2 md:right-4 top-1/2 -translate-y-1/2 z-10 text-gray-400 hover:text-black transition-colors">
               <IconChevronRight size={36} stroke={1} />
             </button>
 

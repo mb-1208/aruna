@@ -65,7 +65,7 @@ export default function Footer() {
   };
 
   return (
-    <footer className="bg-[#5d422e] text-white pt-20 pb-8 px-8 font-sans">
+    <footer className="bg-[#d18529] text-white pt-20 pb-8 px-8 font-sans">
       <div className="w-full max-w-7xl mx-auto flex flex-col md:flex-row justify-between gap-16 md:gap-8 mb-16">
 
         {/* Column 1: Logo & Info */}
@@ -73,27 +73,27 @@ export default function Footer() {
           <Link href={`/${lang}`} className="inline-block mb-2">
             <Image src={globalContent?.footer_logo_url || globalContent?.logo_url || logo} alt="Aruna Logo" className="h-20 2xl:h-44 w-auto opacity-80" unoptimized priority width={180} height={80} />
           </Link>
-          <p className="pl-2 text-[#d2b799] text-lg leading-relaxed mb-8">
+          <p className="pl-2 text-white/90 text-lg leading-relaxed mb-8">
             {foot.description}
           </p>
           <div className="pl-2 flex gap-4 items-center mb-8">
-            <a href={socialLinks.whatsapp || "#"} className="text-[#d2b799] hover:text-white transition-colors" target="_blank" rel="noopener noreferrer">
+            <a href={socialLinks.whatsapp || "#"} className="text-white/90 hover:text-white transition-colors" target="_blank" rel="noopener noreferrer">
               <IconBrandWhatsapp size={20} stroke={1.5} />
             </a>
-            <a href={socialLinks.instagram || "#"} className="text-[#d2b799] hover:text-white transition-colors" target="_blank" rel="noopener noreferrer">
+            <a href={socialLinks.instagram || "#"} className="text-white/90 hover:text-white transition-colors" target="_blank" rel="noopener noreferrer">
               <IconBrandInstagram size={20} stroke={1.5} />
             </a>
-            <a href={socialLinks.tiktok || "#"} className="text-[#d2b799] hover:text-white transition-colors" target="_blank" rel="noopener noreferrer">
+            <a href={socialLinks.tiktok || "#"} className="text-white/90 hover:text-white transition-colors" target="_blank" rel="noopener noreferrer">
               <IconBrandTiktok size={20} stroke={1.5} />
             </a>
-            <a href={socialLinks.facebook || "#"} className="text-[#d2b799] hover:text-white transition-colors" target="_blank" rel="noopener noreferrer">
+            <a href={socialLinks.facebook || "#"} className="text-white/90 hover:text-white transition-colors" target="_blank" rel="noopener noreferrer">
               <IconBrandFacebook size={20} stroke={1.5} />
             </a>
           </div>
-          <p className="pl-2 text-[#d2b799] text-lg">
+          <p className="pl-2 text-white/90 text-lg">
             {foot.phone}
           </p>
-          <p className="pl-2 text-[#d2b799] text-lg">
+          <p className="pl-2 text-white/90 text-lg">
             {foot.email}
           </p>
         </div>
@@ -101,7 +101,7 @@ export default function Footer() {
         {/* Column 2: The Company */}
         <div className="flex-1">
           <h4 className="text-lg mb-6 tracking-wide">{foot.company_title}</h4>
-          <ul className="space-y-4 text-base text-[#d2b799]">
+          <ul className="space-y-4 text-base text-white/90">
             {pathname.startsWith(`/${lang}/retreats`) ? (
               <>
                 <li>
@@ -177,7 +177,7 @@ export default function Footer() {
               ? (foot.retreats_newsletter_title || foot.newsletter_title)
               : foot.newsletter_title}
           </h4>
-          <p className="text-base text-[#d2b799] mb-6">
+          <p className="text-sm text-white/90 mb-6">
             {pathname.includes("/retreats")
               ? (foot.retreats_newsletter_desc || foot.newsletter_desc)
               : foot.newsletter_desc}
@@ -195,7 +195,7 @@ export default function Footer() {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 disabled={status === "loading"}
-                className="flex-1 bg-transparent border-b border-[#d2b799] px-0 py-2 text-base text-white placeholder-[#d2b799]/70 focus:outline-none focus:border-white transition-colors disabled:opacity-50"
+                className="flex-1 bg-transparent border-b border-white/50 px-0 py-2 text-base text-white placeholder-white/60 focus:outline-none focus:border-white transition-colors disabled:opacity-50"
               />
               <button type="submit" disabled={status === "loading"} className="bg-white text-black px-8 py-2 rounded-full text-sm tracking-widest font-medium hover:bg-gray-200 transition-colors max-w-fit cursor-pointer disabled:opacity-50">
                 {status === "loading" ? "..." : (pathname.includes("/retreats") ? (foot.retreats_subscribe_btn || foot.subscribe_btn) : foot.subscribe_btn)}
@@ -207,7 +207,7 @@ export default function Footer() {
       </div>
 
       {/* Bottom Footer */}
-      <div className="w-full max-w-7xl mx-auto border-t border-[#d2b799]/30 pt-8 flex flex-col md:flex-row justify-between items-center gap-4 text-sm text-[#d2b799]">
+      <div className="w-full max-w-7xl mx-auto border-t border-white/30 pt-8 flex flex-col md:flex-row justify-between items-center gap-4 text-sm text-white/90">
         <p>{foot.copyright}</p>
         <div className="flex gap-6">
           <Link href={`/${lang}/legal`} className="hover:text-white transition-colors">{foot.link_legal}</Link>

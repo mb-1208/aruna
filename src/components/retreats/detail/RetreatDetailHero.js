@@ -43,7 +43,7 @@ export default function RetreatDetailHero({ title, subtitle, date, bgImage, book
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 1, delay: 0.2, ease: "easeOut" }}
-          className="text-white text-5xl md:text-6xl lg:text-7xl font-light uppercase tracking-widest drop-shadow-lg mb-6 max-w-6xl mx-auto"
+          className="text-white text-3xl sm:text-4xl md:text-5xl lg:text-7xl font-light uppercase tracking-widest drop-shadow-lg mb-6 max-w-6xl mx-auto"
         >
           {title}
         </motion.h1>
