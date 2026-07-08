@@ -41,7 +41,7 @@ export default function Testimonials({ subtitle, title, subtext, reviews, curren
   ];
 
   const sourceReviews = reviews && reviews.length > 0 ? reviews : defaultReviews;
-  
+
   const mappedReviews = sourceReviews.map(r => {
     if (currentLang === 'es') {
       return {
@@ -100,19 +100,19 @@ export default function Testimonials({ subtitle, title, subtext, reviews, curren
       >
         <div>
           <span className="text-sm tracking-[0.2em] uppercase text-gray-500 block mb-4">{subtitle || "Stories From Our Travelers"}</span>
-          <h2 className="text-5xl md:text-7xl font-sacramento capitalize text-brand-dark-brown max-w-lg" dangerouslySetInnerHTML={{ __html: title || "Stories From<br />Our Travelers" }} />
+          <h2 className="text-4xl md:text-6xl font-light font-cormorant uppercase text-brand-dark-brown max-w-lg" dangerouslySetInnerHTML={{ __html: title || "Stories From<br />Our Travelers" }} />
         </div>
         <div className="flex flex-col items-start md:items-end justify-between gap-6 max-w-sm text-left md:text-right">
-          {subtext && <p className="text-gray-600 text-base leading-relaxed">{subtext}</p>}
+          {subtext && <p className="text-gray-600 text-xl leading-relaxed font-sacramento">{subtext}</p>}
           <div className="flex gap-4">
-            <button 
+            <button
               onClick={() => setCurrentIndex(prev => Math.max(prev - 1, 0))}
               disabled={currentIndex === 0}
               className="p-2 border border-gray-200 rounded-full hover:bg-gray-50 disabled:opacity-30 transition-colors"
             >
               <IconChevronLeft stroke={1.5} />
             </button>
-            <button 
+            <button
               onClick={() => setCurrentIndex(prev => Math.min(prev + 1, totalPages - 1))}
               disabled={currentIndex === totalPages - 1}
               className="p-2 border border-gray-200 rounded-full hover:bg-gray-50 disabled:opacity-30 transition-colors"
@@ -179,9 +179,8 @@ export default function Testimonials({ subtitle, title, subtext, reviews, curren
             <button
               key={idx}
               onClick={() => setCurrentIndex(idx)}
-              className={`w-2 h-2 rounded-full transition-colors ${
-                currentIndex === idx ? "bg-gray-800 w-6" : "bg-gray-300 hover:bg-gray-400"
-              }`}
+              className={`w-2 h-2 rounded-full transition-colors ${currentIndex === idx ? "bg-gray-800 w-6" : "bg-gray-300 hover:bg-gray-400"
+                }`}
               aria-label={`Go to page ${idx + 1}`}
             />
           ))}
