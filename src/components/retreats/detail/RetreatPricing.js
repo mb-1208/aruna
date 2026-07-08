@@ -9,7 +9,7 @@ import { Swiper, SwiperSlide } from 'swiper/react';
 import { Mousewheel } from 'swiper/modules';
 import 'swiper/css';
 
-export default function RetreatPricing({ title, subtitle, packages, whatsappNumber, retreatTitle, englishTitle, lang = 'en' }) {
+export default function RetreatPricing({ title, subtitle, packages, englishPackages, whatsappNumber, retreatTitle, englishTitle, lang = 'en' }) {
   const displayPackages = (packages && packages.length > 0) ? packages : [];
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [inquiryDate, setInquiryDate] = useState("");
@@ -256,7 +256,8 @@ export default function RetreatPricing({ title, subtitle, packages, whatsappNumb
                           >
                             {dates.map((dateItem, i) => {
                               const parsed = parseDates(dateItem, lang);
-                              const parsedEn = parseDates(dateItem, 'en');
+                              const enDateItem = englishPackages && englishPackages[index] && englishPackages[index].dates && englishPackages[index].dates[i] ? englishPackages[index].dates[i] : dateItem;
+                              const parsedEn = parseDates(enDateItem, 'en');
                               if (!parsed || !parsed.isValid) return null;
                               
                               const { mainText, status } = parsed;

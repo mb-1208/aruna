@@ -147,6 +147,7 @@ export default async function RetreatDetailPage({ params }) {
         title={pricingTitle}
         subtitle={pricingSubtitle}
         packages={packages}
+        englishPackages={basePackages}
         whatsappNumber={content.whatsapp_number}
         retreatTitle={displayTitle}
         englishTitle={dest.title}
