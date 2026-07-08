@@ -169,7 +169,10 @@ export default function DashboardEditor({ initialData }) {
   // Subscribers State
   const [leads, setLeads] = useState(initialData.leads || []);
   const [subscriberFilter, setSubscriberFilter] = useState("All");
+  const [searchQuery, setSearchQuery] = useState("");
+  const [dateFilter, setDateFilter] = useState("All");
   const [isRefreshingLeads, setIsRefreshingLeads] = useState(false);
+  const [selectedLead, setSelectedLead] = useState(null);
 
   const handleRefreshLeads = async () => {
     setIsRefreshingLeads(true);
@@ -1496,10 +1499,26 @@ export default function DashboardEditor({ initialData }) {
               </div>
 
               <div className="bg-white border border-gray-200 p-8 rounded-2xl shadow-sm">
-                <div className="flex justify-between items-center mb-6">
+                <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
                   <h3 className="text-lg font-bold">Email List</h3>
-                  <div className="flex items-center gap-4">
-                    <label className="text-sm font-bold uppercase tracking-widest text-gray-500">Filter Source:</label>
+                  <div className="flex flex-wrap items-center gap-4 w-full sm:w-auto">
+                    <input
+                      type="text"
+                      placeholder="Search email or details..."
+                      value={searchQuery}
+                      onChange={(e) => setSearchQuery(e.target.value)}
+                      className="border border-gray-200 rounded-lg p-2 text-sm focus:outline-none focus:border-black transition-colors bg-white flex-1 min-w-[200px]"
+                    />
+                    <select
+                      value={dateFilter}
+                      onChange={(e) => setDateFilter(e.target.value)}
+                      className="border border-gray-200 rounded-lg p-2 text-sm focus:outline-none focus:border-black transition-colors bg-white"
+                    >
+                      <option value="All">All Time</option>
+                      <option value="Today">Today</option>
+                      <option value="7Days">Last 7 Days</option>
+                      <option value="30Days">Last 30 Days</option>
+                    </select>
                     <select
                       value={subscriberFilter}
                       onChange={(e) => setSubscriberFilter(e.target.value)}
@@ -1520,12 +1539,30 @@ export default function DashboardEditor({ initialData }) {
                         <th className="py-4 font-normal">Email Address</th>
                         <th className="py-4 font-normal">Source</th>
                         <th className="py-4 font-normal">Details</th>
-                        <th className="py-4 font-normal">Date Subscribed</th>
+                        <th className="py-4 font-normal">Date Received</th>
+                        <th className="py-4 font-normal text-right">Action</th>
                       </tr>
                     </thead>
                     <tbody className="divide-y divide-gray-100">
                       {leads
                         .filter(l => subscriberFilter === "All" || l.source === subscriberFilter)
+                        .filter(l => {
+                          if (dateFilter === "All") return true;
+                          const leadDate = new Date(l.created_at);
+                          const now = new Date();
+                          const diffTime = Math.abs(now - leadDate);
+                          const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24)); 
+                          if (dateFilter === "Today") return diffDays <= 1;
+                          if (dateFilter === "7Days") return diffDays <= 7;
+                          if (dateFilter === "30Days") return diffDays <= 30;
+                          return true;
+                        })
+                        .filter(l => {
+                          if (!searchQuery) return true;
+                          const q = searchQuery.toLowerCase();
+                          return (l.email && l.email.toLowerCase().includes(q)) || 
+                                 (l.details && l.details.toLowerCase().includes(q));
+                        })
                         .map((lead, i) => (
                         <tr key={i} className="hover:bg-gray-50 transition-colors">
                           <td className="py-4 text-black font-medium">{lead.email}</td>
@@ -1534,11 +1571,16 @@ export default function DashboardEditor({ initialData }) {
                           </td>
                           <td className="py-4 text-gray-500 max-w-[300px] truncate" title={lead.details}>{lead.details || '-'}</td>
                           <td className="py-4 text-gray-500">{new Date(lead.created_at).toLocaleDateString()}</td>
+                          <td className="py-4 text-right">
+                            <button onClick={() => setSelectedLead(lead)} className="text-gray-400 hover:text-black p-2 rounded-md hover:bg-gray-100 transition-colors inline-flex" title="View Details">
+                              <IconEye size={18} />
+                            </button>
+                          </td>
                         </tr>
                       ))}
                       {leads.length === 0 && (
                         <tr>
-                          <td colSpan="4" className="py-12 text-center text-gray-400">
+                          <td colSpan="5" className="py-12 text-center text-gray-400">
                             No subscribers found.
                           </td>
                         </tr>
@@ -1548,6 +1590,42 @@ export default function DashboardEditor({ initialData }) {
                 </div>
               </div>
             </div>
+
+            {/* Lead Details Modal */}
+            {selectedLead && (
+              <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/20 backdrop-blur-md px-4">
+                <div className="bg-white w-full max-w-lg rounded-2xl shadow-2xl overflow-hidden animate-in fade-in zoom-in duration-200">
+                  <div className="p-6 border-b border-gray-100 flex justify-between items-center bg-gray-50">
+                    <h3 className="font-bold text-lg">Lead Details</h3>
+                    <button onClick={() => setSelectedLead(null)} className="text-gray-400 hover:text-black transition-colors">
+                      <IconX size={20} />
+                    </button>
+                  </div>
+                  <div className="p-6 space-y-5">
+                    <div className="grid grid-cols-2 gap-4">
+                      <div>
+                        <span className="block text-xs font-bold uppercase tracking-widest text-gray-500 mb-1">Email</span>
+                        <div className="font-medium text-sm break-all">{selectedLead.email}</div>
+                      </div>
+                      <div>
+                        <span className="block text-xs font-bold uppercase tracking-widest text-gray-500 mb-1">Date</span>
+                        <div className="font-medium text-sm">{new Date(selectedLead.created_at).toLocaleString()}</div>
+                      </div>
+                    </div>
+                    <div>
+                      <span className="block text-xs font-bold uppercase tracking-widest text-gray-500 mb-1">Source</span>
+                      <div className="font-medium text-sm"><span className="px-2 py-1 bg-gray-100 rounded text-xs">{selectedLead.source || '-'}</span></div>
+                    </div>
+                    <div>
+                      <span className="block text-xs font-bold uppercase tracking-widest text-gray-500 mb-2">Submitted Data</span>
+                      <div className="bg-gray-50 p-4 rounded-xl text-sm text-gray-700 whitespace-pre-wrap break-words border border-gray-100 font-mono leading-relaxed max-h-[300px] overflow-y-auto">
+                        {selectedLead.details || 'No additional details provided.'}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            )}
           </div>
         ) : (
           <>
