@@ -195,6 +195,16 @@ export default function LocalizationEditor({
                 <ReadOnlyField label="Button Text" value={globalContent?.cta?.en?.buttonText} />
                 <ReadOnlyField label="Email Label" value={globalContent?.cta?.en?.emailLabel} />
               </div>
+              <div className="bg-white p-4 rounded-lg border border-gray-200 space-y-4">
+                <h4 className="text-xs font-bold uppercase text-gray-400">Inquiry Modal</h4>
+                <ReadOnlyField label="Title" value={globalContent?.inquiry_modal?.en?.title} />
+                <ReadOnlyField label="Description" value={globalContent?.inquiry_modal?.en?.description} isTextarea />
+                <ReadOnlyField label="Label: Name" value={globalContent?.inquiry_modal?.en?.label_name} />
+                <ReadOnlyField label="Label: Email" value={globalContent?.inquiry_modal?.en?.label_email} />
+                <ReadOnlyField label="Label: Phone" value={globalContent?.inquiry_modal?.en?.label_phone} />
+                <ReadOnlyField label="Button: Submit" value={globalContent?.inquiry_modal?.en?.btn_submit} />
+                <ReadOnlyField label="Button: WhatsApp" value={globalContent?.inquiry_modal?.en?.btn_whatsapp} />
+              </div>
             </div>
           )}
 
@@ -368,6 +378,16 @@ export default function LocalizationEditor({
                 <EditField label="Text" value={globalContent?.cta?.es?.text} isTextarea onChange={(val) => updateGlobal('cta', 'text', 'es', val)} />
                 <EditField label="Button Text" value={globalContent?.cta?.es?.buttonText} onChange={(val) => updateGlobal('cta', 'buttonText', 'es', val)} />
                 <EditField label="Email Label" value={globalContent?.cta?.es?.emailLabel} onChange={(val) => updateGlobal('cta', 'emailLabel', 'es', val)} />
+              </div>
+              <div className="bg-gray-50 p-4 rounded-lg border border-gray-200 space-y-4">
+                <h4 className="text-xs font-bold uppercase text-gray-400">Inquiry Modal</h4>
+                <EditField label="Title" value={globalContent?.inquiry_modal?.es?.title} onChange={(val) => updateGlobal('inquiry_modal', 'title', 'es', val)} />
+                <EditField label="Description" value={globalContent?.inquiry_modal?.es?.description} isTextarea onChange={(val) => updateGlobal('inquiry_modal', 'description', 'es', val)} />
+                <EditField label="Label: Name" value={globalContent?.inquiry_modal?.es?.label_name} onChange={(val) => updateGlobal('inquiry_modal', 'label_name', 'es', val)} />
+                <EditField label="Label: Email" value={globalContent?.inquiry_modal?.es?.label_email} onChange={(val) => updateGlobal('inquiry_modal', 'label_email', 'es', val)} />
+                <EditField label="Label: Phone" value={globalContent?.inquiry_modal?.es?.label_phone} onChange={(val) => updateGlobal('inquiry_modal', 'label_phone', 'es', val)} />
+                <EditField label="Button: Submit" value={globalContent?.inquiry_modal?.es?.btn_submit} onChange={(val) => updateGlobal('inquiry_modal', 'btn_submit', 'es', val)} />
+                <EditField label="Button: WhatsApp" value={globalContent?.inquiry_modal?.es?.btn_whatsapp} onChange={(val) => updateGlobal('inquiry_modal', 'btn_whatsapp', 'es', val)} />
               </div>
             </div>
           )}

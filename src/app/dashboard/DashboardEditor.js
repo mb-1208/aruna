@@ -134,7 +134,30 @@ export default function DashboardEditor({ initialData }) {
   // Global Information State
   const [editingLang, setEditingLang] = useState('en');
   const [isLoadingGlobal, setIsLoadingGlobal] = useState(false);
-  const [globalContent, setGlobalContent] = useState(initialData.content.find(c => c.id === 'global_settings')?.content || { title: {en:'', es:''}, description: {en:'', es:''}, additional_data: {email:'', phone:'', instagram:''}, cta: { en: {}, es: {} } });
+  const initialGlobalContent = initialData.content.find(c => c.id === 'global_settings')?.content || {};
+  if (!initialGlobalContent.inquiry_modal) {
+    initialGlobalContent.inquiry_modal = {
+      en: {
+        title: 'Inquire Availability',
+        description: 'Leave your details and we will get back to you as soon as possible.',
+        label_name: 'Name',
+        label_email: 'Email',
+        label_phone: 'Phone',
+        btn_submit: 'Submit Inquiry',
+        btn_whatsapp: 'Inquire via WhatsApp'
+      },
+      es: {
+        title: 'Consultar Disponibilidad',
+        description: 'Déjanos tus datos y nos pondremos en contacto contigo lo antes posible.',
+        label_name: 'Nombre',
+        label_email: 'Correo Electrónico',
+        label_phone: 'Teléfono',
+        btn_submit: 'Enviar Consulta',
+        btn_whatsapp: 'Consultar por WhatsApp'
+      }
+    };
+  }
+  const [globalContent, setGlobalContent] = useState(initialGlobalContent);
 
   // Access Management State
   const [currentUser, setCurrentUser] = useState(null);
@@ -194,6 +217,26 @@ export default function DashboardEditor({ initialData }) {
           footer: data.content.footer || { en: {}, es: {} },
           promo: data.content.promo || { en: {}, es: {} },
           cta: data.content.cta || { en: {}, es: {} },
+          inquiry_modal: data.content.inquiry_modal || {
+            en: {
+              title: 'Inquire Availability',
+              description: 'Leave your details and we will get back to you as soon as possible.',
+              label_name: 'Name',
+              label_email: 'Email',
+              label_phone: 'Phone',
+              btn_submit: 'Submit Inquiry',
+              btn_whatsapp: 'Inquire via WhatsApp'
+            },
+            es: {
+              title: 'Consultar Disponibilidad',
+              description: 'Déjanos tus datos y nos pondremos en contacto contigo lo antes posible.',
+              label_name: 'Nombre',
+              label_email: 'Correo Electrónico',
+              label_phone: 'Teléfono',
+              btn_submit: 'Enviar Consulta',
+              btn_whatsapp: 'Consultar por WhatsApp'
+            }
+          },
           logo_url: data.content.logo_url || '',
           footer_logo_url: data.content.footer_logo_url || ''
         });
@@ -1173,6 +1216,24 @@ export default function DashboardEditor({ initialData }) {
                             />
                           </div>
                         </div>
+                      </div>
+                    </div>
+
+                    <div className="bg-white border border-gray-200 p-8 rounded-xl shadow-sm">
+                      <h3 className="text-lg font-bold mb-6 flex items-center gap-2">
+                        <IconMessageCircle size={20} className="text-gray-400" /> Inquiry Modal
+                      </h3>
+                      <div className="space-y-4">
+                        {['title', 'description', 'label_name', 'label_email', 'label_phone', 'btn_submit', 'btn_whatsapp'].map(key => (
+                          <div key={`inquiry-${key}`}>
+                            <label className="block text-xs font-bold uppercase tracking-widest text-gray-500 mb-2">{key.replace('_', ' ')}</label>
+                            {key === 'description' ? (
+                              <textarea rows={2} value={globalContent?.inquiry_modal?.en?.[key] || ''} onChange={(e) => setGlobalContent({...globalContent, inquiry_modal: {...globalContent.inquiry_modal, en: {...(globalContent?.inquiry_modal?.en || {}), [key]: e.target.value}}})} className="w-full border border-gray-200 rounded-lg p-3 text-sm focus:outline-none focus:border-black transition-colors" />
+                            ) : (
+                              <input type="text" value={globalContent?.inquiry_modal?.en?.[key] || ''} onChange={(e) => setGlobalContent({...globalContent, inquiry_modal: {...globalContent.inquiry_modal, en: {...(globalContent?.inquiry_modal?.en || {}), [key]: e.target.value}}})} className="w-full border border-gray-200 rounded-lg p-3 text-sm focus:outline-none focus:border-black transition-colors" />
+                            )}
+                          </div>
+                        ))}
                       </div>
                     </div>
                   </>

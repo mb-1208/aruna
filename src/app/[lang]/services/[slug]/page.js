@@ -133,15 +133,15 @@ export default async function ServiceDetailPage({ params }) {
         lang={lang}
       />
 
-      {content.status !== 'coming_soon' && (
-        <>
-
       {/* Overview Section */}
       <RetreatOverview 
         title={displayTitle}
         description={overview || displayDescription}
         imageUrl={content.overview_image || "http://placehold.co/800x600.png"}
       />
+
+      {content.status !== 'coming_soon' && (
+        <>
 
       {/* Itinerary & Pricing */}
       <RetreatPricing 

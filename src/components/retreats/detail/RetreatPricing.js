@@ -1,13 +1,63 @@
 "use client";
 
-import { motion } from "framer-motion";
-import { IconBrandWhatsapp, IconCheck, IconChevronRight } from "@tabler/icons-react";
+import { useState } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import { IconBrandWhatsapp, IconCheck, IconChevronRight, IconX } from "@tabler/icons-react";
+import { submitInquiry } from "@/app/actions/newsletter";
+import { useLanguage } from "@/contexts/LanguageContext";
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { Mousewheel } from 'swiper/modules';
 import 'swiper/css';
 
 export default function RetreatPricing({ title, subtitle, packages, whatsappNumber, retreatTitle, lang = 'en' }) {
   const displayPackages = (packages && packages.length > 0) ? packages : [];
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [inquiryDate, setInquiryDate] = useState("");
+  const [formData, setFormData] = useState({ name: "", email: "", phone: "" });
+  const [submitStatus, setSubmitStatus] = useState("idle");
+  const [submitMessage, setSubmitMessage] = useState("");
+
+  const { globalContent } = useLanguage();
+  const inquiryContent = globalContent?.inquiry_modal?.[lang] || {};
+
+  const modalTitle = inquiryContent.title || (lang === 'es' ? 'Consultar Disponibilidad' : 'Inquire Availability');
+  const modalDesc = inquiryContent.description || (lang === 'es' ? 'Déjanos tus datos y nos pondremos en contacto contigo lo antes posible.' : 'Leave your details and we will get back to you as soon as possible.');
+  const labelName = inquiryContent.label_name || (lang === 'es' ? 'Nombre' : 'Name');
+  const labelEmail = inquiryContent.label_email || (lang === 'es' ? 'Correo Electrónico' : 'Email');
+  const labelPhone = inquiryContent.label_phone || (lang === 'es' ? 'Teléfono' : 'Phone');
+  const btnSubmit = inquiryContent.btn_submit || (lang === 'es' ? 'Enviar Consulta' : 'Submit Inquiry');
+  const btnWhatsapp = inquiryContent.btn_whatsapp || (lang === 'es' ? 'Consultar por WhatsApp' : 'Inquire via WhatsApp');
+
+  const handleOpenModal = (dateString) => {
+    setInquiryDate(dateString);
+    setIsModalOpen(true);
+    setSubmitStatus("idle");
+    setSubmitMessage("");
+  };
+
+  const handleModalSubmit = async (e) => {
+    e.preventDefault();
+    setSubmitStatus("loading");
+    
+    const result = await submitInquiry({
+      name: formData.name,
+      email: formData.email,
+      phone: formData.phone,
+      retreatTitle: retreatTitle || "Unknown",
+      dateStr: inquiryDate
+    });
+    
+    setSubmitStatus(result.success ? "success" : "error");
+    setSubmitMessage(result.message || result.error);
+    
+    if (result.success) {
+      setTimeout(() => {
+        setIsModalOpen(false);
+        setFormData({ name: "", email: "", phone: "" });
+      }, 3000);
+    }
+  };
+
 
   const handleWhatsAppInquiry = (dateString) => {
     if (!whatsappNumber) return;
@@ -232,12 +282,11 @@ export default function RetreatPricing({ title, subtitle, packages, whatsappNumb
                                     {!isFullyBooked ? (
                                       whatsappNumber && (
                                         <button
-                                          onClick={() => handleWhatsAppInquiry(dateStrForWa)}
+                                          onClick={() => handleOpenModal(dateStrForWa)}
                                           className="flex items-center justify-between w-full py-4 px-5 bg-black text-white text-xs font-bold tracking-widest uppercase rounded-xl hover:bg-gray-800 hover:shadow-lg transition-all duration-300 mt-auto transform group-hover:-translate-y-1"
                                         >
                                           <div className="flex items-center gap-2">
-                                            <IconBrandWhatsapp size={18} />
-                                            <span>{lang === 'es' ? 'Consultar' : 'Inquire'}</span>
+                                            <span>{lang === 'es' ? 'Más Información' : 'More Information'}</span>
                                           </div>
                                           <IconChevronRight size={18} className="text-white group-hover:translate-x-1 transition-all" />
                                         </button>
@@ -292,6 +341,135 @@ export default function RetreatPricing({ title, subtitle, packages, whatsappNumb
           })
         )}
       </div>
+    
+      <AnimatePresence>
+        {isModalOpen && (
+          <motion.div 
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-[999] flex items-center justify-center bg-black/60 backdrop-blur-sm px-4"
+            onClick={() => setIsModalOpen(false)}
+          >
+            <motion.div 
+              initial={{ opacity: 0, scale: 0.95, y: 20 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.95, y: 20 }}
+              className="bg-white w-full max-w-lg rounded-xl overflow-y-auto shadow-2xl relative max-h-[90vh]"
+              onClick={(e) => e.stopPropagation()}
+            >
+              <button 
+                onClick={() => setIsModalOpen(false)}
+                className="absolute top-6 right-6 text-gray-400 hover:text-black transition-colors"
+              >
+                <IconX size={24} stroke={1.5} />
+              </button>
+              
+              <div className="p-6 md:p-10">
+                <h3 className="text-2xl font-light font-cormorant uppercase text-brand-dark-brown mb-2">
+                  {modalTitle}
+                </h3>
+                <p className="text-gray-500 text-sm mb-8">
+                  {modalDesc}
+                </p>
+
+                <form onSubmit={handleModalSubmit} className="flex flex-col gap-5">
+                  <div className="flex flex-col gap-2">
+                    <label className="text-xs font-bold tracking-widest uppercase text-gray-700">
+                      {labelName}
+                    </label>
+                    <input 
+                      type="text" 
+                      required
+                      value={formData.name}
+                      onChange={e => setFormData({...formData, name: e.target.value})}
+                      className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:outline-none focus:border-brand-dark-brown focus:ring-1 focus:ring-brand-dark-brown bg-gray-50 focus:bg-white transition-all text-sm"
+                    />
+                  </div>
+                  
+                  <div className="flex flex-col gap-2">
+                    <label className="text-xs font-bold tracking-widest uppercase text-gray-700">
+                      {labelEmail}
+                    </label>
+                    <input 
+                      type="email" 
+                      required
+                      value={formData.email}
+                      onChange={e => setFormData({...formData, email: e.target.value})}
+                      className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:outline-none focus:border-brand-dark-brown focus:ring-1 focus:ring-brand-dark-brown bg-gray-50 focus:bg-white transition-all text-sm"
+                    />
+                  </div>
+
+                  <div className="flex flex-col gap-2">
+                    <label className="text-xs font-bold tracking-widest uppercase text-gray-700">
+                      {labelPhone}
+                    </label>
+                    <input 
+                      type="tel" 
+                      required
+                      value={formData.phone}
+                      onChange={e => setFormData({...formData, phone: e.target.value})}
+                      className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:outline-none focus:border-brand-dark-brown focus:ring-1 focus:ring-brand-dark-brown bg-gray-50 focus:bg-white transition-all text-sm"
+                    />
+                  </div>
+
+                  <div className="flex flex-col gap-4 mt-2">
+                    <div className="flex flex-col gap-2">
+                      <label className="text-xs font-bold tracking-widest uppercase text-gray-700">Retreat</label>
+                      <div className="w-full px-4 py-3 rounded-xl border border-gray-100 bg-gray-100 text-gray-500 text-xs truncate">
+                        {retreatTitle || '-'}
+                      </div>
+                    </div>
+                    <div className="flex flex-col gap-2">
+                      <label className="text-xs font-bold tracking-widest uppercase text-gray-700">Date</label>
+                      <div className="w-full px-4 py-3 rounded-xl border border-gray-100 bg-gray-100 text-gray-500 text-xs truncate">
+                        {inquiryDate || '-'}
+                      </div>
+                    </div>
+                  </div>
+
+                  {submitMessage && (
+                    <div className={`mt-2 p-4 rounded-xl text-sm font-medium ${submitStatus === 'success' ? 'bg-green-50 text-green-700 border border-green-100' : 'bg-red-50 text-red-700 border border-red-100'}`}>
+                      {submitMessage}
+                    </div>
+                  )}
+
+                  <button 
+                    type="submit"
+                    disabled={submitStatus === 'loading'}
+                    className="w-full py-4 mt-4 bg-brand-dark-brown text-white text-xs font-bold tracking-widest uppercase rounded-xl hover:bg-[#b07023] transition-colors disabled:opacity-50"
+                  >
+                    {submitStatus === 'loading' ? '...' : btnSubmit}
+                  </button>
+                </form>
+
+                {whatsappNumber && (
+                  <div className="mt-8 flex flex-col items-center">
+                    <div className="flex items-center w-full gap-4 mb-6">
+                      <div className="h-px bg-gray-200 flex-1" />
+                      <span className="text-xs font-bold tracking-widest uppercase text-gray-400">
+                        {lang === 'es' ? 'O' : 'OR'}
+                      </span>
+                      <div className="h-px bg-gray-200 flex-1" />
+                    </div>
+                    
+                    <button
+                      onClick={() => handleWhatsAppInquiry(inquiryDate)}
+                      className="flex items-center justify-center w-full py-4 px-5 bg-black text-white text-xs font-bold tracking-widest uppercase rounded-xl hover:bg-gray-800 hover:shadow-lg transition-all duration-300 group"
+                    >
+                      <div className="flex items-center gap-2">
+                        <IconBrandWhatsapp size={18} />
+                        <span>{btnWhatsapp}</span>
+                      </div>
+                    </button>
+                  </div>
+                )}
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
     </section>
   );
 }

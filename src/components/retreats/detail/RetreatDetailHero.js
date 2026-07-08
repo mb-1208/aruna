@@ -47,16 +47,7 @@ export default function RetreatDetailHero({ title, subtitle, date, bgImage, book
         >
           {title}
         </motion.h1>
-        {subtitle && (
-          <motion.p 
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 1, delay: 0.4, ease: "easeOut" }}
-            className="text-white text-lg md:text-xl font-light uppercase tracking-widest max-w-2xl mb-4"
-          >
-            {subtitle}
-          </motion.p>
-        )}
+
         {date && (
           <motion.p 
             initial={{ opacity: 0, y: 30 }}
