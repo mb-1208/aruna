@@ -8,6 +8,11 @@ import { motion, AnimatePresence } from "framer-motion";
 export default function Testimonials({ subtitle, title, subtext, reviews, currentLang }) {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isMobile, setIsMobile] = useState(false);
+  const [expandedReviews, setExpandedReviews] = useState({});
+
+  const toggleReview = (id) => {
+    setExpandedReviews(prev => ({ ...prev, [id]: !prev[id] }));
+  };
 
   useEffect(() => {
     const handleResize = () => setIsMobile(window.innerWidth < 768);
@@ -46,6 +51,7 @@ export default function Testimonials({ subtitle, title, subtext, reviews, curren
     if (currentLang === 'es') {
       return {
         ...r,
+        name: r.name_es || r.name,
         review: r.quote_es || r.quote || r.review,
         location: r.location_es || r.location,
         bgImage: r.bg_image || r.bgImage
@@ -143,7 +149,7 @@ export default function Testimonials({ subtitle, title, subtext, reviews, curren
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true, margin: "-100px" }}
                   transition={{ duration: 0.8, delay: index * 0.2, ease: "easeOut" }}
-                  className="relative aspect-[3/4] overflow-hidden group cursor-grab active:cursor-grabbing"
+                  className="relative aspect-[3/4] overflow-hidden group cursor-default"
                 >
                   <Image
                     src={r.image_url || r.bgImage || "http://placehold.co/400x600.png"}
@@ -158,7 +164,22 @@ export default function Testimonials({ subtitle, title, subtext, reviews, curren
                     <div>
                       <h4 className="text-white font-bold tracking-widest uppercase text-xs">{r.author || r.name}</h4>
                     </div>
-                    <p className="text-white text-sm leading-relaxed italic line-clamp-3">"{r.review || r.quote}"</p>
+                    <div className="pointer-events-auto flex flex-col items-start w-full">
+                      <div 
+                        className={`text-white text-sm leading-relaxed italic transition-all duration-300 w-full ${expandedReviews[r.id] ? 'max-h-[50vh] overflow-y-auto pr-2' : 'line-clamp-3'}`}
+                        onPointerDown={(e) => expandedReviews[r.id] && e.stopPropagation()}
+                      >
+                        "{r.review || r.quote}"
+                      </div>
+                      {((r.review || r.quote)?.length > 120) && (
+                        <button 
+                          onClick={(e) => { e.stopPropagation(); toggleReview(r.id); }}
+                          className="text-[10px] text-white/60 hover:text-white mt-2 font-bold uppercase tracking-widest cursor-pointer transition-colors"
+                        >
+                          {expandedReviews[r.id] ? "Show Less" : "Show More"}
+                        </button>
+                      )}
+                    </div>
                     <div className="flex gap-1">
                       {[1, 2, 3, 4, 5].map((star) => (
                         <IconStarFilled key={star} size={14} className="text-[#D4AF37]" />

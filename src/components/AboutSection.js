@@ -19,10 +19,8 @@ export default function AboutSection({ subtitle, title, text, quote, image }) {
           <h2 className="text-5xl 2xl:text-6xl font-light font-cormorant text-brand-dark-brown uppercase" dangerouslySetInnerHTML={{ __html: title || "Find Serenity In<br />Every Journey" }} />
         </div>
 
-        <div className="text-gray-700 space-y-6 leading-relaxed max-w-lg">
-          <p>
-            {text || "We believe that travel is more than just a change of scenery—it is an opportunity to reconnect with yourself. At Aruna, we curate bespoke travel experiences that blend untouched natural beauty with soul-soothing luxury. Let us craft a journey that not only explores the world but also restores your spirit."}
-          </p>
+        <div className="text-gray-700 space-y-6 leading-relaxed max-w-lg whitespace-pre-wrap text-justify">
+          {text || "We believe that travel is more than just a change of scenery—it is an opportunity to reconnect with yourself. At Aruna, we curate bespoke travel experiences that blend untouched natural beauty with soul-soothing luxury. Let us craft a journey that not only explores the world but also restores your spirit."}
         </div>
       </motion.div>
 
@@ -45,9 +43,9 @@ export default function AboutSection({ subtitle, title, text, quote, image }) {
         </div>
         {/* Founder Quote */}
         <div className="mt-8 w-full max-w-[600px]">
-          <p className="text-3xl font-allura leading-relaxed text-brand-dark-brown text-justify">
+          <div className="text-3xl font-allura leading-relaxed text-brand-dark-brown text-justify whitespace-pre-wrap">
             {quote || "\"Hello! I am Jessica, the founder of Aruna. Having traveled extensively, I believe true luxury is finding peace in the world's most beautiful corners. I created Aruna to blend world-class adventure with soul-restoring tranquility, crafting deeply personal, transformative journeys just for you.\""}
-          </p>
+          </div>
         </div>
       </motion.div>
     </section>

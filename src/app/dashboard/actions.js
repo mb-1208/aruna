@@ -88,6 +88,7 @@ export async function saveReviews(reviews) {
     id: r.id,
     category: r.category,
     name: r.name,
+    name_es: r.name_es,
     quote: r.quote,
     quote_es: r.quote_es,
     location: r.location,

@@ -398,7 +398,11 @@ export default function LocalizationEditor({
               {reviews.map((rev, index) => (
                 <div key={rev.id || index} className="p-6 bg-white rounded-xl border border-gray-100">
                   <h4 className="text-xs font-bold uppercase text-gray-400 mb-4">Review {index + 1} ({rev.category})</h4>
-                  <ReadOnlyField label="Name" value={rev.name} />
+                  <EditField label="Name" value={rev.name_es || rev.name} onChange={(val) => {
+                    const newRevs = [...reviews];
+                    newRevs[index] = { ...newRevs[index], name_es: val };
+                    setReviews(newRevs);
+                  }} />
                   <EditField label="Quote" isTextarea value={rev.quote_es} onChange={(val) => {
                     const newRevs = [...reviews];
                     newRevs[index] = { ...newRevs[index], quote_es: val };
