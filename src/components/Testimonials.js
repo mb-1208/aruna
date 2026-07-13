@@ -103,7 +103,7 @@ export default function Testimonials({ subtitle, title, subtext, reviews, curren
           <h2 className="text-4xl md:text-6xl font-light font-cormorant uppercase text-brand-dark-brown max-w-lg" dangerouslySetInnerHTML={{ __html: title || "Stories From<br />Our Travelers" }} />
         </div>
         <div className="flex flex-col items-start md:items-end justify-between gap-6 max-w-sm text-left md:text-right">
-          {subtext && <p className="text-gray-600 text-xl leading-relaxed font-sacramento">{subtext}</p>}
+          {subtext && <p className="text-gray-600 text-xl leading-relaxed font-allura">{subtext}</p>}
           <div className="flex gap-4">
             <button
               onClick={() => setCurrentIndex(prev => Math.max(prev - 1, 0))}

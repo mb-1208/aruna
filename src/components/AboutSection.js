@@ -45,7 +45,7 @@ export default function AboutSection({ subtitle, title, text, quote, image }) {
         </div>
         {/* Founder Quote */}
         <div className="mt-8 w-full max-w-[600px]">
-          <p className="text-3xl font-sacramento leading-relaxed text-brand-dark-brown text-justify">
+          <p className="text-3xl font-allura leading-relaxed text-brand-dark-brown text-justify">
             {quote || "\"Hello! I am Jessica, the founder of Aruna. Having traveled extensively, I believe true luxury is finding peace in the world's most beautiful corners. I created Aruna to blend world-class adventure with soul-restoring tranquility, crafting deeply personal, transformative journeys just for you.\""}
           </p>
         </div>

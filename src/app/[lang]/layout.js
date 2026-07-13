@@ -1,4 +1,4 @@
-import { Inter, Playfair_Display, Questrial, Cormorant_Garamond, Sacramento } from "next/font/google";
+import { Inter, Playfair_Display, Questrial, Cormorant_Garamond, Allura } from "next/font/google";
 import { LanguageProvider } from "@/contexts/LanguageContext";
 import { supabase } from "@/lib/supabase";
 import "../globals.css";
@@ -27,9 +27,9 @@ const cormorant = Cormorant_Garamond({
   subsets: ["latin"],
 });
 
-const sacramento = Sacramento({
+const allura = Allura({
   weight: "400",
-  variable: "--font-sacramento",
+  variable: "--font-allura",
   subsets: ["latin"],
 });
 
@@ -52,7 +52,7 @@ export default async function RootLayout({ children, params }) {
   return (
     <html
       lang={lang}
-      className={`${inter.variable} ${playfair.variable} ${questrial.variable} ${cormorant.variable} ${sacramento.variable} h-full antialiased`}
+      className={`${inter.variable} ${playfair.variable} ${questrial.variable} ${cormorant.variable} ${allura.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col m-0 aruna-public">
         <LanguageProvider globalContent={globalContent} lang={lang}>
