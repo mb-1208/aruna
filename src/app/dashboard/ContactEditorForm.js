@@ -73,6 +73,16 @@ export default function ContactEditorForm({ content, setContent }) {
     setContent({ ...content, [key]: value });
   };
 
+  const updateLabel = (key, value) => {
+    setContent({
+      ...content,
+      labels: {
+        ...(content.labels || {}),
+        [key]: value
+      }
+    });
+  };
+
   return (
     <div className="space-y-6">
       <Section title="Hero Section">
@@ -86,6 +96,39 @@ export default function ContactEditorForm({ content, setContent }) {
           label="Title"
           value={content.title}
           onChange={(val) => updateContent("title", val)}
+        />
+      </Section>
+
+      <Section title="Form Labels">
+        <Input
+          label="Name Label"
+          value={content.labels?.name || ''}
+          onChange={(val) => updateLabel("name", val)}
+        />
+        <Input
+          label="Email Label"
+          value={content.labels?.email || ''}
+          onChange={(val) => updateLabel("email", val)}
+        />
+        <Input
+          label="Phone Label"
+          value={content.labels?.phone || ''}
+          onChange={(val) => updateLabel("phone", val)}
+        />
+        <Input
+          label="Subject Label"
+          value={content.labels?.subject || ''}
+          onChange={(val) => updateLabel("subject", val)}
+        />
+        <Input
+          label="Comment Label"
+          value={content.labels?.comment || ''}
+          onChange={(val) => updateLabel("comment", val)}
+        />
+        <Input
+          label="Button Text"
+          value={content.labels?.button || ''}
+          onChange={(val) => updateLabel("button", val)}
         />
       </Section>
     </div>

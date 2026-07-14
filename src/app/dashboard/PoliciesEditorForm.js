@@ -22,10 +22,14 @@ function generateHtmlFromSections(sections) {
   }).join('');
 }
 
-const Input = ({ label, value, onChange }) => (
+const Input = ({ label, value, onChange, type="text" }) => (
   <div className="mb-4">
     <label className="block text-xs font-bold uppercase tracking-widest text-gray-500 mb-2">{label}</label>
-    <input type="text" value={value || ""} onChange={(e) => onChange(e.target.value)} className="w-full border border-gray-200 rounded-lg p-3 text-sm focus:outline-none focus:border-black transition-colors" />
+    {type === "textarea" ? (
+      <textarea rows={4} value={value || ""} onChange={(e) => onChange(e.target.value)} className="w-full border border-gray-200 rounded-lg p-3 text-sm focus:outline-none focus:border-black transition-colors" />
+    ) : (
+      <input type="text" value={value || ""} onChange={(e) => onChange(e.target.value)} className="w-full border border-gray-200 rounded-lg p-3 text-sm focus:outline-none focus:border-black transition-colors" />
+    )}
   </div>
 );
 
@@ -97,6 +101,10 @@ export default function PoliciesEditorForm({ content, setContent }) {
         <div className="grid grid-cols-2 gap-4">
           <Input label="Page Title (EN)" value={content.title} onChange={(val) => updateContent('title', val)} />
           <Input label="Page Title (ES)" value={content.title_es} onChange={(val) => updateContent('title_es', val)} />
+        </div>
+        <div className="grid grid-cols-2 gap-4">
+          <Input label="Intro Text (EN)" type="textarea" value={content.intro_text} onChange={(val) => updateContent('intro_text', val)} />
+          <Input label="Intro Text (ES)" type="textarea" value={content.intro_text_es} onChange={(val) => updateContent('intro_text_es', val)} />
         </div>
         <div className="grid grid-cols-2 gap-4">
           <ImageUpload label="Hero Image" hint="1920x1080 (Landscape)" value={content.hero_image} onChange={(val) => updateContent('hero_image', val)} />

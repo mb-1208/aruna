@@ -1,9 +1,21 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 
 export default function ContactClient({ data }) {
+  const [defaultSubject, setDefaultSubject] = useState("");
+
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      const params = new URLSearchParams(window.location.search);
+      const subjectParam = params.get("subject");
+      if (subjectParam) {
+        setDefaultSubject(subjectParam);
+      }
+    }
+  }, []);
   const handleSubmit = (e) => {
     e.preventDefault();
     const formData = new FormData(e.target);
@@ -19,7 +31,7 @@ export default function ContactClient({ data }) {
     window.location.href = mailtoLink;
   };
 
-  const labels = data?.labels || {
+  const defaultLabels = {
     name: "Name",
     email: "Email",
     phone: "Phone",
@@ -27,6 +39,8 @@ export default function ContactClient({ data }) {
     comment: "Comment",
     button: "Send Message"
   };
+
+  const labels = { ...defaultLabels, ...(data?.labels || {}) };
 
   return (
     <main className="min-h-screen bg-white font-sans text-black flex flex-col">
@@ -92,6 +106,8 @@ export default function ContactClient({ data }) {
               id="subject" 
               name="subject"
               required
+              value={defaultSubject}
+              onChange={(e) => setDefaultSubject(e.target.value)}
               className="w-full border border-gray-300 p-3 focus:outline-none focus:border-black transition-colors"
             />
           </div>

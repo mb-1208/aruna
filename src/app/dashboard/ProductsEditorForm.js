@@ -274,7 +274,6 @@ export default function ProductsEditorForm({ products, setProducts }) {
                     </select>
                   </div>
                 )}
-                <Input label="WhatsApp Number" value={products[activeProductId].content?.whatsapp_number} onChange={(val) => updateContent(activeProductId, 'whatsapp_number', val)} />
               </div>
 
               <div className="grid grid-cols-2 gap-4">

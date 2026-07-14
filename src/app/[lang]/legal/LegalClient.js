@@ -11,6 +11,7 @@ export default function LegalClient({ initialContent }) {
     title: initialContent.title_es || initialContent.title,
     content: initialContent.content_es || initialContent.content,
     rich_text: initialContent.rich_text_es || initialContent.rich_text,
+    intro_text: initialContent.intro_text_es || initialContent.intro_text,
     hero_image: initialContent.hero_image_es || initialContent.hero_image
   } : initialContent;
 

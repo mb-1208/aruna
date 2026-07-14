@@ -115,6 +115,31 @@ export default async function RetreatDetailPage({ params }) {
   if (retreatsPageContent.faqTitle) finalFaqTitle = retreatsPageContent.faqTitle;
   if (retreatsPageContent.faqSubtitle) finalFaqSubtitle = retreatsPageContent.faqSubtitle;
 
+  // Determine if all dates are fully booked
+  let hasAvailableDates = true;
+  if (basePackages && basePackages.length > 0) {
+    let availableCount = 0;
+    let totalDates = 0;
+    
+    basePackages.forEach(pkg => {
+      if (pkg.dates && pkg.dates.length > 0) {
+         pkg.dates.forEach(d => {
+            totalDates++;
+            const status = (d.status || '').toLowerCase();
+            const isUnavailable = status.includes('fully booked') || status.includes('completo') || status.includes('private group') || status.includes('grupo cerrado');
+            if (!isUnavailable) {
+               availableCount++;
+            }
+         });
+      }
+    });
+
+    if (totalDates > 0 && availableCount === 0) {
+       hasAvailableDates = false;
+    }
+  }
+  const isSoldOut = !hasAvailableDates;
+
   return (
     <main className="min-h-screen font-sans overflow-x-hidden">
       {/* Navigation */}
@@ -130,6 +155,7 @@ export default async function RetreatDetailPage({ params }) {
         whatsappNumber={content.whatsapp_number}
         isComingSoon={content.status === 'coming_soon'}
         lang={lang}
+        isSoldOut={isSoldOut}
       />
 
       {/* Overview Section */}

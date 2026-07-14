@@ -32,6 +32,12 @@ export default function DocumentLayout({ content }) {
       </section>
 
       <div className="max-w-4xl mx-auto px-6 md:px-12 flex-grow mb-16">
+        {content.intro_text && (
+          <p className="text-gray-600 leading-relaxed mb-4 text-lg border-b border-gray-200 pb-4">
+            {content.intro_text}
+          </p>
+        )}
+
         {content.rich_text ? (
           <div
             className="prose prose-lg max-w-none text-gray-600 prose-headings:font-light prose-headings:tracking-wide prose-headings:text-black prose-a:text-black prose-a:underline"

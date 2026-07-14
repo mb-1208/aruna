@@ -88,11 +88,9 @@ export default function RetreatDetailHero({ title, subtitle, date, bgImage, book
               </p>
             )}
           </motion.div>
-        ) : whatsappNumber ? (
+        ) : (
           <motion.a 
-            href={`https://wa.me/${whatsappNumber.replace(/[^0-9]/g, '')}`}
-            target="_blank"
-            rel="noopener noreferrer"
+            href={`/${lang}/contact?subject=${encodeURIComponent(title)}`}
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 1, delay: 0.8, ease: "easeOut" }}
@@ -100,15 +98,6 @@ export default function RetreatDetailHero({ title, subtitle, date, bgImage, book
           >
             {bookNowText || "Book Now"}
           </motion.a>
-        ) : (
-          <motion.button 
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 1, delay: 0.8, ease: "easeOut" }}
-            className="bg-white text-black px-12 py-3 rounded-full text-sm font-medium tracking-widest uppercase hover:bg-gray-200 transition-colors mt-4"
-          >
-            {bookNowText || "Book Now"}
-          </motion.button>
         )}
       </div>
     </section>

@@ -53,15 +53,42 @@ export default function TheExperience({ subtitle, title, destinations, currentLa
     
     baseExp.image_url = exp.content?.cover_image || exp.content?.hero_image || exp.image_url;
     
+    let isSoldOut = false;
+    let hasAvailableDates = true;
+    const basePackages = exp.content?.packages || [];
+    if (basePackages.length > 0) {
+      let availableCount = 0;
+      let totalDates = 0;
+      basePackages.forEach(pkg => {
+        if (pkg.dates && pkg.dates.length > 0) {
+           pkg.dates.forEach(d => {
+              totalDates++;
+              const status = (d.status || '').toLowerCase();
+              const isUnavailable = status.includes('fully booked') || status.includes('completo') || status.includes('private group') || status.includes('grupo cerrado');
+              if (!isUnavailable) {
+                 availableCount++;
+              }
+           });
+        }
+      });
+      if (totalDates > 0 && availableCount === 0) {
+         hasAvailableDates = false;
+      }
+    }
+    if (basePackages.length > 0 && !hasAvailableDates) {
+      isSoldOut = true;
+    }
+
     if (currentLang === 'es') {
       return {
         ...baseExp,
         title: exp.content?.title_es || exp.title,
         date: exp.content?.date_es || exp.date,
-        description: exp.content?.description_es || exp.description
+        description: exp.content?.description_es || exp.description,
+        isSoldOut
       };
     }
-    return baseExp;
+    return { ...baseExp, isSoldOut };
   });
 
   return (
@@ -125,7 +152,9 @@ export default function TheExperience({ subtitle, title, destinations, currentLa
                 </div>
 
                 {/* Date */}
-                <p className="text-sm uppercase tracking-widest text-gray-500 mb-4">{exp.date}</p>
+                <p className="text-sm uppercase tracking-widest text-gray-500 mb-4">
+                  {exp.date} {exp.isSoldOut && <span className="ml-1 text-gray-500">({currentLang === 'es' ? 'AGOTADO' : 'SOLD OUT'})</span>}
+                </p>
 
                 {/* Description */}
                 <p className="text-gray-600 leading-relaxed text-sm md:text-base line-clamp-3">

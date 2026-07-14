@@ -12,3 +12,4 @@ export default async function PrivacyPage() {
 
   return <PrivacyClient initialContent={content} />;
 }
+// Force refresh
