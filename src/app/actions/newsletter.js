@@ -80,12 +80,24 @@ export async function submitInquiry(data) {
     if (!data.email || !emailRegex.test(data.email)) {
       return { success: false, error: 'Invalid email address.' };
     }
-    const details = `Name: ${data.name || '-'}, Phone: ${data.phone || '-'}, Retreat: ${data.retreatTitle || '-'}, Date: ${data.dateStr || '-'}`;
+    
+    let details = '';
+    let source = '';
+    
+    if (data.isService) {
+      details = `Name: ${data.name || '-'}, Phone: ${data.phone || '-'}, Service: ${data.retreatTitle || '-'}`;
+      source = 'Service Inquiry';
+    } else {
+      details = `Name: ${data.name || '-'}, Phone: ${data.phone || '-'}, Retreat: ${data.retreatTitle || '-'}, Date: ${data.dateStr || '-'}`;
+      source = 'Retreat Inquiry';
+    }
+    
     const { error } = await supabase.from('leads').insert([{
       email: data.email.toLowerCase().trim(),
-      source: 'Retreat Inquiry',
+      source: source,
       details: details
     }]);
+    
     if (error) {
       console.error('Error inserting lead:', error);
       return { success: false, error: 'Failed to submit inquiry. Please try again later.' };

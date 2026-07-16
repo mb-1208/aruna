@@ -2,8 +2,8 @@ import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import RetreatDetailHero from "@/components/retreats/detail/RetreatDetailHero";
 import RetreatOverview from "@/components/retreats/detail/RetreatOverview";
-import RetreatPricing from "@/components/retreats/detail/RetreatPricing";
-import RetreatLocation from "@/components/retreats/detail/RetreatLocation";
+import ServiceProcess from "@/components/services/ServiceProcess";
+
 import FAQ from "@/components/FAQ";
 import RetreatCTA from "@/components/retreats/RetreatCTA";
 import { supabase } from "@/lib/supabase";
@@ -80,6 +80,8 @@ export default async function ServiceDetailPage({ params }) {
   const displayDescription = isEs ? (content.description_es || dest.description) : dest.description;
 
   const overview = isEs ? (content.overview_es || content.overview) : content.overview;
+  const overviewTitle = isEs ? (content.overview_title_es || content.overview_title || displayTitle) : (content.overview_title || displayTitle);
+  const rightForYou = isEs ? (content.right_for_you_es || content.right_for_you) : content.right_for_you;
   const pricingTitle = isEs ? (content.pricing_title_es || content.pricing_title) : content.pricing_title;
   const pricingSubtitle = isEs ? (content.pricing_subtitle_es || content.pricing_subtitle) : content.pricing_subtitle;
   const locationTitle = isEs ? (content.location_title_es || content.location_title) : content.location_title;
@@ -130,12 +132,13 @@ export default async function ServiceDetailPage({ params }) {
         bookNowText={heroBookButton}
         whatsappNumber={content.whatsapp_number}
         isComingSoon={content.status === 'coming_soon'}
+        isService={true}
         lang={lang}
       />
 
       {/* Overview Section */}
       <RetreatOverview 
-        title={displayTitle}
+        title={overviewTitle}
         description={overview || displayDescription}
         imageUrl={content.overview_image || "http://placehold.co/800x600.png"}
       />
@@ -143,22 +146,18 @@ export default async function ServiceDetailPage({ params }) {
       {content.status !== 'coming_soon' && (
         <>
 
-      {/* Itinerary & Pricing */}
-      <RetreatPricing 
-        title={pricingTitle}
-        subtitle={pricingSubtitle}
-        packages={packages}
-        whatsappNumber={content.whatsapp_number}
-        retreatTitle={displayTitle}
-        lang={lang}
-      />
+      {/* Service Process Section (How It Works & Right For You) */}
+      {(content.how_it_works?.length > 0 || rightForYou) && (
+        <ServiceProcess 
+          howItWorks={content.how_it_works || []}
+          rightForYou={rightForYou}
+          processTitle={isEs ? content.how_it_works_title_es : content.how_it_works_title}
+          rightForYouTitle={isEs ? content.right_for_you_title_es : content.right_for_you_title}
+          lang={lang}
+        />
+      )}
 
-      {/* Location */}
-      <RetreatLocation 
-        title={locationTitle}
-        text={locationText}
-        images={locationImages}
-      />
+
 
       {/* FAQ Section */}
       <FAQ

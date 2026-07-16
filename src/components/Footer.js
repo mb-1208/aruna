@@ -65,7 +65,7 @@ export default function Footer() {
   };
 
   return (
-    <footer className="bg-[#d18529] text-white pt-20 pb-8 px-8 font-sans">
+    <footer className="bg-[#D2B799] text-white pt-20 pb-8 px-8 font-sans">
       <div className="w-full max-w-7xl mx-auto flex flex-col md:flex-row justify-between gap-16 md:gap-8 mb-16">
 
         {/* Column 1: Logo & Info */}

@@ -41,6 +41,14 @@ export async function generateMetadata({ params }) {
   return {
     title: globalContent?.title?.[lang] || "Aruna - Travel & Retreats",
     description: globalContent?.description?.[lang] || "Aruna Travel and Retreats in Bali",
+    appleWebApp: {
+      capable: true,
+      statusBarStyle: 'default',
+      title: globalContent?.title?.[lang] || "Aruna",
+    },
+    formatDetection: {
+      telephone: false,
+    },
   };
 }
 

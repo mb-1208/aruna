@@ -80,6 +80,7 @@ export default async function RetreatDetailPage({ params }) {
   const displayDescription = isEs ? (content.description_es || dest.description) : dest.description;
 
   const overview = isEs ? (content.overview_es || content.overview) : content.overview;
+  const overviewTitle = isEs ? (content.overview_title_es || content.overview_title || displayTitle) : (content.overview_title || displayTitle);
   const pricingTitle = isEs ? (content.pricing_title_es || content.pricing_title) : content.pricing_title;
   const pricingSubtitle = isEs ? (content.pricing_subtitle_es || content.pricing_subtitle) : content.pricing_subtitle;
   const basePackages = content.packages || [];
@@ -160,7 +161,7 @@ export default async function RetreatDetailPage({ params }) {
 
       {/* Overview Section */}
       <RetreatOverview 
-        title={displayTitle}
+        title={overviewTitle}
         description={overview || displayDescription}
         imageUrl={content.overview_image || "http://placehold.co/800x600.png"}
       />

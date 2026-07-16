@@ -180,6 +180,23 @@ export default function ProductsEditorForm({ products, setProducts }) {
     updateContent(activeProductId, 'faqs', faqs);
   };
 
+  const addHowItWorks = () => {
+    const items = products[activeProductId].content?.how_it_works || [];
+    updateContent(activeProductId, 'how_it_works', [...items, { title: "", title_es: "", description: "", description_es: "" }]);
+  };
+
+  const removeHowItWorks = (idx) => {
+    const items = [...(products[activeProductId].content?.how_it_works || [])];
+    items.splice(idx, 1);
+    updateContent(activeProductId, 'how_it_works', items);
+  };
+
+  const updateHowItWorks = (idx, key, value) => {
+    const items = [...(products[activeProductId].content?.how_it_works || [])];
+    items[idx][key] = value;
+    updateContent(activeProductId, 'how_it_works', items);
+  };
+
 
   return (
     <div className="flex gap-6 h-[calc(100vh-200px)]">
@@ -281,6 +298,10 @@ export default function ProductsEditorForm({ products, setProducts }) {
                 <Input label="Date Range (ES)" value={products[activeProductId].content?.date_es} onChange={(val) => updateContent(activeProductId, 'date_es', val)} />
               </div>
 
+              <div className="grid grid-cols-1 gap-4">
+                <Input label="Specific WhatsApp Number (Optional)" hint="Leave empty to use Global WhatsApp number" value={products[activeProductId].content?.whatsapp_number} onChange={(val) => updateContent(activeProductId, 'whatsapp_number', val)} />
+              </div>
+
               <div className="grid grid-cols-2 gap-4">
                 <Input label="Description (EN)" type="textarea" value={products[activeProductId].description} onChange={(val) => updateProduct(activeProductId, 'description', val)} />
                 <Input label="Description (ES)" type="textarea" value={products[activeProductId].content?.description_es} onChange={(val) => updateContent(activeProductId, 'description_es', val)} />
@@ -306,305 +327,370 @@ export default function ProductsEditorForm({ products, setProducts }) {
                 <div className="border border-gray-200 rounded-xl p-6 bg-white shadow-sm space-y-6">
               <h3 className="text-lg font-bold border-b border-gray-100 pb-4 mb-4">Overview Section</h3>
               <div className="grid grid-cols-2 gap-4">
+                <Input label="Overview Title (EN)" value={products[activeProductId].content?.overview_title} onChange={(val) => updateContent(activeProductId, 'overview_title', val)} />
+                <Input label="Overview Title (ES)" value={products[activeProductId].content?.overview_title_es} onChange={(val) => updateContent(activeProductId, 'overview_title_es', val)} />
+              </div>
+              <div className="grid grid-cols-2 gap-4">
                 <Input label="Overview Content (EN)" type="textarea" value={products[activeProductId].content?.overview} onChange={(val) => updateContent(activeProductId, 'overview', val)} />
                 <Input label="Overview Content (ES)" type="textarea" value={products[activeProductId].content?.overview_es} onChange={(val) => updateContent(activeProductId, 'overview_es', val)} />
               </div>
             </div>
+            {products[activeProductId].type !== 'service' && (
+              <div className="border border-gray-200 rounded-xl p-6 bg-white shadow-sm space-y-6">
+                <div className="flex justify-between items-center border-b border-gray-100 pb-4 mb-4">
+                  <h3 className="text-lg font-bold">Itinerary & Pricing Packages</h3>
+                  <button onClick={addPackage} className="text-xs bg-black text-white px-3 py-1.5 rounded-full hover:bg-gray-800 transition-colors uppercase tracking-widest font-bold flex items-center gap-1">
+                    <IconPlus size={14} /> Add Package
+                  </button>
+                </div>
 
-            <div className="border border-gray-200 rounded-xl p-6 bg-white shadow-sm space-y-6">
-              <div className="flex justify-between items-center border-b border-gray-100 pb-4 mb-4">
-                <h3 className="text-lg font-bold">Itinerary & Pricing Packages</h3>
-                <button onClick={addPackage} className="text-xs bg-black text-white px-3 py-1.5 rounded-full hover:bg-gray-800 transition-colors uppercase tracking-widest font-bold flex items-center gap-1">
-                  <IconPlus size={14} /> Add Package
-                </button>
-              </div>
+                <div className="grid grid-cols-2 gap-4">
+                  <Input label="Pricing Title (EN)" value={products[activeProductId].content?.pricing_title} onChange={(val) => updateContent(activeProductId, 'pricing_title', val)} />
+                  <Input label="Pricing Title (ES)" value={products[activeProductId].content?.pricing_title_es} onChange={(val) => updateContent(activeProductId, 'pricing_title_es', val)} />
+                </div>
+                <div className="grid grid-cols-2 gap-4 mb-8">
+                  <Input label="Pricing Subtitle (EN)" value={products[activeProductId].content?.pricing_subtitle} onChange={(val) => updateContent(activeProductId, 'pricing_subtitle', val)} />
+                  <Input label="Pricing Subtitle (ES)" value={products[activeProductId].content?.pricing_subtitle_es} onChange={(val) => updateContent(activeProductId, 'pricing_subtitle_es', val)} />
+                </div>
 
-              <div className="grid grid-cols-2 gap-4">
-                <Input label="Pricing Title (EN)" value={products[activeProductId].content?.pricing_title} onChange={(val) => updateContent(activeProductId, 'pricing_title', val)} />
-                <Input label="Pricing Title (ES)" value={products[activeProductId].content?.pricing_title_es} onChange={(val) => updateContent(activeProductId, 'pricing_title_es', val)} />
-              </div>
-              <div className="grid grid-cols-2 gap-4 mb-8">
-                <Input label="Pricing Subtitle (EN)" value={products[activeProductId].content?.pricing_subtitle} onChange={(val) => updateContent(activeProductId, 'pricing_subtitle', val)} />
-                <Input label="Pricing Subtitle (ES)" value={products[activeProductId].content?.pricing_subtitle_es} onChange={(val) => updateContent(activeProductId, 'pricing_subtitle_es', val)} />
-              </div>
+                <div className="space-y-6">
+                  {(products[activeProductId].content?.packages || []).map((pkg, idx) => (
+                    <div key={idx} className="border border-gray-200 rounded-lg p-5 bg-gray-50 relative">
+                      <button 
+                        onClick={() => removePackage(idx)} 
+                        className="absolute top-4 right-4 text-gray-400 hover:text-red-500 transition-colors"
+                        title="Remove Package"
+                      >
+                        <IconTrash size={18} />
+                      </button>
+                      
+                      <h4 className="text-sm font-bold uppercase tracking-widest mb-4">Package {idx + 1}</h4>
+                      
+                      <div className="grid grid-cols-2 gap-4 mb-4">
+                        <Input label="Duration Title (EN) (e.g. 5 NIGHTS)" value={pkg.nights} onChange={(val) => updatePackage(idx, 'nights', val)} />
+                        <Input label="Duration Title (ES) (e.g. 5 NOCHES)" value={pkg.nights_es} onChange={(val) => updatePackage(idx, 'nights_es', val)} />
+                      </div>
+                      
+                      <div className="grid grid-cols-2 gap-4 mb-4">
+                        <Input label="Price (EN) (e.g. Rp 10.000.000)" value={pkg.price} onChange={(val) => updatePackage(idx, 'price', val)} />
+                        <Input label="Price (ES)" value={pkg.price_es} onChange={(val) => updatePackage(idx, 'price_es', val)} />
+                      </div>
 
-              <div className="space-y-6">
-                {(products[activeProductId].content?.packages || []).map((pkg, idx) => (
-                  <div key={idx} className="border border-gray-200 rounded-lg p-5 bg-gray-50 relative">
-                    <button 
-                      onClick={() => removePackage(idx)} 
-                      className="absolute top-4 right-4 text-gray-400 hover:text-red-500 transition-colors"
-                      title="Remove Package"
-                    >
-                      <IconTrash size={18} />
-                    </button>
-                    
-                    <h4 className="text-sm font-bold uppercase tracking-widest mb-4">Package {idx + 1}</h4>
-                    
-                    <div className="grid grid-cols-2 gap-4 mb-4">
-                      <Input label="Duration Title (EN) (e.g. 5 NIGHTS)" value={pkg.nights} onChange={(val) => updatePackage(idx, 'nights', val)} />
-                      <Input label="Duration Title (ES) (e.g. 5 NOCHES)" value={pkg.nights_es} onChange={(val) => updatePackage(idx, 'nights_es', val)} />
-                    </div>
-                    
-                    <div className="grid grid-cols-2 gap-4 mb-4">
-                      <Input label="Price (EN) (e.g. Rp 10.000.000)" value={pkg.price} onChange={(val) => updatePackage(idx, 'price', val)} />
-                      <Input label="Price (ES)" value={pkg.price_es} onChange={(val) => updatePackage(idx, 'price_es', val)} />
-                    </div>
-
-                    <div className="grid grid-cols-1 xl:grid-cols-2 gap-8 mb-8">
-                      {/* Dates EN */}
-                      <div className="bg-white border border-gray-100 rounded-xl p-4 shadow-sm">
-                        <div className="flex justify-between items-center mb-4">
-                          <label className="block text-xs font-bold uppercase tracking-widest text-gray-500">Available Dates (EN)</label>
-                          <button onClick={() => addPackageArrayItem(idx, 'dates', { title: '', range: '', status: 'AVAILABLE' })} className="text-[10px] bg-black text-white px-2 py-1 rounded hover:bg-gray-800 uppercase tracking-widest font-bold">
-                            + Add Date
-                          </button>
-                        </div>
-                        <div className="space-y-3 max-h-60 overflow-y-auto pr-2 custom-scrollbar">
-                          {(pkg.dates || []).map((dateItem, dateIdx) => {
-                            const currentStatus = typeof dateItem === 'string' ? 'AVAILABLE' : (dateItem.status || 'AVAILABLE');
-                            const uiStatus = getUIStatus(currentStatus, 'en');
-                            
-                            return (
-                              <div key={dateIdx} className="flex flex-col gap-2 p-3 bg-gray-50 border border-gray-200 rounded-lg relative group">
-                                <button onClick={() => removePackageArrayItem(idx, 'dates', dateIdx)} className="absolute top-2 right-2 text-gray-400 hover:text-red-500"><IconTrash size={14} /></button>
-                                <div className="pr-6">
-                                  <input type="text" placeholder="Title (e.g. Easter Retreat 2027)" value={typeof dateItem === 'string' ? dateItem : (dateItem.title || '')} onChange={(e) => updatePackageDateObject(idx, 'dates', dateIdx, 'title', e.target.value)} className="w-full text-sm border-b border-gray-200 bg-transparent py-1 mb-2 focus:outline-none focus:border-black" />
-                                  <div className="flex gap-2 mb-2">
-                                    <div className="flex-1">
-                                      <label className="text-[10px] uppercase text-gray-500 font-bold mb-1 block">Start Date</label>
-                                      <input type="date" value={typeof dateItem === 'string' ? '' : (dateItem.startDate || '')} onChange={(e) => updatePackageDateObject(idx, 'dates', dateIdx, 'startDate', e.target.value)} className="w-full text-xs p-1.5 border border-gray-200 rounded focus:outline-none focus:border-black text-gray-700" />
-                                    </div>
-                                    <div className="flex-1">
-                                      <label className="text-[10px] uppercase text-gray-500 font-bold mb-1 block">End Date</label>
-                                      <input type="date" value={typeof dateItem === 'string' ? '' : (dateItem.endDate || '')} onChange={(e) => updatePackageDateObject(idx, 'dates', dateIdx, 'endDate', e.target.value)} className="w-full text-xs p-1.5 border border-gray-200 rounded focus:outline-none focus:border-black text-gray-700" />
-                                    </div>
-                                  </div>
-                                  <div className="flex gap-2 items-center">
-                                    <select 
-                                      value={uiStatus.type} 
-                                      onChange={(e) => {
-                                        const val = e.target.value;
-                                        if (val === 'LIMITED_SPOTS') {
-                                          updatePackageDateObject(idx, 'dates', dateIdx, 'status', `ONLY 4 SPOTS AVAILABLE`);
-                                        } else {
-                                          updatePackageDateObject(idx, 'dates', dateIdx, 'status', val);
-                                        }
-                                      }} 
-                                      className="w-full text-xs p-1.5 border border-gray-200 rounded focus:outline-none"
-                                    >
-                                      <option value="AVAILABLE">Available</option>
-                                      <option value="SPOTS AVAILABLE">Spots Available</option>
-                                      <option value="LIMITED_SPOTS">Limited Spots...</option>
-                                      <option value="PRIVATE GROUP">Private Group</option>
-                                      <option value="FULLY BOOKED">Fully Booked</option>
-                                    </select>
-                                    {uiStatus.type === 'LIMITED_SPOTS' && (
-                                      <div className="flex items-center gap-1">
-                                        <input 
-                                          type="number" 
-                                          min="1" 
-                                          className="w-16 text-xs p-1.5 border border-gray-200 rounded focus:outline-none text-center" 
-                                          value={uiStatus.spots}
-                                          onChange={(e) => updatePackageDateObject(idx, 'dates', dateIdx, 'status', `ONLY ${e.target.value} SPOTS AVAILABLE`)}
-                                        />
-                                        <span className="text-[10px] text-gray-500 font-bold">SPOTS</span>
+                      <div className="grid grid-cols-1 xl:grid-cols-2 gap-8 mb-8">
+                        {/* Dates EN */}
+                        <div className="bg-white border border-gray-100 rounded-xl p-4 shadow-sm">
+                          <div className="flex justify-between items-center mb-4">
+                            <label className="block text-xs font-bold uppercase tracking-widest text-gray-500">Available Dates (EN)</label>
+                            <button onClick={() => addPackageArrayItem(idx, 'dates', { title: '', range: '', status: 'AVAILABLE' })} className="text-[10px] bg-black text-white px-2 py-1 rounded hover:bg-gray-800 uppercase tracking-widest font-bold">
+                              + Add Date
+                            </button>
+                          </div>
+                          <div className="space-y-3 max-h-60 overflow-y-auto pr-2 custom-scrollbar">
+                            {(pkg.dates || []).map((dateItem, dateIdx) => {
+                              const currentStatus = typeof dateItem === 'string' ? 'AVAILABLE' : (dateItem.status || 'AVAILABLE');
+                              const uiStatus = getUIStatus(currentStatus, 'en');
+                              
+                              return (
+                                <div key={dateIdx} className="flex flex-col gap-2 p-3 bg-gray-50 border border-gray-200 rounded-lg relative group">
+                                  <button onClick={() => removePackageArrayItem(idx, 'dates', dateIdx)} className="absolute top-2 right-2 text-gray-400 hover:text-red-500"><IconTrash size={14} /></button>
+                                  <div className="pr-6">
+                                    <input type="text" placeholder="Title (e.g. May 1st - May 7th)" value={typeof dateItem === 'string' ? dateItem : (dateItem.title || '')} onChange={(e) => updatePackageDateObject(idx, 'dates', dateIdx, 'title', e.target.value)} className="w-full text-sm border-b border-gray-200 bg-transparent py-1 mb-2 focus:outline-none focus:border-black" />
+                                    <div className="flex gap-2 mb-2">
+                                      <div className="flex-1">
+                                        <label className="text-[10px] uppercase text-gray-500 font-bold mb-1 block">Start Date</label>
+                                        <input type="date" value={typeof dateItem === 'string' ? '' : (dateItem.startDate || '')} onChange={(e) => updatePackageDateObject(idx, 'dates', dateIdx, 'startDate', e.target.value)} className="w-full text-xs p-1.5 border border-gray-200 rounded focus:outline-none focus:border-black text-gray-700" />
                                       </div>
-                                    )}
+                                      <div className="flex-1">
+                                        <label className="text-[10px] uppercase text-gray-500 font-bold mb-1 block">End Date</label>
+                                        <input type="date" value={typeof dateItem === 'string' ? '' : (dateItem.endDate || '')} onChange={(e) => updatePackageDateObject(idx, 'dates', dateIdx, 'endDate', e.target.value)} className="w-full text-xs p-1.5 border border-gray-200 rounded focus:outline-none focus:border-black text-gray-700" />
+                                      </div>
+                                    </div>
+                                    <div className="flex gap-2 items-center">
+                                      <select 
+                                        value={uiStatus.type} 
+                                        onChange={(e) => {
+                                          const val = e.target.value;
+                                          if (val === 'LIMITED_SPOTS') {
+                                            updatePackageDateObject(idx, 'dates', dateIdx, 'status', `ONLY 4 SPOTS AVAILABLE`);
+                                          } else {
+                                            updatePackageDateObject(idx, 'dates', dateIdx, 'status', val);
+                                          }
+                                        }} 
+                                        className="w-full text-xs p-1.5 border border-gray-200 rounded focus:outline-none"
+                                      >
+                                        <option value="AVAILABLE">Available</option>
+                                        <option value="SPOTS AVAILABLE">Spots Available</option>
+                                        <option value="LIMITED_SPOTS">Limited Spots...</option>
+                                        <option value="PRIVATE GROUP">Private Group</option>
+                                        <option value="FULLY BOOKED">Fully Booked</option>
+                                      </select>
+                                      {uiStatus.type === 'LIMITED_SPOTS' && (
+                                        <div className="flex items-center gap-1">
+                                          <input 
+                                            type="number" 
+                                            min="1" 
+                                            className="w-16 text-xs p-1.5 border border-gray-200 rounded focus:outline-none text-center" 
+                                            value={uiStatus.spots}
+                                            onChange={(e) => updatePackageDateObject(idx, 'dates', dateIdx, 'status', `ONLY ${e.target.value} SPOTS AVAILABLE`)}
+                                          />
+                                          <span className="text-[10px] text-gray-500 font-bold">SPOTS</span>
+                                        </div>
+                                      )}
+                                    </div>
                                   </div>
                                 </div>
-                              </div>
-                            );
-                          })}
-                          {(!pkg.dates || pkg.dates.length === 0) && <p className="text-xs text-gray-400 italic text-center py-2">No dates added yet.</p>}
+                              );
+                            })}
+                            {(!pkg.dates || pkg.dates.length === 0) && <p className="text-xs text-gray-400 italic text-center py-2">No dates added yet.</p>}
+                          </div>
                         </div>
-                      </div>
 
-                      {/* Dates ES */}
-                      <div className="bg-white border border-gray-100 rounded-xl p-4 shadow-sm">
-                        <div className="flex justify-between items-center mb-4">
-                          <label className="block text-xs font-bold uppercase tracking-widest text-gray-500">Available Dates (ES)</label>
-                          <button onClick={() => addPackageArrayItem(idx, 'dates_es', { title: '', range: '', status: 'DISPONIBLE' })} className="text-[10px] bg-black text-white px-2 py-1 rounded hover:bg-gray-800 uppercase tracking-widest font-bold">
-                            + Add Date
-                          </button>
-                        </div>
-                        <div className="space-y-3 max-h-60 overflow-y-auto pr-2 custom-scrollbar">
-                          {(pkg.dates_es || []).map((dateItem, dateIdx) => {
-                            const currentStatus = typeof dateItem === 'string' ? 'DISPONIBLE' : (dateItem.status || 'DISPONIBLE');
-                            const uiStatus = getUIStatus(currentStatus, 'es');
-                            
-                            return (
-                              <div key={dateIdx} className="flex flex-col gap-2 p-3 bg-gray-50 border border-gray-200 rounded-lg relative group">
-                                <button onClick={() => removePackageArrayItem(idx, 'dates_es', dateIdx)} className="absolute top-2 right-2 text-gray-400 hover:text-red-500"><IconTrash size={14} /></button>
-                                <div className="pr-6">
-                                  <input type="text" placeholder="Title (e.g. Semana Santa 2027)" value={typeof dateItem === 'string' ? dateItem : (dateItem.title || '')} onChange={(e) => updatePackageDateObject(idx, 'dates_es', dateIdx, 'title', e.target.value)} className="w-full text-sm border-b border-gray-200 bg-transparent py-1 mb-2 focus:outline-none focus:border-black" />
-                                  <div className="flex gap-2 mb-2">
-                                    <div className="flex-1">
-                                      <label className="text-[10px] uppercase text-gray-500 font-bold mb-1 block">Start Date</label>
-                                      <input type="date" value={typeof dateItem === 'string' ? '' : (dateItem.startDate || '')} onChange={(e) => updatePackageDateObject(idx, 'dates_es', dateIdx, 'startDate', e.target.value)} className="w-full text-xs p-1.5 border border-gray-200 rounded focus:outline-none focus:border-black text-gray-700" />
-                                    </div>
-                                    <div className="flex-1">
-                                      <label className="text-[10px] uppercase text-gray-500 font-bold mb-1 block">End Date</label>
-                                      <input type="date" value={typeof dateItem === 'string' ? '' : (dateItem.endDate || '')} onChange={(e) => updatePackageDateObject(idx, 'dates_es', dateIdx, 'endDate', e.target.value)} className="w-full text-xs p-1.5 border border-gray-200 rounded focus:outline-none focus:border-black text-gray-700" />
-                                    </div>
-                                  </div>
-                                  <div className="flex gap-2 items-center">
-                                    <select 
-                                      value={uiStatus.type} 
-                                      onChange={(e) => {
-                                        const val = e.target.value;
-                                        if (val === 'LIMITED_SPOTS') {
-                                          updatePackageDateObject(idx, 'dates_es', dateIdx, 'status', `SÓLO 4 PLAZAS DISPONIBLES`);
-                                        } else {
-                                          updatePackageDateObject(idx, 'dates_es', dateIdx, 'status', val);
-                                        }
-                                      }} 
-                                      className="w-full text-xs p-1.5 border border-gray-200 rounded focus:outline-none"
-                                    >
-                                      <option value="DISPONIBLE">Disponible</option>
-                                      <option value="PLAZAS DISPONIBLES">Plazas Disponibles</option>
-                                      <option value="LIMITED_SPOTS">Plazas Limitadas...</option>
-                                      <option value="GRUPO PRIVADO">Grupo Privado</option>
-                                      <option value="COMPLETO">Completo</option>
-                                    </select>
-                                    {uiStatus.type === 'LIMITED_SPOTS' && (
-                                      <div className="flex items-center gap-1">
-                                        <input 
-                                          type="number" 
-                                          min="1" 
-                                          className="w-16 text-xs p-1.5 border border-gray-200 rounded focus:outline-none text-center" 
-                                          value={uiStatus.spots}
-                                          onChange={(e) => updatePackageDateObject(idx, 'dates_es', dateIdx, 'status', `SÓLO ${e.target.value} PLAZAS DISPONIBLES`)}
-                                        />
-                                        <span className="text-[10px] text-gray-500 font-bold">PLAZAS</span>
+                        {/* Dates ES */}
+                        <div className="bg-white border border-gray-100 rounded-xl p-4 shadow-sm">
+                          <div className="flex justify-between items-center mb-4">
+                            <label className="block text-xs font-bold uppercase tracking-widest text-gray-500">Available Dates (ES)</label>
+                            <button onClick={() => addPackageArrayItem(idx, 'dates_es', { title: '', range: '', status: 'DISPONIBLE' })} className="text-[10px] bg-black text-white px-2 py-1 rounded hover:bg-gray-800 uppercase tracking-widest font-bold">
+                              + Add Date
+                            </button>
+                          </div>
+                          <div className="space-y-3 max-h-60 overflow-y-auto pr-2 custom-scrollbar">
+                            {(pkg.dates_es || []).map((dateItem, dateIdx) => {
+                              const currentStatus = typeof dateItem === 'string' ? 'DISPONIBLE' : (dateItem.status || 'DISPONIBLE');
+                              const uiStatus = getUIStatus(currentStatus, 'es');
+                              
+                              return (
+                                <div key={dateIdx} className="flex flex-col gap-2 p-3 bg-gray-50 border border-gray-200 rounded-lg relative group">
+                                  <button onClick={() => removePackageArrayItem(idx, 'dates_es', dateIdx)} className="absolute top-2 right-2 text-gray-400 hover:text-red-500"><IconTrash size={14} /></button>
+                                  <div className="pr-6">
+                                    <input type="text" placeholder="Title (e.g. Semana Santa 2027)" value={typeof dateItem === 'string' ? dateItem : (dateItem.title || '')} onChange={(e) => updatePackageDateObject(idx, 'dates_es', dateIdx, 'title', e.target.value)} className="w-full text-sm border-b border-gray-200 bg-transparent py-1 mb-2 focus:outline-none focus:border-black" />
+                                    <div className="flex gap-2 mb-2">
+                                      <div className="flex-1">
+                                        <label className="text-[10px] uppercase text-gray-500 font-bold mb-1 block">Start Date</label>
+                                        <input type="date" value={typeof dateItem === 'string' ? '' : (dateItem.startDate || '')} onChange={(e) => updatePackageDateObject(idx, 'dates_es', dateIdx, 'startDate', e.target.value)} className="w-full text-xs p-1.5 border border-gray-200 rounded focus:outline-none focus:border-black text-gray-700" />
                                       </div>
-                                    )}
+                                      <div className="flex-1">
+                                        <label className="text-[10px] uppercase text-gray-500 font-bold mb-1 block">End Date</label>
+                                        <input type="date" value={typeof dateItem === 'string' ? '' : (dateItem.endDate || '')} onChange={(e) => updatePackageDateObject(idx, 'dates_es', dateIdx, 'endDate', e.target.value)} className="w-full text-xs p-1.5 border border-gray-200 rounded focus:outline-none focus:border-black text-gray-700" />
+                                      </div>
+                                    </div>
+                                    <div className="flex gap-2 items-center">
+                                      <select 
+                                        value={uiStatus.type} 
+                                        onChange={(e) => {
+                                          const val = e.target.value;
+                                          if (val === 'LIMITED_SPOTS') {
+                                            updatePackageDateObject(idx, 'dates_es', dateIdx, 'status', `SÓLO 4 PLAZAS DISPONIBLES`);
+                                          } else {
+                                            updatePackageDateObject(idx, 'dates_es', dateIdx, 'status', val);
+                                          }
+                                        }} 
+                                        className="w-full text-xs p-1.5 border border-gray-200 rounded focus:outline-none"
+                                      >
+                                        <option value="DISPONIBLE">Disponible</option>
+                                        <option value="PLAZAS DISPONIBLES">Plazas Disponibles</option>
+                                        <option value="LIMITED_SPOTS">Plazas Limitadas...</option>
+                                        <option value="GRUPO PRIVADO">Grupo Privado</option>
+                                        <option value="COMPLETO">Completo</option>
+                                      </select>
+                                      {uiStatus.type === 'LIMITED_SPOTS' && (
+                                        <div className="flex items-center gap-1">
+                                          <input 
+                                            type="number" 
+                                            min="1" 
+                                            className="w-16 text-xs p-1.5 border border-gray-200 rounded focus:outline-none text-center" 
+                                            value={uiStatus.spots}
+                                            onChange={(e) => updatePackageDateObject(idx, 'dates_es', dateIdx, 'status', `SÓLO ${e.target.value} PLAZAS DISPONIBLES`)}
+                                          />
+                                          <span className="text-[10px] text-gray-500 font-bold">PLAZAS</span>
+                                        </div>
+                                      )}
+                                    </div>
                                   </div>
                                 </div>
+                              );
+                            })}
+                            {(!pkg.dates_es || pkg.dates_es.length === 0) && <p className="text-xs text-gray-400 italic text-center py-2">No dates added yet.</p>}
+                          </div>
+                        </div>
+                      </div>
+
+                      <div className="grid grid-cols-1 xl:grid-cols-2 gap-8 mb-8">
+                        {/* Rooms EN */}
+                        <div className="bg-white border border-gray-100 rounded-xl p-4 shadow-sm">
+                          <div className="flex justify-between items-center mb-4">
+                            <label className="block text-xs font-bold uppercase tracking-widest text-gray-500">Room Options (EN)</label>
+                            <button onClick={() => addPackageArrayItem(idx, 'rooms', '')} className="text-[10px] bg-black text-white px-2 py-1 rounded hover:bg-gray-800 uppercase tracking-widest font-bold">
+                              + Add Room
+                            </button>
+                          </div>
+                          <div className="space-y-2 max-h-60 overflow-y-auto pr-2 custom-scrollbar">
+                            {(pkg.rooms || []).map((room, roomIdx) => (
+                              <div key={roomIdx} className="flex items-center gap-2">
+                                <input type="text" value={room} onChange={(e) => updatePackageArrayItem(idx, 'rooms', roomIdx, e.target.value)} placeholder="e.g. Room: Private double room..." className="flex-1 text-sm p-2 border border-gray-200 rounded focus:outline-none focus:border-black" />
+                                <button onClick={() => removePackageArrayItem(idx, 'rooms', roomIdx)} className="text-gray-400 hover:text-red-500 p-2"><IconTrash size={16} /></button>
                               </div>
-                            );
-                          })}
-                          {(!pkg.dates_es || pkg.dates_es.length === 0) && <p className="text-xs text-gray-400 italic text-center py-2">No dates added yet.</p>}
+                            ))}
+                            {(!pkg.rooms || pkg.rooms.length === 0) && <p className="text-xs text-gray-400 italic text-center py-2">No rooms added yet.</p>}
+                          </div>
+                        </div>
+
+                        {/* Rooms ES */}
+                        <div className="bg-white border border-gray-100 rounded-xl p-4 shadow-sm">
+                          <div className="flex justify-between items-center mb-4">
+                            <label className="block text-xs font-bold uppercase tracking-widest text-gray-500">Room Options (ES)</label>
+                            <button onClick={() => addPackageArrayItem(idx, 'rooms_es', '')} className="text-[10px] bg-black text-white px-2 py-1 rounded hover:bg-gray-800 uppercase tracking-widest font-bold">
+                              + Add Room
+                            </button>
+                          </div>
+                          <div className="space-y-2 max-h-60 overflow-y-auto pr-2 custom-scrollbar">
+                            {(pkg.rooms_es || []).map((room, roomIdx) => (
+                              <div key={roomIdx} className="flex items-center gap-2">
+                                <input type="text" value={room} onChange={(e) => updatePackageArrayItem(idx, 'rooms_es', roomIdx, e.target.value)} placeholder="e.g. Habitación: Privada doble..." className="flex-1 text-sm p-2 border border-gray-200 rounded focus:outline-none focus:border-black" />
+                                <button onClick={() => removePackageArrayItem(idx, 'rooms_es', roomIdx)} className="text-gray-400 hover:text-red-500 p-2"><IconTrash size={16} /></button>
+                              </div>
+                            ))}
+                            {(!pkg.rooms_es || pkg.rooms_es.length === 0) && <p className="text-xs text-gray-400 italic text-center py-2">No rooms added yet.</p>}
+                          </div>
+                        </div>
+                      </div>
+
+                      <div className="grid grid-cols-1 xl:grid-cols-2 gap-8">
+                        {/* Inclusions EN */}
+                        <div className="bg-white border border-gray-100 rounded-xl p-4 shadow-sm">
+                          <div className="flex justify-between items-center mb-4">
+                            <label className="block text-xs font-bold uppercase tracking-widest text-gray-500">Included Items (EN)</label>
+                            <button onClick={() => addPackageArrayItem(idx, 'inclusions', '')} className="text-[10px] bg-black text-white px-2 py-1 rounded hover:bg-gray-800 uppercase tracking-widest font-bold">
+                              + Add Item
+                            </button>
+                          </div>
+                          <div className="space-y-2 max-h-60 overflow-y-auto pr-2 custom-scrollbar">
+                            {(pkg.inclusions || []).map((inc, incIdx) => (
+                              <div key={incIdx} className="flex items-start gap-2">
+                                <textarea rows={2} value={inc} onChange={(e) => updatePackageArrayItem(idx, 'inclusions', incIdx, e.target.value)} placeholder="e.g. Daily morning yoga classes" className="flex-1 text-sm p-2 border border-gray-200 rounded focus:outline-none focus:border-black" />
+                                <button onClick={() => removePackageArrayItem(idx, 'inclusions', incIdx)} className="text-gray-400 hover:text-red-500 p-2 mt-1"><IconTrash size={16} /></button>
+                              </div>
+                            ))}
+                            {(!pkg.inclusions || pkg.inclusions.length === 0) && <p className="text-xs text-gray-400 italic text-center py-2">No inclusions added yet.</p>}
+                          </div>
+                        </div>
+
+                        {/* Inclusions ES */}
+                        <div className="bg-white border border-gray-100 rounded-xl p-4 shadow-sm">
+                          <div className="flex justify-between items-center mb-4">
+                            <label className="block text-xs font-bold uppercase tracking-widest text-gray-500">Included Items (ES)</label>
+                            <button onClick={() => addPackageArrayItem(idx, 'inclusions_es', '')} className="text-[10px] bg-black text-white px-2 py-1 rounded hover:bg-gray-800 uppercase tracking-widest font-bold">
+                              + Add Item
+                            </button>
+                          </div>
+                          <div className="space-y-2 max-h-60 overflow-y-auto pr-2 custom-scrollbar">
+                            {(pkg.inclusions_es || []).map((inc, incIdx) => (
+                              <div key={incIdx} className="flex items-start gap-2">
+                                <textarea rows={2} value={inc} onChange={(e) => updatePackageArrayItem(idx, 'inclusions_es', incIdx, e.target.value)} placeholder="e.g. Clases diarias de yoga" className="flex-1 text-sm p-2 border border-gray-200 rounded focus:outline-none focus:border-black" />
+                                <button onClick={() => removePackageArrayItem(idx, 'inclusions_es', incIdx)} className="text-gray-400 hover:text-red-500 p-2 mt-1"><IconTrash size={16} /></button>
+                              </div>
+                            ))}
+                            {(!pkg.inclusions_es || pkg.inclusions_es.length === 0) && <p className="text-xs text-gray-400 italic text-center py-2">No inclusions added yet.</p>}
+                          </div>
                         </div>
                       </div>
                     </div>
-
-                    <div className="grid grid-cols-1 xl:grid-cols-2 gap-8 mb-8">
-                      {/* Rooms EN */}
-                      <div className="bg-white border border-gray-100 rounded-xl p-4 shadow-sm">
-                        <div className="flex justify-between items-center mb-4">
-                          <label className="block text-xs font-bold uppercase tracking-widest text-gray-500">Room Options (EN)</label>
-                          <button onClick={() => addPackageArrayItem(idx, 'rooms', '')} className="text-[10px] bg-black text-white px-2 py-1 rounded hover:bg-gray-800 uppercase tracking-widest font-bold">
-                            + Add Room
-                          </button>
-                        </div>
-                        <div className="space-y-2 max-h-60 overflow-y-auto pr-2 custom-scrollbar">
-                          {(pkg.rooms || []).map((room, roomIdx) => (
-                            <div key={roomIdx} className="flex items-center gap-2">
-                              <input type="text" value={room} onChange={(e) => updatePackageArrayItem(idx, 'rooms', roomIdx, e.target.value)} placeholder="e.g. Room: Private double room..." className="flex-1 text-sm p-2 border border-gray-200 rounded focus:outline-none focus:border-black" />
-                              <button onClick={() => removePackageArrayItem(idx, 'rooms', roomIdx)} className="text-gray-400 hover:text-red-500 p-2"><IconTrash size={16} /></button>
-                            </div>
-                          ))}
-                          {(!pkg.rooms || pkg.rooms.length === 0) && <p className="text-xs text-gray-400 italic text-center py-2">No rooms added yet.</p>}
-                        </div>
-                      </div>
-
-                      {/* Rooms ES */}
-                      <div className="bg-white border border-gray-100 rounded-xl p-4 shadow-sm">
-                        <div className="flex justify-between items-center mb-4">
-                          <label className="block text-xs font-bold uppercase tracking-widest text-gray-500">Room Options (ES)</label>
-                          <button onClick={() => addPackageArrayItem(idx, 'rooms_es', '')} className="text-[10px] bg-black text-white px-2 py-1 rounded hover:bg-gray-800 uppercase tracking-widest font-bold">
-                            + Add Room
-                          </button>
-                        </div>
-                        <div className="space-y-2 max-h-60 overflow-y-auto pr-2 custom-scrollbar">
-                          {(pkg.rooms_es || []).map((room, roomIdx) => (
-                            <div key={roomIdx} className="flex items-center gap-2">
-                              <input type="text" value={room} onChange={(e) => updatePackageArrayItem(idx, 'rooms_es', roomIdx, e.target.value)} placeholder="e.g. Habitación: Privada doble..." className="flex-1 text-sm p-2 border border-gray-200 rounded focus:outline-none focus:border-black" />
-                              <button onClick={() => removePackageArrayItem(idx, 'rooms_es', roomIdx)} className="text-gray-400 hover:text-red-500 p-2"><IconTrash size={16} /></button>
-                            </div>
-                          ))}
-                          {(!pkg.rooms_es || pkg.rooms_es.length === 0) && <p className="text-xs text-gray-400 italic text-center py-2">No rooms added yet.</p>}
-                        </div>
-                      </div>
+                  ))}
+                  
+                  {(!products[activeProductId].content?.packages || products[activeProductId].content.packages.length === 0) && (
+                    <div className="text-center text-sm text-gray-400 italic py-4 border-2 border-dashed border-gray-200 rounded-lg">
+                      No packages added yet. Click "Add Package" to create one.
                     </div>
+                  )}
+                </div>
+              </div>
+            )}
 
-                    <div className="grid grid-cols-1 xl:grid-cols-2 gap-8">
-                      {/* Inclusions EN */}
-                      <div className="bg-white border border-gray-100 rounded-xl p-4 shadow-sm">
-                        <div className="flex justify-between items-center mb-4">
-                          <label className="block text-xs font-bold uppercase tracking-widest text-gray-500">Included Items (EN)</label>
-                          <button onClick={() => addPackageArrayItem(idx, 'inclusions', '')} className="text-[10px] bg-black text-white px-2 py-1 rounded hover:bg-gray-800 uppercase tracking-widest font-bold">
-                            + Add Item
-                          </button>
-                        </div>
-                        <div className="space-y-2 max-h-60 overflow-y-auto pr-2 custom-scrollbar">
-                          {(pkg.inclusions || []).map((inc, incIdx) => (
-                            <div key={incIdx} className="flex items-start gap-2">
-                              <textarea rows={2} value={inc} onChange={(e) => updatePackageArrayItem(idx, 'inclusions', incIdx, e.target.value)} placeholder="e.g. Daily morning yoga classes" className="flex-1 text-sm p-2 border border-gray-200 rounded focus:outline-none focus:border-black" />
-                              <button onClick={() => removePackageArrayItem(idx, 'inclusions', incIdx)} className="text-gray-400 hover:text-red-500 p-2 mt-1"><IconTrash size={16} /></button>
-                            </div>
-                          ))}
-                          {(!pkg.inclusions || pkg.inclusions.length === 0) && <p className="text-xs text-gray-400 italic text-center py-2">No inclusions added yet.</p>}
-                        </div>
-                      </div>
+            {products[activeProductId].type !== 'service' && (
+              <div className="border border-gray-200 rounded-xl p-6 bg-white shadow-sm space-y-6">
+                <h3 className="text-lg font-bold border-b border-gray-100 pb-4 mb-4">Location Section</h3>
+                <div className="grid grid-cols-2 gap-4">
+                  <Input label="Location Title (EN)" value={products[activeProductId].content?.location_title} onChange={(val) => updateContent(activeProductId, 'location_title', val)} />
+                  <Input label="Location Title (ES)" value={products[activeProductId].content?.location_title_es} onChange={(val) => updateContent(activeProductId, 'location_title_es', val)} />
+                </div>
+                <div className="grid grid-cols-2 gap-4">
+                  <Input label="Location Description (EN)" type="textarea" value={products[activeProductId].content?.location_text} onChange={(val) => updateContent(activeProductId, 'location_text', val)} />
+                  <Input label="Location Description (ES)" type="textarea" value={products[activeProductId].content?.location_text_es} onChange={(val) => updateContent(activeProductId, 'location_text_es', val)} />
+                </div>
+                <div className="space-y-4">
+                  {[0, 1, 2].map((i) => (
+                    <ImageUpload 
+                      key={i} 
+                      label={`Location Image ${i+1}`} 
+                      hint="600x800 (Portrait)" 
+                      value={(products[activeProductId].content?.location_images || [])[i]} 
+                      onChange={(val) => {
+                        const newImages = [...(products[activeProductId].content?.location_images || [])];
+                        newImages[i] = val;
+                        updateContent(activeProductId, 'location_images', newImages);
+                      }} 
+                    />
+                  ))}
+                </div>
+              </div>
+            )}
 
-                      {/* Inclusions ES */}
-                      <div className="bg-white border border-gray-100 rounded-xl p-4 shadow-sm">
-                        <div className="flex justify-between items-center mb-4">
-                          <label className="block text-xs font-bold uppercase tracking-widest text-gray-500">Included Items (ES)</label>
-                          <button onClick={() => addPackageArrayItem(idx, 'inclusions_es', '')} className="text-[10px] bg-black text-white px-2 py-1 rounded hover:bg-gray-800 uppercase tracking-widest font-bold">
-                            + Add Item
-                          </button>
-                        </div>
-                        <div className="space-y-2 max-h-60 overflow-y-auto pr-2 custom-scrollbar">
-                          {(pkg.inclusions_es || []).map((inc, incIdx) => (
-                            <div key={incIdx} className="flex items-start gap-2">
-                              <textarea rows={2} value={inc} onChange={(e) => updatePackageArrayItem(idx, 'inclusions_es', incIdx, e.target.value)} placeholder="e.g. Clases diarias de yoga" className="flex-1 text-sm p-2 border border-gray-200 rounded focus:outline-none focus:border-black" />
-                              <button onClick={() => removePackageArrayItem(idx, 'inclusions_es', incIdx)} className="text-gray-400 hover:text-red-500 p-2 mt-1"><IconTrash size={16} /></button>
-                            </div>
-                          ))}
-                          {(!pkg.inclusions_es || pkg.inclusions_es.length === 0) && <p className="text-xs text-gray-400 italic text-center py-2">No inclusions added yet.</p>}
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                ))}
+            {products[activeProductId].type === 'service' && (
+              <div className="border border-gray-200 rounded-xl p-6 bg-white shadow-sm space-y-6">
+                <div className="flex justify-between items-center border-b border-gray-100 pb-4 mb-4">
+                  <h3 className="text-lg font-bold">Service Process (How it Works & Right For You)</h3>
+                  <button onClick={addHowItWorks} className="text-xs bg-black text-white px-3 py-1.5 rounded-full hover:bg-gray-800 transition-colors uppercase tracking-widest font-bold flex items-center gap-1">
+                    <IconPlus size={14} /> Add Step
+                  </button>
+                </div>
                 
-                {(!products[activeProductId].content?.packages || products[activeProductId].content.packages.length === 0) && (
-                  <div className="text-center text-sm text-gray-400 italic py-4 border-2 border-dashed border-gray-200 rounded-lg">
-                    No packages added yet. Click "Add Package" to create one.
-                  </div>
-                )}
-              </div>
-            </div>
+                <h4 className="text-sm font-bold uppercase tracking-widest text-gray-500 mb-2">How Does It Work?</h4>
+                <div className="grid grid-cols-2 gap-4 mb-4">
+                  <Input label="Section Title (EN)" value={products[activeProductId].content?.how_it_works_title} onChange={(val) => updateContent(activeProductId, 'how_it_works_title', val)} />
+                  <Input label="Section Title (ES)" value={products[activeProductId].content?.how_it_works_title_es} onChange={(val) => updateContent(activeProductId, 'how_it_works_title_es', val)} />
+                </div>
+                <div className="space-y-6 mb-8">
+                  {(products[activeProductId].content?.how_it_works || []).map((step, idx) => (
+                    <div key={idx} className="border border-gray-200 rounded-lg p-5 bg-gray-50 relative">
+                      <button 
+                        onClick={() => removeHowItWorks(idx)} 
+                        className="absolute top-4 right-4 text-gray-400 hover:text-red-500 transition-colors"
+                        title="Remove Step"
+                      >
+                        <IconTrash size={18} />
+                      </button>
+                      
+                      <h4 className="text-sm font-bold uppercase tracking-widest mb-4">Step {idx + 1}</h4>
+                      
+                      <div className="grid grid-cols-2 gap-4 mb-4">
+                        <Input label="Title (EN)" value={step.title} onChange={(val) => updateHowItWorks(idx, 'title', val)} />
+                        <Input label="Title (ES)" value={step.title_es} onChange={(val) => updateHowItWorks(idx, 'title_es', val)} />
+                      </div>
+                      
+                      <div className="grid grid-cols-2 gap-4">
+                        <Input label="Description (EN)" type="textarea" value={step.description} onChange={(val) => updateHowItWorks(idx, 'description', val)} />
+                        <Input label="Description (ES)" type="textarea" value={step.description_es} onChange={(val) => updateHowItWorks(idx, 'description_es', val)} />
+                      </div>
+                    </div>
+                  ))}
+                  
+                  {(!products[activeProductId].content?.how_it_works || products[activeProductId].content.how_it_works.length === 0) && (
+                    <div className="text-center text-sm text-gray-400 italic py-4 border-2 border-dashed border-gray-200 rounded-lg">
+                      No steps added yet. Click "Add Step" to create one.
+                    </div>
+                  )}
+                </div>
 
-            <div className="border border-gray-200 rounded-xl p-6 bg-white shadow-sm space-y-6">
-              <h3 className="text-lg font-bold border-b border-gray-100 pb-4 mb-4">Location Section</h3>
-              <div className="grid grid-cols-2 gap-4">
-                <Input label="Location Title (EN)" value={products[activeProductId].content?.location_title} onChange={(val) => updateContent(activeProductId, 'location_title', val)} />
-                <Input label="Location Title (ES)" value={products[activeProductId].content?.location_title_es} onChange={(val) => updateContent(activeProductId, 'location_title_es', val)} />
+                <h4 className="text-sm font-bold uppercase tracking-widest text-gray-500 mb-2 border-t border-gray-100 pt-6">Is This Service Right For You?</h4>
+                <div className="grid grid-cols-2 gap-4 mb-4">
+                  <Input label="Section Title (EN)" value={products[activeProductId].content?.right_for_you_title} onChange={(val) => updateContent(activeProductId, 'right_for_you_title', val)} />
+                  <Input label="Section Title (ES)" value={products[activeProductId].content?.right_for_you_title_es} onChange={(val) => updateContent(activeProductId, 'right_for_you_title_es', val)} />
+                </div>
+                <div className="grid grid-cols-2 gap-4">
+                  <Input label="Content (EN)" type="textarea" value={products[activeProductId].content?.right_for_you} onChange={(val) => updateContent(activeProductId, 'right_for_you', val)} />
+                  <Input label="Content (ES)" type="textarea" value={products[activeProductId].content?.right_for_you_es} onChange={(val) => updateContent(activeProductId, 'right_for_you_es', val)} />
+                </div>
               </div>
-              <div className="grid grid-cols-2 gap-4">
-                <Input label="Location Description (EN)" type="textarea" value={products[activeProductId].content?.location_text} onChange={(val) => updateContent(activeProductId, 'location_text', val)} />
-                <Input label="Location Description (ES)" type="textarea" value={products[activeProductId].content?.location_text_es} onChange={(val) => updateContent(activeProductId, 'location_text_es', val)} />
-              </div>
-              <div className="space-y-4">
-                {[0, 1, 2].map((i) => (
-                  <ImageUpload 
-                    key={i} 
-                    label={`Location Image ${i+1}`} 
-                    hint="600x800 (Portrait)" 
-                    value={(products[activeProductId].content?.location_images || [])[i]} 
-                    onChange={(val) => {
-                      const newImages = [...(products[activeProductId].content?.location_images || [])];
-                      newImages[i] = val;
-                      updateContent(activeProductId, 'location_images', newImages);
-                    }} 
-                  />
-                ))}
-              </div>
-            </div>
+            )}
 
             <div className="border border-gray-200 rounded-xl p-6 bg-white shadow-sm space-y-6">
               <div className="flex justify-between items-center border-b border-gray-100 pb-4 mb-4">
