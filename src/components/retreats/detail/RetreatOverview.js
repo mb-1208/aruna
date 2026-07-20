@@ -31,12 +31,14 @@ export default function RetreatOverview({ title, description, imageUrl }) {
           transition={{ duration: 0.8, delay: 0.2, ease: "easeOut" }}
           className="flex-1 w-full"
         >
-          <div className="relative w-full aspect-[4/3] md:aspect-square lg:aspect-[4/3] overflow-hidden bg-gray-100">
+          <div className="relative w-full overflow-hidden bg-gray-100">
             <Image 
               src={imageUrl || "http://placehold.co/800x600.png"} 
               alt={title || "Retreat Overview"} 
-              fill 
-              className="object-cover transition-transform duration-700 hover:scale-105" 
+              width={1200}
+              height={1200}
+              style={{ width: '100%', height: 'auto' }}
+              className="transition-transform duration-700 hover:scale-105" 
               unoptimized 
             />
           </div>
