@@ -122,7 +122,7 @@ export default function Navbar() {
       >
 
         {/* Left Links & Logo (Desktop) */}
-        <div className="hidden lg:flex flex-1 gap-4 xl:gap-8 items-center text-sm tracking-widest capitalize overflow-hidden">
+        <div className="hidden lg:flex flex-1 gap-2 xl:gap-8 items-center text-[9px] xl:text-[11px] 2xl:text-sm tracking-wide xl:tracking-widest capitalize overflow-visible">
           <Link
             href={`/${currentLang}`}
             onClick={(e) => {
@@ -131,17 +131,17 @@ export default function Navbar() {
                 window.location.href = `/${currentLang}`;
               }
             }}
-            className="flex-shrink-0 mr-2 xl:mr-4"
+            className="flex-shrink-0 mr-2 2xl:mr-4"
           >
-            <Image src={globalContent?.logo_url || logo} alt="Aruna Logo" className="h-16 xl:h-20 2xl:h-24 w-auto object-contain drop-shadow-md" priority unoptimized={!!globalContent?.logo_url} width={180} height={80} />
+            <Image src={globalContent?.logo_url || logo} alt="Aruna Logo" className="h-10 2xl:h-20 w-auto object-contain drop-shadow-md" priority unoptimized={!!globalContent?.logo_url} width={180} height={80} />
           </Link>
-          <div className="flex items-center gap-4 xl:gap-8 flex-nowrap whitespace-nowrap">
+          <div className="flex items-center gap-2 xl:gap-8 flex-nowrap whitespace-nowrap">
             {leftLinks.map(link => renderNavLink(link, false))}
           </div>
         </div>
 
         {/* Center Group: Travel - Retreats (Desktop) */}
-        <div className="hidden lg:flex flex-none items-center gap-8 xl:gap-12 text-sm tracking-widest capitalize mx-4">
+        <div className="hidden lg:flex flex-none items-center gap-4 xl:gap-12 text-[9px] xl:text-[11px] 2xl:text-sm tracking-wide xl:tracking-widest capitalize mx-2 xl:mx-4">
           <Link
             href={`/${currentLang}/travel`}
             onClick={(e) => {
@@ -177,7 +177,7 @@ export default function Navbar() {
         </div>
 
         {/* Right Links & Icons (Desktop) */}
-        <div className="hidden lg:flex flex-1 gap-4 xl:gap-6 items-center text-sm tracking-widest capitalize justify-end overflow-hidden">
+        <div className="hidden lg:flex flex-1 gap-2 xl:gap-6 items-center text-[9px] xl:text-[11px] 2xl:text-sm tracking-wide xl:tracking-widest capitalize justify-end overflow-visible">
           {/* Social Icons */}
           <div className="flex gap-2 xl:gap-3 items-center">
             <a href={socialLinks.whatsapp || "#"} className="hover:opacity-70 transition-opacity" target="_blank" rel="noopener noreferrer"><IconBrandWhatsapp size={18} stroke={1.5} /></a>

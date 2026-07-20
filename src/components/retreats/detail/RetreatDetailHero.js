@@ -1,15 +1,28 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { joinWaitingList, submitInquiry } from "@/app/actions/newsletter";
 import { useLanguage } from "@/contexts/LanguageContext";
-import { IconBrandWhatsapp, IconX } from "@tabler/icons-react";
+import { IconBrandWhatsapp, IconX, IconArrowUp } from "@tabler/icons-react";
 
 export default function RetreatDetailHero({ title, subtitle, date, bgImage, bookNowText, whatsappNumber, isComingSoon, isService, lang = 'en' }) {
   const [email, setEmail] = useState("");
+  const [showFab, setShowFab] = useState(false);
   const [status, setStatus] = useState("idle");
   const [message, setMessage] = useState("");
+
+  useEffect(() => {
+    const handleScroll = () => {
+      if (window.scrollY > 400) {
+        setShowFab(true);
+      } else {
+        setShowFab(false);
+      }
+    };
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
 
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [formData, setFormData] = useState({ name: "", email: "", phone: "" });
@@ -286,6 +299,27 @@ export default function RetreatDetailHero({ title, subtitle, date, bgImage, book
               </div>
             </motion.div>
           </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* Floating Action Button (Scroll to Top / Inquire) */}
+      <AnimatePresence>
+        {showFab && (
+          <motion.button
+            initial={{ opacity: 0, y: 50, scale: 0.9 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            exit={{ opacity: 0, y: 50, scale: 0.9 }}
+            transition={{ duration: 0.3, ease: "easeOut" }}
+            onClick={() => {
+              window.scrollTo({ top: 0, behavior: 'smooth' });
+            }}
+            className="fixed bottom-6 right-6 md:bottom-8 md:right-8 z-[100] bg-brand-dark-brown text-white px-5 py-3 md:px-6 md:py-4 rounded-full shadow-2xl flex items-center gap-3 hover:bg-[#b07023] hover:shadow-3xl transition-all"
+          >
+            <span className="text-[10px] md:text-xs uppercase tracking-widest font-bold">
+              {bookNowText || "Inquire Now"}
+            </span>
+            <IconArrowUp size={16} stroke={2.5} />
+          </motion.button>
         )}
       </AnimatePresence>
     </section>
