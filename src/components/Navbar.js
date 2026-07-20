@@ -122,7 +122,7 @@ export default function Navbar() {
       >
 
         {/* Left Links & Logo (Desktop) */}
-        <div className="hidden lg:flex gap-8 items-center text-sm tracking-widest capitalize w-1/3">
+        <div className="hidden lg:flex flex-1 gap-4 xl:gap-8 items-center text-sm tracking-widest capitalize overflow-hidden">
           <Link
             href={`/${currentLang}`}
             onClick={(e) => {
@@ -131,15 +131,17 @@ export default function Navbar() {
                 window.location.href = `/${currentLang}`;
               }
             }}
-            className="flex-shrink-0 mr-4"
+            className="flex-shrink-0 mr-2 xl:mr-4"
           >
-            <Image src={globalContent?.logo_url || logo} alt="Aruna Logo" className="h-20 2xl:h-24 w-auto object-contain drop-shadow-md" priority unoptimized={!!globalContent?.logo_url} width={180} height={80} />
+            <Image src={globalContent?.logo_url || logo} alt="Aruna Logo" className="h-16 xl:h-20 2xl:h-24 w-auto object-contain drop-shadow-md" priority unoptimized={!!globalContent?.logo_url} width={180} height={80} />
           </Link>
-          {leftLinks.map(link => renderNavLink(link, false))}
+          <div className="flex items-center gap-4 xl:gap-8 flex-nowrap whitespace-nowrap">
+            {leftLinks.map(link => renderNavLink(link, false))}
+          </div>
         </div>
 
         {/* Center Group: Travel - Retreats (Desktop) */}
-        <div className="hidden lg:flex absolute left-1/2 -translate-x-1/2 items-center gap-12 text-sm tracking-widest capitalize">
+        <div className="hidden lg:flex flex-none items-center gap-8 xl:gap-12 text-sm tracking-widest capitalize mx-4">
           <Link
             href={`/${currentLang}/travel`}
             onClick={(e) => {
@@ -170,14 +172,14 @@ export default function Navbar() {
         {/* Mobile Logo (Visible only on Mobile) */}
         <div className="lg:hidden flex items-center">
           <Link href={`/${currentLang}`}>
-            <Image src={globalContent?.logo_url || logo} alt="Aruna Logo" className="h-20 w-auto object-contain drop-shadow-md" priority unoptimized={!!globalContent?.logo_url} width={160} height={80} />
+            <Image src={globalContent?.logo_url || logo} alt="Aruna Logo" className="h-16 w-auto object-contain drop-shadow-md" priority unoptimized={!!globalContent?.logo_url} width={160} height={80} />
           </Link>
         </div>
 
         {/* Right Links & Icons (Desktop) */}
-        <div className="hidden lg:flex gap-6 items-center text-sm tracking-widest capitalize justify-end w-1/3">
+        <div className="hidden lg:flex flex-1 gap-4 xl:gap-6 items-center text-sm tracking-widest capitalize justify-end overflow-hidden">
           {/* Social Icons */}
-          <div className="flex gap-3 items-center">
+          <div className="flex gap-2 xl:gap-3 items-center">
             <a href={socialLinks.whatsapp || "#"} className="hover:opacity-70 transition-opacity" target="_blank" rel="noopener noreferrer"><IconBrandWhatsapp size={18} stroke={1.5} /></a>
             <a href={socialLinks.instagram || "#"} className="hover:opacity-70 transition-opacity" target="_blank" rel="noopener noreferrer"><IconBrandInstagram size={18} stroke={1.5} /></a>
             <a href={socialLinks.tiktok || "#"} className="hover:opacity-70 transition-opacity" target="_blank" rel="noopener noreferrer"><IconBrandTiktok size={18} stroke={1.5} /></a>
