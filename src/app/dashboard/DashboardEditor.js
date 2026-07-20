@@ -242,6 +242,7 @@ export default function DashboardEditor({ initialData }) {
               btn_whatsapp: 'Consultar por WhatsApp'
             }
           },
+          social_links: data.content.social_links || { facebook: '', instagram: '', tiktok: '', whatsapp: '' },
           logo_url: data.content.logo_url || '',
           footer_logo_url: data.content.footer_logo_url || ''
         });
