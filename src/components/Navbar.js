@@ -133,7 +133,7 @@ export default function Navbar() {
             }}
             className="flex-shrink-0 mr-4"
           >
-            <Image src={globalContent?.logo_url || logo} alt="Aruna Logo" className="h-16 w-auto object-contain drop-shadow-md" priority unoptimized={!!globalContent?.logo_url} width={120} height={48} />
+            <Image src={globalContent?.logo_url || logo} alt="Aruna Logo" className="h-20 2xl:h-24 w-auto object-contain drop-shadow-md" priority unoptimized={!!globalContent?.logo_url} width={180} height={80} />
           </Link>
           {leftLinks.map(link => renderNavLink(link, false))}
         </div>
@@ -170,7 +170,7 @@ export default function Navbar() {
         {/* Mobile Logo (Visible only on Mobile) */}
         <div className="lg:hidden flex items-center">
           <Link href={`/${currentLang}`}>
-            <Image src={globalContent?.logo_url || logo} alt="Aruna Logo" className="h-16 w-auto object-contain drop-shadow-md" priority unoptimized={!!globalContent?.logo_url} width={120} height={48} />
+            <Image src={globalContent?.logo_url || logo} alt="Aruna Logo" className="h-20 w-auto object-contain drop-shadow-md" priority unoptimized={!!globalContent?.logo_url} width={160} height={80} />
           </Link>
         </div>
 
