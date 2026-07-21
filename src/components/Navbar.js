@@ -118,11 +118,11 @@ export default function Navbar() {
         initial={{ opacity: 0, y: -20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.8, ease: "easeOut" }}
-        className={`fixed top-0 left-0 right-0 z-[60] flex items-center justify-between px-6 lg:px-8 py-4 lg:py-6 2xl:py-10 text-white font-sans transition-colors duration-300 border-b ${isScrolled ? "bg-[#d18529]/40 backdrop-blur-md border-[#feeedf]/10" : "bg-transparent border-transparent"}`}
+        className={`fixed top-0 left-0 right-0 z-[60] flex items-center justify-between px-4 lg:px-6 2xl:px-8 py-4 lg:py-6 2xl:py-10 text-white font-sans transition-colors duration-300 border-b ${isScrolled ? "bg-[#d18529]/40 backdrop-blur-md border-[#feeedf]/10" : "bg-transparent border-transparent"}`}
       >
 
         {/* Left Links & Logo (Desktop) */}
-        <div className="hidden lg:flex flex-1 gap-2 xl:gap-8 items-center text-[9px] xl:text-[11px] 2xl:text-sm tracking-wide xl:tracking-widest capitalize overflow-visible">
+        <div className="hidden lg:flex flex-1 gap-1 xl:gap-4 2xl:gap-8 items-center text-[8px] xl:text-[12px] 2xl:text-sm tracking-normal xl:tracking-wide 2xl:tracking-widest capitalize overflow-visible">
           <Link
             href={`/${currentLang}`}
             onClick={(e) => {
@@ -131,17 +131,17 @@ export default function Navbar() {
                 window.location.href = `/${currentLang}`;
               }
             }}
-            className="flex-shrink-0 mr-2 2xl:mr-4"
+            className="flex-shrink-0 mr-1 2xl:mr-4"
           >
-            <Image src={globalContent?.logo_url || logo} alt="Aruna Logo" className="h-10 2xl:h-20 w-auto object-contain drop-shadow-md" priority unoptimized={!!globalContent?.logo_url} width={180} height={80} />
+            <Image src={globalContent?.logo_url || logo} alt="Aruna Logo" className="h-10 2xl:h-16 w-auto object-contain drop-shadow-md" priority unoptimized={!!globalContent?.logo_url} width={180} height={80} />
           </Link>
-          <div className="flex items-center gap-2 xl:gap-8 flex-nowrap whitespace-nowrap">
+          <div className="flex items-center gap-1 xl:gap-4 2xl:gap-8 flex-nowrap whitespace-nowrap">
             {leftLinks.map(link => renderNavLink(link, false))}
           </div>
         </div>
 
         {/* Center Group: Travel - Retreats (Desktop) */}
-        <div className="hidden lg:flex flex-none items-center gap-4 xl:gap-12 text-[9px] xl:text-[11px] 2xl:text-sm tracking-wide xl:tracking-widest capitalize mx-2 xl:mx-4">
+        <div className="hidden lg:flex flex-none items-center gap-2 xl:gap-6 2xl:gap-12 text-[8px] xl:text-[12px] 2xl:text-sm tracking-normal xl:tracking-wide 2xl:tracking-widest capitalize mx-1 xl:mx-4">
           <Link
             href={`/${currentLang}/travel`}
             onClick={(e) => {
@@ -177,7 +177,7 @@ export default function Navbar() {
         </div>
 
         {/* Right Links & Icons (Desktop) */}
-        <div className="hidden lg:flex flex-1 gap-2 xl:gap-6 items-center text-[9px] xl:text-[11px] 2xl:text-sm tracking-wide xl:tracking-widest capitalize justify-end overflow-visible">
+        <div className="hidden lg:flex flex-1 gap-1 xl:gap-4 2xl:gap-6 items-center text-[8px] xl:text-[10px] 2xl:text-sm tracking-normal xl:tracking-wide 2xl:tracking-widest capitalize justify-end overflow-visible">
           {/* Social Icons */}
           <div className="flex gap-2 xl:gap-3 items-center">
             <a href={socialLinks.whatsapp || "#"} className="hover:opacity-70 transition-opacity" target="_blank" rel="noopener noreferrer"><IconBrandWhatsapp size={18} stroke={1.5} /></a>
