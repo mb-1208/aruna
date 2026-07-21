@@ -26,9 +26,10 @@ export async function middleware(request) {
   // Now, if it's a dashboard path (either naturally or via rewrite)
   if (url.pathname.startsWith('/dashboard')) {
     // Block direct access if not admin host AND not vercel
-    if (!isAdminHost && !isVercelDomain) {
-      return NextResponse.redirect(new URL('/', request.url));
-    }
+    // Removed restriction to allow /dashboard access from main domain
+    // if (!isAdminHost && !isVercelDomain) {
+    //   return NextResponse.redirect(new URL('/', request.url));
+    // }
 
     // Check auth
     if (!user && url.pathname !== '/dashboard/login' && !url.pathname.startsWith('/api/')) {
