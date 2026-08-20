@@ -58,6 +58,19 @@ export default function RetreatDetailHero({ title, subtitle, date, bgImage, book
     setSubmitMessage(result.message || result.error);
     
     if (result.success) {
+      const isEs = lang === 'es';
+      const itemTitle = title || "Travel Service";
+      const subject = isEs 
+        ? `[Consulta] ${itemTitle} - ${formData.name}` 
+        : `[Inquiry] ${itemTitle} - ${formData.name}`;
+      
+      const body = isEs
+        ? `Hola equipo de Aruna,\n\nMe gustaría solicitar información para ${itemTitle} con los siguientes detalles:\n\n• Nombre: ${formData.name}\n• Correo electrónico: ${formData.email}\n• Teléfono / WhatsApp: ${formData.phone}\n• Servicio: ${itemTitle}\n\n¡Muchas gracias!`
+        : `Hello Aruna Team,\n\nI would like to inquire about ${itemTitle} with the following details:\n\n• Name: ${formData.name}\n• Email: ${formData.email}\n• Phone / WhatsApp: ${formData.phone}\n• Service: ${itemTitle}\n\nThank you!`;
+
+      const mailtoLink = `mailto:hello@arunatravelstudio.com?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+      window.location.href = mailtoLink;
+
       setTimeout(() => {
         setIsModalOpen(false);
         setFormData({ name: "", email: "", phone: "" });
@@ -86,6 +99,19 @@ export default function RetreatDetailHero({ title, subtitle, date, bgImage, book
     setStatus(result.success ? "success" : "error");
     setMessage(result.message || result.error);
     if (result.success) {
+      const isEs = lang === 'es';
+      const itemTitle = title || "Retreat / Service";
+      const subject = isEs 
+        ? `[Lista de Espera] ${itemTitle} - ${email}` 
+        : `[Waiting List] ${itemTitle} - ${email}`;
+      
+      const body = isEs
+        ? `Hola equipo de Aruna,\n\nPor favor agrégame a la lista de espera para ${itemTitle}.\n\n• Correo electrónico: ${email}\n\n¡Muchas gracias!`
+        : `Hello Aruna Team,\n\nPlease add me to the waiting list for ${itemTitle}.\n\n• Email: ${email}\n\nThank you!`;
+
+      const mailtoLink = `mailto:hello@arunatravelstudio.com?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+      window.location.href = mailtoLink;
+
       setTimeout(() => {
         setEmail("");
         setStatus("idle");

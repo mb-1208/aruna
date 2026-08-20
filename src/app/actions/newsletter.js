@@ -108,3 +108,30 @@ export async function submitInquiry(data) {
     return { success: false, error: 'An unexpected error occurred.' };
   }
 }
+
+export async function submitContactForm(data) {
+  try {
+    const supabase = supabaseAdmin;
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!data.email || !emailRegex.test(data.email)) {
+      return { success: false, error: 'Invalid email address.' };
+    }
+    
+    const details = `Name: ${data.name || '-'}, Phone: ${data.phone || '-'}, Subject: ${data.subject || '-'}, Message: ${data.comment || '-'}`;
+    
+    const { error } = await supabase.from('leads').insert([{
+      email: data.email.toLowerCase().trim(),
+      source: 'Contact Form',
+      details: details
+    }]);
+    
+    if (error) {
+      console.error('Error inserting contact lead:', error);
+      return { success: false, error: 'Failed to submit message. Please try again later.' };
+    }
+    return { success: true, message: 'Message submitted successfully!' };
+  } catch (err) {
+    console.error('Contact error:', err);
+    return { success: false, error: 'An unexpected error occurred.' };
+  }
+}

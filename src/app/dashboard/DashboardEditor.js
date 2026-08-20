@@ -1075,7 +1075,7 @@ export default function DashboardEditor({ initialData }) {
                             type="email" 
                             value={globalContent?.footer?.en?.email || ''}
                             onChange={(e) => setGlobalContent({...globalContent, footer: {...globalContent.footer, en: {...(globalContent?.footer?.en || {}), email: e.target.value}}})}
-                            placeholder="hello@aruna.com" 
+                            placeholder="hello@arunatravelstudio.com" 
                             className="w-full border border-gray-200 rounded-lg p-3 text-sm focus:outline-none focus:border-black transition-colors" 
                           />
                         </div>
@@ -1275,7 +1275,7 @@ export default function DashboardEditor({ initialData }) {
                       value={newUser.email}
                       onChange={(e) => setNewUser({...newUser, email: e.target.value})}
                       required
-                      placeholder="jane@aruna.com" 
+                      placeholder="jane@arunatravelstudio.com" 
                       className="w-full border border-gray-200 rounded-lg p-3 text-sm focus:outline-none focus:border-black transition-colors" 
                     />
                   </div>

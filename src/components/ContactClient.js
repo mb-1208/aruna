@@ -3,9 +3,18 @@
 import { useEffect, useState } from "react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
+import { submitContactForm } from "@/app/actions/newsletter";
+import { useLanguage } from "@/contexts/LanguageContext";
 
 export default function ContactClient({ data }) {
+  const { currentLang } = useLanguage();
+  const lang = currentLang || 'en';
+  const isEs = lang === 'es';
+
   const [defaultSubject, setDefaultSubject] = useState("");
+  const [status, setStatus] = useState("idle");
+  const [message, setMessage] = useState("");
+  const [mailtoUrl, setMailtoUrl] = useState("");
 
   useEffect(() => {
     if (typeof window !== "undefined") {
@@ -16,28 +25,45 @@ export default function ContactClient({ data }) {
       }
     }
   }, []);
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    const formData = new FormData(e.target);
-    const name = formData.get("name");
-    const email = formData.get("email");
-    const phone = formData.get("phone");
-    const subject = formData.get("subject");
-    const comment = formData.get("comment");
 
-    const bodyText = `Name: ${name}\nEmail: ${email}\nPhone: ${phone}\n\n${comment}`;
-    const mailtoLink = `mailto:hello@aruna.com?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(bodyText)}`;
-    
-    window.location.href = mailtoLink;
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setStatus("loading");
+    setMessage("");
+
+    const formData = new FormData(e.target);
+    const name = formData.get("name") || "";
+    const email = formData.get("email") || "";
+    const phone = formData.get("phone") || "";
+    const subject = formData.get("subject") || (isEs ? "Consulta de Contacto" : "Contact Inquiry");
+    const comment = formData.get("comment") || "";
+
+    // 1. Save lead to Database
+    const result = await submitContactForm({ name, email, phone, subject, comment });
+    setStatus(result.success ? "success" : "error");
+    setMessage(result.message || result.error);
+
+    if (result.success) {
+      // 2. Generate Mailto Link
+      const bodyText = isEs 
+        ? `Hola equipo de Aruna,\n\n${comment}\n\n• Nombre: ${name}\n• Correo electrónico: ${email}\n• Teléfono: ${phone}`
+        : `Hello Aruna Team,\n\n${comment}\n\n• Name: ${name}\n• Email: ${email}\n• Phone: ${phone}`;
+      
+      const mailtoLink = `mailto:hello@arunatravelstudio.com?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(bodyText)}`;
+      setMailtoUrl(mailtoLink);
+      
+      // 3. Attempt mailto redirect
+      window.location.href = mailtoLink;
+    }
   };
 
   const defaultLabels = {
-    name: "Name",
-    email: "Email",
-    phone: "Phone",
-    subject: "Subject",
-    comment: "Comment",
-    button: "Send Message"
+    name: isEs ? "Nombre" : "Name",
+    email: isEs ? "Correo Electrónico" : "Email",
+    phone: isEs ? "Teléfono" : "Phone",
+    subject: isEs ? "Asunto" : "Subject",
+    comment: isEs ? "Mensaje" : "Comment",
+    button: isEs ? "Enviar Mensaje" : "Send Message"
   };
 
   const labels = { ...defaultLabels, ...(data?.labels || {}) };
@@ -124,13 +150,31 @@ export default function ContactClient({ data }) {
             ></textarea>
           </div>
 
+          {/* Feedback Message */}
+          {message && (
+            <div className={`p-4 rounded-md text-sm ${status === 'success' ? 'bg-green-50 text-green-800 border border-green-200' : 'bg-red-50 text-red-800 border border-red-200'}`}>
+              <p className="font-medium">{message}</p>
+              {status === 'success' && mailtoUrl && (
+                <p className="mt-2 text-xs text-gray-600">
+                  {isEs 
+                    ? "Si tu aplicación de correo no se abrió automáticamente, " 
+                    : "If your email app did not open automatically, "}
+                  <a href={mailtoUrl} className="underline font-bold text-black hover:text-gray-700">
+                    {isEs ? "haz clic aquí para enviar el correo directamente." : "click here to open your email."}
+                  </a>
+                </p>
+              )}
+            </div>
+          )}
+
           {/* Submit Button */}
-          <div className="pt-4">
+          <div className="pt-2">
             <button 
               type="submit" 
-              className="bg-black text-white px-10 py-3 text-sm tracking-wide hover:bg-gray-800 transition-colors"
+              disabled={status === 'loading'}
+              className="bg-black text-white px-10 py-3 text-sm tracking-wide hover:bg-gray-800 transition-colors disabled:opacity-50"
             >
-              {labels.button}
+              {status === 'loading' ? (isEs ? "Enviando..." : "Sending...") : labels.button}
             </button>
           </div>
         </form>

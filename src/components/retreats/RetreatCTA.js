@@ -3,8 +3,10 @@
 import { motion } from "framer-motion";
 import { useState } from "react";
 import { subscribeEmail } from "@/app/actions/newsletter";
+import { useLanguage } from "@/contexts/LanguageContext";
 
 export default function RetreatCTA({ title, text, image, boxTitle, emailLabel, buttonText, source = "Retreats CTA" }) {
+  const { currentLang } = useLanguage();
   const [email, setEmail] = useState("");
   const [status, setStatus] = useState("idle");
   const [message, setMessage] = useState("");
@@ -21,6 +23,14 @@ export default function RetreatCTA({ title, text, image, boxTitle, emailLabel, b
     setMessage(result.message || result.error);
     
     if (result.success) {
+      const isEs = currentLang === 'es';
+      const subject = isEs ? `[Suscripción al Boletín] ${email}` : `[Newsletter Subscription] ${email}`;
+      const body = isEs 
+        ? `Hola equipo de Aruna,\n\nMe gustaría suscribirme al boletín informativo de Aruna.\n\n• Correo electrónico: ${email}\n• Fuente: ${source}\n\n¡Muchas gracias!`
+        : `Hello Aruna Team,\n\nI would like to subscribe to the Aruna newsletter.\n\n• Email: ${email}\n• Source: ${source}\n\nThank you!`;
+      const mailtoLink = `mailto:hello@arunatravelstudio.com?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+      window.location.href = mailtoLink;
+
       setTimeout(() => {
         setEmail("");
         setStatus("idle");

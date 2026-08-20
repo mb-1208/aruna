@@ -31,6 +31,14 @@ export default function Footer() {
     setStatus(result.success ? "success" : "error");
     setMessage(result.message || result.error);
     if (result.success) {
+      const isEs = lang === 'es';
+      const subject = isEs ? `[Suscripción al Boletín] ${email}` : `[Newsletter Subscription] ${email}`;
+      const body = isEs 
+        ? `Hola equipo de Aruna,\n\nMe gustaría suscribirme al boletín informativo de Aruna.\n\n• Correo electrónico: ${email}\n\n¡Muchas gracias!`
+        : `Hello Aruna Team,\n\nI would like to subscribe to the Aruna newsletter.\n\n• Email: ${email}\n\nThank you!`;
+      const mailtoLink = `mailto:hello@arunatravelstudio.com?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+      window.location.href = mailtoLink;
+
       setTimeout(() => {
         setEmail("");
         setStatus("idle");
@@ -53,7 +61,7 @@ export default function Footer() {
   const foot = globalContent?.footer?.[lang] || {
     description: "Aruna brings you to exotic destinations with a personal, refined touch.",
     phone: "+62 851 2222 3333",
-    email: "hello@aruna.com",
+    email: "hello@arunatravelstudio.com",
     company_title: "The Company",
     newsletter_title: "Stay Connected",
     newsletter_desc: "Join our newsletter for exclusive travel tips and early access to our curated retreats.",

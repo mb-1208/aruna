@@ -53,6 +53,21 @@ export default function RetreatPricing({ title, subtitle, packages, englishPacka
     setSubmitMessage(result.message || result.error);
     
     if (result.success) {
+      const isEs = lang === 'es';
+      const title = retreatTitle || englishTitle || "Retreat";
+      const chosenDate = inquiryDate || inquiryDateEn || "-";
+      
+      const subject = isEs 
+        ? `[Consulta] ${title} - ${formData.name}` 
+        : `[Inquiry] ${title} - ${formData.name}`;
+      
+      const body = isEs
+        ? `Hola equipo de Aruna,\n\nMe gustaría consultar disponibilidad con los siguientes detalles:\n\n• Nombre: ${formData.name}\n• Correo electrónico: ${formData.email}\n• Teléfono / WhatsApp: ${formData.phone}\n• Retiro: ${title}\n• Fechas: ${chosenDate}\n\n¡Muchas gracias!`
+        : `Hello Aruna Team,\n\nI would like to inquire about availability with the following details:\n\n• Name: ${formData.name}\n• Email: ${formData.email}\n• Phone / WhatsApp: ${formData.phone}\n• Retreat: ${title}\n• Dates: ${chosenDate}\n\nThank you!`;
+      
+      const mailtoLink = `mailto:hello@arunatravelstudio.com?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+      window.location.href = mailtoLink;
+
       setTimeout(() => {
         setIsModalOpen(false);
         setFormData({ name: "", email: "", phone: "" });
