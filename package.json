@@ -21,6 +21,7 @@
     "react": "19.2.4",
     "react-dom": "19.2.4",
     "react-simple-wysiwyg": "^3.4.1",
+    "resend": "^6.24.0",
     "swiper": "^14.0.1"
   },
   "devDependencies": {

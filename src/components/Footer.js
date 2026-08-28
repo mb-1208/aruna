@@ -31,19 +31,11 @@ export default function Footer() {
     setStatus(result.success ? "success" : "error");
     setMessage(result.message || result.error);
     if (result.success) {
-      const isEs = lang === 'es';
-      const subject = isEs ? `[Suscripción al Boletín] ${email}` : `[Newsletter Subscription] ${email}`;
-      const body = isEs 
-        ? `Hola equipo de Aruna,\n\nMe gustaría suscribirme al boletín informativo de Aruna.\n\n• Correo electrónico: ${email}\n\n¡Muchas gracias!`
-        : `Hello Aruna Team,\n\nI would like to subscribe to the Aruna newsletter.\n\n• Email: ${email}\n\nThank you!`;
-      const mailtoLink = `mailto:hello@arunatravelstudio.com?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
-      window.location.href = mailtoLink;
-
       setTimeout(() => {
         setEmail("");
         setStatus("idle");
         setMessage("");
-      }, 5000);
+      }, 4000);
     }
   };
 
@@ -85,25 +77,49 @@ export default function Footer() {
             {foot.description}
           </p>
           <div className="pl-2 flex gap-4 items-center mb-8">
-            <a href={socialLinks.whatsapp || "#"} className="text-white/90 hover:text-white transition-colors" target="_blank" rel="noopener noreferrer">
-              <IconBrandWhatsapp size={20} stroke={1.5} />
-            </a>
-            <a href={socialLinks.instagram || "#"} className="text-white/90 hover:text-white transition-colors" target="_blank" rel="noopener noreferrer">
-              <IconBrandInstagram size={20} stroke={1.5} />
-            </a>
-            <a href={socialLinks.tiktok || "#"} className="text-white/90 hover:text-white transition-colors" target="_blank" rel="noopener noreferrer">
-              <IconBrandTiktok size={20} stroke={1.5} />
-            </a>
-            <a href={socialLinks.facebook || "#"} className="text-white/90 hover:text-white transition-colors" target="_blank" rel="noopener noreferrer">
-              <IconBrandFacebook size={20} stroke={1.5} />
-            </a>
+            {socialLinks.whatsapp && (
+              <a 
+                href={socialLinks.whatsapp.startsWith('http') ? socialLinks.whatsapp : `https://wa.me/${socialLinks.whatsapp.replace(/[^0-9]/g, '')}`} 
+                className="text-white/90 hover:text-white transition-colors" 
+                target="_blank" 
+                rel="noopener noreferrer"
+                aria-label="WhatsApp"
+              >
+                <IconBrandWhatsapp size={20} stroke={1.5} />
+              </a>
+            )}
+            {socialLinks.instagram && (
+              <a href={socialLinks.instagram} className="text-white/90 hover:text-white transition-colors" target="_blank" rel="noopener noreferrer" aria-label="Instagram">
+                <IconBrandInstagram size={20} stroke={1.5} />
+              </a>
+            )}
+            {socialLinks.tiktok && (
+              <a href={socialLinks.tiktok} className="text-white/90 hover:text-white transition-colors" target="_blank" rel="noopener noreferrer" aria-label="TikTok">
+                <IconBrandTiktok size={20} stroke={1.5} />
+              </a>
+            )}
+            {socialLinks.facebook && (
+              <a href={socialLinks.facebook} className="text-white/90 hover:text-white transition-colors" target="_blank" rel="noopener noreferrer" aria-label="Facebook">
+                <IconBrandFacebook size={20} stroke={1.5} />
+              </a>
+            )}
           </div>
-          <p className="pl-2 text-white/90 text-lg">
-            {foot.phone}
-          </p>
-          <p className="pl-2 text-white/90 text-lg">
-            {foot.email}
-          </p>
+          {foot.phone && (
+            <a 
+              href={`tel:${foot.phone.replace(/[^0-9+]/g, '')}`} 
+              className="pl-2 text-white/90 text-lg hover:text-white transition-colors block mb-1"
+            >
+              {foot.phone}
+            </a>
+          )}
+          {foot.email && (
+            <a 
+              href={`mailto:${foot.email}`} 
+              className="pl-2 text-white/90 text-lg hover:text-white transition-colors block"
+            >
+              {foot.email}
+            </a>
+          )}
         </div>
 
         {/* Column 2: The Company */}

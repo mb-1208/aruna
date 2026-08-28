@@ -23,19 +23,11 @@ export default function RetreatCTA({ title, text, image, boxTitle, emailLabel, b
     setMessage(result.message || result.error);
     
     if (result.success) {
-      const isEs = currentLang === 'es';
-      const subject = isEs ? `[Suscripción al Boletín] ${email}` : `[Newsletter Subscription] ${email}`;
-      const body = isEs 
-        ? `Hola equipo de Aruna,\n\nMe gustaría suscribirme al boletín informativo de Aruna.\n\n• Correo electrónico: ${email}\n• Fuente: ${source}\n\n¡Muchas gracias!`
-        : `Hello Aruna Team,\n\nI would like to subscribe to the Aruna newsletter.\n\n• Email: ${email}\n• Source: ${source}\n\nThank you!`;
-      const mailtoLink = `mailto:hello@arunatravelstudio.com?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
-      window.location.href = mailtoLink;
-
       setTimeout(() => {
         setEmail("");
         setStatus("idle");
         setMessage("");
-      }, 5000);
+      }, 4000);
     }
   };
 
@@ -44,7 +36,7 @@ export default function RetreatCTA({ title, text, image, boxTitle, emailLabel, b
       {/* Background Image */}
       <div
         className="absolute inset-0 bg-cover bg-center"
-        style={{ backgroundImage: `url("${image || 'http://placehold.co/1920x800.png'}")` }}
+        style={{ backgroundImage: `url("${image || 'https://placehold.co/1920x800.png'}")` }}
       />
       {/* Dark Overlay */}
       <div className="absolute inset-0 bg-black/30" />

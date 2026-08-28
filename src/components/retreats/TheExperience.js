@@ -12,7 +12,7 @@ export default function TheExperience({ subtitle, title, destinations, currentLa
   const defaultExperiences = [
     {
       id: 1,
-      image_url: "http://placehold.co/800x800.png",
+      image_url: "https://placehold.co/800x800.png",
       title: "Destination 1",
       date: "Aug 15 - Aug 20, 2026",
       description: "Immerse yourself in lush greenery and find inner peace with daily yoga and meditation sessions.",
@@ -20,7 +20,7 @@ export default function TheExperience({ subtitle, title, destinations, currentLa
     },
     {
       id: 2,
-      image_url: "http://placehold.co/800x800.png",
+      image_url: "https://placehold.co/800x800.png",
       title: "Destination 2",
       date: "Sep 01 - Sep 07, 2026",
       description: "A vibrant blend of wellness and surf culture, perfect for the energetic and adventurous soul.",
@@ -28,7 +28,7 @@ export default function TheExperience({ subtitle, title, destinations, currentLa
     },
     {
       id: 3,
-      image_url: "http://placehold.co/800x800.png",
+      image_url: "https://placehold.co/800x800.png",
       title: "Destination 3",
       date: "Oct 10 - Oct 15, 2026",
       description: "Disconnect from the world and rejuvenate on this pristine island with crystal clear waters.",
@@ -36,7 +36,7 @@ export default function TheExperience({ subtitle, title, destinations, currentLa
     },
     {
       id: 4,
-      image_url: "http://placehold.co/800x800.png",
+      image_url: "https://placehold.co/800x800.png",
       title: "Destination 4",
       date: "Nov 05 - Nov 12, 2026",
       description: "Experience untamed beauty and cultural richness while restoring your body and mind.",
@@ -137,7 +137,7 @@ export default function TheExperience({ subtitle, title, destinations, currentLa
                 {/* Image Container */}
                 <div className="relative w-full aspect-square mb-6 overflow-hidden bg-gray-100 pointer-events-none">
                   <Image
-                    src={exp.image_url || "http://placehold.co/800x800.png"}
+                    src={exp.image_url || "https://placehold.co/800x800.png"}
                     alt={exp.title}
                     fill
                     className="object-cover transition-transform duration-700 group-hover:scale-105"

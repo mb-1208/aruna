@@ -13,10 +13,10 @@ export default function HomeClient({ content }) {
   const logoImage = globalContent?.logo_url;
   const travelTitle = langContent.travelTitle || content.travelTitle || "Travel";
   const travelButton = langContent.travelButton || content.travelButton || "View";
-  const travelImage = content.travelImage || "http://placehold.co/1080x1080.png";
+  const travelImage = content.travelImage || "https://placehold.co/1080x1080.png";
   const retreatsTitle = langContent.retreatsTitle || content.retreatsTitle || "Retreats";
   const retreatsButton = langContent.retreatsButton || content.retreatsButton || "View";
-  const retreatsImage = content.retreatsImage || "http://placehold.co/1080x1080/444444/FFFFFF.png";
+  const retreatsImage = content.retreatsImage || "https://placehold.co/1080x1080/444444/FFFFFF.png";
 
   return (
     <div className="relative h-screen w-full flex flex-col md:flex-row overflow-hidden font-sans">

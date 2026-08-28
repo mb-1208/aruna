@@ -1,6 +1,7 @@
 "use server";
 
 import { supabaseAdmin } from "@/lib/supabaseAdmin";
+import { sendInquiryEmail, sendContactEmail, sendWaitingListEmail, sendNewsletterSubscriberEmail } from "@/lib/email";
 
 export async function subscribeEmail(email, source = "Unknown", details = "") {
   try {
@@ -29,6 +30,13 @@ export async function subscribeEmail(email, source = "Unknown", details = "") {
          return { success: true, message: "You are already subscribed!" };
       }
       return { success: false, error: "Failed to subscribe. Please try again later." };
+    }
+
+    // Trigger automated email notification to admin inbox
+    try {
+      await sendNewsletterSubscriberEmail({ email, source, details });
+    } catch (mailErr) {
+      console.error("Failed to send subscriber notification email:", mailErr);
     }
 
     return { success: true, message: "Thank you for subscribing!" };
@@ -63,6 +71,13 @@ export async function joinWaitingList(email, productTitle) {
          return { success: true, message: "You are already on the waiting list!" };
       }
       return { success: false, error: "Failed to join waiting list. Please try again later." };
+    }
+
+    // Trigger automated email notification in background
+    try {
+      await sendWaitingListEmail({ email, productTitle });
+    } catch (mailErr) {
+      console.error("Failed to send waiting list notification email:", mailErr);
     }
 
     return { success: true, message: "Thank you for joining the waiting list!" };
@@ -102,6 +117,21 @@ export async function submitInquiry(data) {
       console.error('Error inserting lead:', error);
       return { success: false, error: 'Failed to submit inquiry. Please try again later.' };
     }
+
+    // Trigger automated email notification to admin inbox
+    try {
+      await sendInquiryEmail({
+        name: data.name,
+        email: data.email,
+        phone: data.phone,
+        retreatTitle: data.retreatTitle,
+        dateStr: data.dateStr,
+        isService: data.isService
+      });
+    } catch (mailErr) {
+      console.error("Failed to send inquiry notification email:", mailErr);
+    }
+
     return { success: true, message: 'Inquiry submitted successfully!' };
   } catch (err) {
     console.error('Inquiry error:', err);
@@ -129,6 +159,20 @@ export async function submitContactForm(data) {
       console.error('Error inserting contact lead:', error);
       return { success: false, error: 'Failed to submit message. Please try again later.' };
     }
+
+    // Trigger automated email notification to admin inbox
+    try {
+      await sendContactEmail({
+        name: data.name,
+        email: data.email,
+        phone: data.phone,
+        subject: data.subject,
+        message: data.comment
+      });
+    } catch (mailErr) {
+      console.error("Failed to send contact notification email:", mailErr);
+    }
+
     return { success: true, message: 'Message submitted successfully!' };
   } catch (err) {
     console.error('Contact error:', err);

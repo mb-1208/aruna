@@ -5,9 +5,9 @@ import { motion } from "framer-motion";
 
 export default function RetreatLocation({ title, text, images }) {
   const locationImages = [
-    "http://placehold.co/600x800.png",
-    "http://placehold.co/600x800.png",
-    "http://placehold.co/600x800.png"
+    "https://placehold.co/600x800.png",
+    "https://placehold.co/600x800.png",
+    "https://placehold.co/600x800.png"
   ];
   const displayImages = (images && images.length > 0) ? images : locationImages;
 

@@ -18,7 +18,7 @@ export default function ServicesGallery({ data, fallbackData, currentLang }) {
         id: srv.id || index,
         title: title || "Service",
         subtitle: lang === 'es' ? "Hablemos de tu viaje" : "Let's Plan Your Journey",
-        image: content.cover_image || content.hero_image || "http://placehold.co/600x800.png",
+        image: content.cover_image || content.hero_image || "https://placehold.co/600x800.png",
         link: `/${lang}/services/${srv.slug}`,
       };
     }
@@ -28,7 +28,7 @@ export default function ServicesGallery({ data, fallbackData, currentLang }) {
       id: srv.id || index,
       title: srv.title || "Service",
       subtitle: srv.subtitle || (lang === 'es' ? "Hablemos de tu viaje" : "Let's Plan Your Journey"),
-      image: srv.image || "http://placehold.co/600x800.png",
+      image: srv.image || "https://placehold.co/600x800.png",
       link: srv.link || "#",
     };
   });

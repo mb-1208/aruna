@@ -71,9 +71,9 @@ export default function RetreatsEditorForm({ content, setContent }) {
   
   const updateMosaic = (index, value) => {
     const newMosaic = [...(content.mosaicImages || [
-      "http://placehold.co/800x800.png", "http://placehold.co/800x800.png", 
-      "http://placehold.co/800x800.png", "http://placehold.co/800x800.png", 
-      "http://placehold.co/800x800.png", "http://placehold.co/800x800.png"
+      "https://placehold.co/800x800.png", "https://placehold.co/800x800.png", 
+      "https://placehold.co/800x800.png", "https://placehold.co/800x800.png", 
+      "https://placehold.co/800x800.png", "https://placehold.co/800x800.png"
     ])];
     newMosaic[index] = value;
     updateContent('mosaicImages', newMosaic);

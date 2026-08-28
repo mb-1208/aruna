@@ -11,7 +11,7 @@ export default function CTA({ title, text, buttonText, image }) {
       {/* Background Image */}
       <div
         className="absolute inset-0 bg-cover bg-center"
-        style={{ backgroundImage: `url("${image || 'http://placehold.co/1920x800.png'}")` }}
+        style={{ backgroundImage: `url("${image || 'https://placehold.co/1920x800.png'}")` }}
       />
       {/* Dark Overlay */}
       <div className="absolute inset-0 bg-black/40" />

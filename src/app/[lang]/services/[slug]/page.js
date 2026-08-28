@@ -26,18 +26,48 @@ export async function generateMetadata({ params }) {
 
 const detailFaqs = {
   en: [
-    { question: "What should I bring to the retreat?", answer: "We recommend bringing comfortable, loose-fitting clothing for yoga and meditation, a swimsuit, walking shoes, a reusable water bottle, and any personal toiletries. A detailed packing list will be provided upon booking." },
-    { question: "Is there WiFi available at the venue?", answer: "Yes, complimentary WiFi is available in common areas. However, to encourage a true digital detox, we recommend limiting screen time to fully immerse yourself in the experience." },
-    { question: "How do I get to the retreat location?", answer: "Roundtrip airport transfers are included in most of our packages. Our concierge team will coordinate your pickup based on your flight details." },
-    { question: "Can I attend the retreat solo?", answer: "Absolutely! Many of our guests travel solo. It's a wonderful opportunity to connect with like-minded individuals in a safe and welcoming environment." },
-    { question: "Is there an age requirement?", answer: "Guests must be at least 18 years old to attend our standard retreats. For family or specialized youth retreats, please check the specific program details." }
+    { 
+      question: "How does the bespoke travel planning process work?", 
+      answer: "We begin with a personal consultation to understand your travel style, preferences, and pace. From there, we curate a tailor-made day-by-day itinerary including private accommodations, authentic cultural encounters, and seamless logistics." 
+    },
+    { 
+      question: "Can I customize the destinations, accommodations, and activities?", 
+      answer: "Yes, absolutely. Every aspect of your journey is crafted specifically for you. Whether you desire luxury villas, wellness sanctuaries, hidden temples, or private culinary tastings, we adapt every detail to your vision." 
+    },
+    { 
+      question: "How far in advance should I book my travel service?", 
+      answer: "We recommend reaching out at least 4 to 8 weeks prior to your intended arrival, especially during peak travel seasons in Bali, to ensure priority availability for premier villas, private guides, and exclusive experiences." 
+    },
+    { 
+      question: "Do you provide on-ground concierge support during our trip?", 
+      answer: "Yes, our dedicated team is available throughout your stay to assist with reservations, schedule adjustments, private chauffeurs, and real-time recommendations." 
+    },
+    { 
+      question: "Can you arrange trips for couples, families, or private groups?", 
+      answer: "Certainly! We design bespoke travel itineraries for solo travelers, couples seeking romantic escapes, families requiring child-friendly activities, and private groups traveling together." 
+    }
   ],
   es: [
-    { question: "¿Qué debo llevar al retiro?", answer: "Recomendamos traer ropa cómoda y holgada para yoga y meditación, traje de baño, zapatos para caminar, una botella de agua reutilizable y artículos de aseo personal. Se proporcionará una lista de empaque detallada al reservar." },
-    { question: "¿Hay WiFi disponible en el lugar?", answer: "Sí, hay WiFi gratuito disponible en las áreas comunes. Sin embargo, para fomentar una verdadera desintoxicación digital, recomendamos limitar el tiempo de pantalla." },
-    { question: "¿Cómo llego a la ubicación del retiro?", answer: "Los traslados de ida y vuelta al aeropuerto están incluidos en la mayoría de nuestros paquetes. Nuestro equipo de conserjería coordinará su recogida según los detalles de su vuelo." },
-    { question: "¿Puedo asistir al retiro solo?", answer: "¡Absolutamente! Muchos de nuestros invitados viajan solos. Es una oportunidad maravillosa para conectar con personas afines en un ambiente seguro y acogedor." },
-    { question: "¿Hay algún requisito de edad?", answer: "Los huéspedes deben tener al menos 18 años para asistir a nuestros retiros estándar. Para retiros familiares o juveniles especializados, consulte los detalles específicos del programa." }
+    { 
+      question: "¿Cómo funciona el proceso de planificación de viajes a medida?", 
+      answer: "Comenzamos con una consulta personalizada para conocer tu estilo de viaje, preferencias y ritmo. A partir de allí, creamos un itinerario a medida día por día con alojamientos privados, encuentros culturales auténticos y logística impecable." 
+    },
+    { 
+      question: "¿Puedo personalizar los destinos, alojamientos y actividades?", 
+      answer: "Sí, absolutamente. Cada detalle de tu viaje se diseña exclusivamente para ti. Ya sea que busques villas de lujo, santuarios de bienestar, templos ocultos o experiencias gastronómicas privadas, adaptamos todo a tus deseos." 
+    },
+    { 
+      question: "¿Con cuánta anticipación debo reservar el servicio de viaje?", 
+      answer: "Recomendamos contactarnos con al menos 4 a 8 semanas de anticipación, especialmente en temporadas altas en Bali, para garantizar disponibilidad en las mejores villas, guías privados y experiencias exclusivas." 
+    },
+    { 
+      question: "¿Ofrecen asistencia de conserjería durante el viaje?", 
+      answer: "Sí, nuestro equipo local está disponible durante toda tu estancia para ayudarte con reservas, ajustes de itinerario, transporte privado y recomendaciones en tiempo real." 
+    },
+    { 
+      question: "¿Organizan viajes para parejas, familias o grupos privados?", 
+      answer: "¡Por supuesto! Diseñamos viajes personalizados para viajeros solos, parejas que buscan escapadas románticas, familias y grupos privados." 
+    }
   ]
 };
 
@@ -128,7 +158,7 @@ export default async function ServiceDetailPage({ params }) {
         title={displayTitle}
         subtitle={pricingSubtitle}
         date={displayDate}
-        bgImage={content.hero_image || "http://placehold.co/1920x1080.png"}
+        bgImage={content.hero_image || "https://placehold.co/1920x1080.png"}
         bookNowText={heroBookButton}
         whatsappNumber={content.whatsapp_number}
         isComingSoon={content.status === 'coming_soon'}
@@ -140,7 +170,7 @@ export default async function ServiceDetailPage({ params }) {
       <RetreatOverview 
         title={overviewTitle}
         description={overview || displayDescription}
-        imageUrl={content.overview_image || "http://placehold.co/800x600.png"}
+        imageUrl={content.overview_image || "https://placehold.co/800x600.png"}
       />
 
       {content.status !== 'coming_soon' && (

@@ -2,8 +2,32 @@
 
 import { supabaseAdmin } from "@/lib/supabaseAdmin";
 import { revalidatePath } from "next/cache";
+import { createServerClient } from "@supabase/ssr";
+import { cookies } from "next/headers";
+
+async function verifyAdminAuth() {
+  const cookieStore = await cookies();
+  const supabase = createServerClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL,
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY,
+    {
+      cookies: {
+        get(name) {
+          return cookieStore.get(name)?.value;
+        },
+      },
+    }
+  );
+
+  const { data: { user }, error } = await supabase.auth.getUser();
+  if (error || !user) {
+    throw new Error("Unauthorized: Admin access required");
+  }
+  return user;
+}
 
 export async function saveSiteContent(id, content) {
+  await verifyAdminAuth();
   const { error } = await supabaseAdmin.from('site_content').upsert({ id, content });
   if (error) throw new Error(error.message);
   
@@ -22,12 +46,14 @@ export async function saveSiteContent(id, content) {
 }
 
 export async function fetchLeads() {
+  await verifyAdminAuth();
   const { data, error } = await supabaseAdmin.from('leads').select('*').order('created_at', { ascending: false });
   if (error) throw new Error(error.message);
   return data || [];
 }
 
 export async function saveProducts(products) {
+  await verifyAdminAuth();
   for (const prod of products) {
     if (prod.id) {
       // Update existing
@@ -74,6 +100,7 @@ export async function saveProducts(products) {
 }
 
 export async function deleteProduct(id) {
+  await verifyAdminAuth();
   const { error } = await supabaseAdmin.from('products').delete().eq('id', id);
   if (error) throw new Error(error.message);
   revalidatePath('/en/retreats');
@@ -84,6 +111,7 @@ export async function deleteProduct(id) {
 }
 
 export async function saveReviews(reviews) {
+  await verifyAdminAuth();
   const upsertData = reviews.map(r => ({
     id: r.id,
     category: r.category,

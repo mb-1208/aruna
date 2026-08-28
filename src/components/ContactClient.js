@@ -38,22 +38,26 @@ export default function ContactClient({ data }) {
     const subject = formData.get("subject") || (isEs ? "Consulta de Contacto" : "Contact Inquiry");
     const comment = formData.get("comment") || "";
 
-    // 1. Save lead to Database
+    // 1. Save lead to Database and send Resend email notification
     const result = await submitContactForm({ name, email, phone, subject, comment });
     setStatus(result.success ? "success" : "error");
-    setMessage(result.message || result.error);
 
     if (result.success) {
-      // 2. Generate Mailto Link
+      setMessage(
+        isEs
+          ? "¡Gracias! Tu mensaje ha sido enviado con éxito. Nuestro equipo se pondrá en contacto contigo a la brevedad."
+          : "Thank you! Your message has been sent successfully. Our team will get back to you shortly."
+      );
+      
       const bodyText = isEs 
         ? `Hola equipo de Aruna,\n\n${comment}\n\n• Nombre: ${name}\n• Correo electrónico: ${email}\n• Teléfono: ${phone}`
         : `Hello Aruna Team,\n\n${comment}\n\n• Name: ${name}\n• Email: ${email}\n• Phone: ${phone}`;
       
       const mailtoLink = `mailto:hello@arunatravelstudio.com?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(bodyText)}`;
       setMailtoUrl(mailtoLink);
-      
-      // 3. Attempt mailto redirect
-      window.location.href = mailtoLink;
+      e.target.reset();
+    } else {
+      setMessage(result.error || (isEs ? "Error al enviar el mensaje." : "Failed to send message."));
     }
   };
 
@@ -77,7 +81,7 @@ export default function ContactClient({ data }) {
         {/* Background Image */}
         <div
           className="absolute inset-0 bg-cover bg-center"
-          style={{ backgroundImage: `url("${data?.heroImage || 'http://placehold.co/1920x800.png'}")` }}
+          style={{ backgroundImage: `url("${data?.heroImage || 'https://placehold.co/1920x800.png'}")` }}
         />
         {/* Dark Overlay */}
         <div className="absolute inset-0 bg-black/20" />
@@ -157,10 +161,10 @@ export default function ContactClient({ data }) {
               {status === 'success' && mailtoUrl && (
                 <p className="mt-2 text-xs text-gray-600">
                   {isEs 
-                    ? "Si tu aplicación de correo no se abrió automáticamente, " 
-                    : "If your email app did not open automatically, "}
+                    ? "¿Prefieres enviar una copia directamente desde tu app de correo? " 
+                    : "Prefer to also send a copy directly from your email app? "}
                   <a href={mailtoUrl} className="underline font-bold text-black hover:text-gray-700">
-                    {isEs ? "haz clic aquí para enviar el correo directamente." : "click here to open your email."}
+                    {isEs ? "haz clic aquí para abrir un borrador." : "click here to open an email draft."}
                   </a>
                 </p>
               )}

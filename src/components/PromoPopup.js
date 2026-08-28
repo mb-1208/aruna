@@ -31,14 +31,6 @@ export default function PromoPopup() {
     setStatus(result.success ? "success" : "error");
     setMessage(result.message || result.error);
     if (result.success) {
-      const isEs = lang === 'es';
-      const subject = isEs ? `[Suscripción al Boletín] ${email}` : `[Newsletter Subscription] ${email}`;
-      const body = isEs 
-        ? `Hola equipo de Aruna,\n\nMe gustaría suscribirme para recibir noticias y ofertas de Aruna.\n\n• Correo electrónico: ${email}\n\n¡Muchas gracias!`
-        : `Hello Aruna Team,\n\nI would like to subscribe to receive news and offers from Aruna.\n\n• Email: ${email}\n\nThank you!`;
-      const mailtoLink = `mailto:hello@arunatravelstudio.com?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
-      window.location.href = mailtoLink;
-
       setTimeout(() => {
         setIsVisible(false);
       }, 3000);

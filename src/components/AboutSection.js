@@ -34,7 +34,7 @@ export default function AboutSection({ subtitle, title, text, quote, image }) {
       >
         <div className="relative aspect-[3/4] w-full max-w-[600px] overflow-hidden">
           <Image
-            src={image || "http://placehold.co/800x1200.png"}
+            src={image || "https://placehold.co/800x1200.png"}
             alt="About Aruna"
             fill
             className="object-cover"

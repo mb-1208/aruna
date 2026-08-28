@@ -5,12 +5,12 @@ import { motion } from "framer-motion";
 
 export default function PhotoMosaic({ images: propImages, title }) {
   const images = propImages && propImages.length === 6 ? propImages : [
-    "http://placehold.co/800x800.png", 
-    "http://placehold.co/800x800.png", 
-    "http://placehold.co/800x800.png", 
-    "http://placehold.co/800x800.png", 
-    "http://placehold.co/800x800.png", 
-    "http://placehold.co/800x800.png", 
+    "https://placehold.co/800x800.png", 
+    "https://placehold.co/800x800.png", 
+    "https://placehold.co/800x800.png", 
+    "https://placehold.co/800x800.png", 
+    "https://placehold.co/800x800.png", 
+    "https://placehold.co/800x800.png", 
   ];
 
   return (

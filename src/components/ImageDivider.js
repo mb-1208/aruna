@@ -13,7 +13,7 @@ export default function ImageDivider({ image }) {
       className="w-full relative h-[600px] overflow-hidden"
     >
       <Image
-        src={image || "http://placehold.co/1920x600.png"}
+        src={image || "https://placehold.co/1920x600.png"}
         alt="Travel Destination Divider"
         fill
         className="object-cover"

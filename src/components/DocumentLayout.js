@@ -15,7 +15,7 @@ export default function DocumentLayout({ content }) {
       <section className="relative w-full h-[40vh] md:h-[50vh] flex flex-col items-center justify-center overflow-hidden mb-16">
         <div
           className="absolute inset-0 bg-cover bg-center"
-          style={{ backgroundImage: `url("${content.hero_image || 'http://placehold.co/1920x1080.png'}")` }}
+          style={{ backgroundImage: `url("${content.hero_image || 'https://placehold.co/1920x1080.png'}")` }}
         />
         <div className="absolute inset-0 bg-black/40" />
 

@@ -9,7 +9,7 @@ export default function TravelHero({ title, image, scrollText }) {
       {/* Background Image */}
       <div
         className="absolute inset-0 bg-cover bg-center"
-        style={{ backgroundImage: `url("${image || 'http://placehold.co/1920x1080.png'}")` }}
+        style={{ backgroundImage: `url("${image || 'https://placehold.co/1920x1080.png'}")` }}
       />
       {/* Dark Overlay */}
       <div className="absolute inset-0 bg-black/30" />

@@ -180,10 +180,32 @@ export default function Navbar() {
         <div className="hidden lg:flex flex-1 gap-1 xl:gap-4 2xl:gap-6 items-center text-[8px] xl:text-[10px] 2xl:text-sm tracking-normal xl:tracking-wide 2xl:tracking-widest capitalize justify-end overflow-visible">
           {/* Social Icons */}
           <div className="flex gap-2 xl:gap-3 items-center">
-            <a href={socialLinks.whatsapp || "#"} className="hover:opacity-70 transition-opacity" target="_blank" rel="noopener noreferrer"><IconBrandWhatsapp size={18} stroke={1.5} /></a>
-            <a href={socialLinks.instagram || "#"} className="hover:opacity-70 transition-opacity" target="_blank" rel="noopener noreferrer"><IconBrandInstagram size={18} stroke={1.5} /></a>
-            <a href={socialLinks.tiktok || "#"} className="hover:opacity-70 transition-opacity" target="_blank" rel="noopener noreferrer"><IconBrandTiktok size={18} stroke={1.5} /></a>
-            <a href={socialLinks.facebook || "#"} className="hover:opacity-70 transition-opacity" target="_blank" rel="noopener noreferrer"><IconBrandFacebook size={18} stroke={1.5} /></a>
+            {socialLinks.whatsapp && (
+              <a 
+                href={socialLinks.whatsapp.startsWith('http') ? socialLinks.whatsapp : `https://wa.me/${socialLinks.whatsapp.replace(/[^0-9]/g, '')}`} 
+                className="hover:opacity-70 transition-opacity" 
+                target="_blank" 
+                rel="noopener noreferrer"
+                aria-label="WhatsApp"
+              >
+                <IconBrandWhatsapp size={18} stroke={1.5} />
+              </a>
+            )}
+            {socialLinks.instagram && (
+              <a href={socialLinks.instagram} className="hover:opacity-70 transition-opacity" target="_blank" rel="noopener noreferrer" aria-label="Instagram">
+                <IconBrandInstagram size={18} stroke={1.5} />
+              </a>
+            )}
+            {socialLinks.tiktok && (
+              <a href={socialLinks.tiktok} className="hover:opacity-70 transition-opacity" target="_blank" rel="noopener noreferrer" aria-label="TikTok">
+                <IconBrandTiktok size={18} stroke={1.5} />
+              </a>
+            )}
+            {socialLinks.facebook && (
+              <a href={socialLinks.facebook} className="hover:opacity-70 transition-opacity" target="_blank" rel="noopener noreferrer" aria-label="Facebook">
+                <IconBrandFacebook size={18} stroke={1.5} />
+              </a>
+            )}
           </div>
 
           {/* Language/Currency Dropdown */}
@@ -277,10 +299,32 @@ export default function Navbar() {
 
               {/* Mobile Social Icons */}
               <div className="mt-auto flex gap-6 items-center text-gray-600">
-                <a href={socialLinks.whatsapp || "#"} className="hover:text-black transition-colors" target="_blank" rel="noopener noreferrer"><IconBrandWhatsapp size={24} stroke={1.5} /></a>
-                <a href={socialLinks.instagram || "#"} className="hover:text-black transition-colors" target="_blank" rel="noopener noreferrer"><IconBrandInstagram size={24} stroke={1.5} /></a>
-                <a href={socialLinks.tiktok || "#"} className="hover:text-black transition-colors" target="_blank" rel="noopener noreferrer"><IconBrandTiktok size={24} stroke={1.5} /></a>
-                <a href={socialLinks.facebook || "#"} className="hover:text-black transition-colors" target="_blank" rel="noopener noreferrer"><IconBrandFacebook size={24} stroke={1.5} /></a>
+                {socialLinks.whatsapp && (
+                  <a 
+                    href={socialLinks.whatsapp.startsWith('http') ? socialLinks.whatsapp : `https://wa.me/${socialLinks.whatsapp.replace(/[^0-9]/g, '')}`} 
+                    className="hover:text-black transition-colors" 
+                    target="_blank" 
+                    rel="noopener noreferrer"
+                    aria-label="WhatsApp"
+                  >
+                    <IconBrandWhatsapp size={24} stroke={1.5} />
+                  </a>
+                )}
+                {socialLinks.instagram && (
+                  <a href={socialLinks.instagram} className="hover:text-black transition-colors" target="_blank" rel="noopener noreferrer" aria-label="Instagram">
+                    <IconBrandInstagram size={24} stroke={1.5} />
+                  </a>
+                )}
+                {socialLinks.tiktok && (
+                  <a href={socialLinks.tiktok} className="hover:text-black transition-colors" target="_blank" rel="noopener noreferrer" aria-label="TikTok">
+                    <IconBrandTiktok size={24} stroke={1.5} />
+                  </a>
+                )}
+                {socialLinks.facebook && (
+                  <a href={socialLinks.facebook} className="hover:text-black transition-colors" target="_blank" rel="noopener noreferrer" aria-label="Facebook">
+                    <IconBrandFacebook size={24} stroke={1.5} />
+                  </a>
+                )}
               </div>
             </motion.div>
           </div>

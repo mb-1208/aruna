@@ -33,7 +33,7 @@ export default function RetreatOverview({ title, description, imageUrl }) {
         >
           <div className="relative w-full overflow-hidden bg-gray-100">
             <Image 
-              src={imageUrl || "http://placehold.co/800x600.png"} 
+              src={imageUrl || "https://placehold.co/800x600.png"} 
               alt={title || "Retreat Overview"} 
               width={1200}
               height={1200}

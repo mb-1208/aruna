@@ -151,7 +151,7 @@ export default async function RetreatDetailPage({ params }) {
         title={displayTitle}
         subtitle={pricingSubtitle}
         date={displayDate}
-        bgImage={content.hero_image || "http://placehold.co/1920x1080.png"}
+        bgImage={content.hero_image || "https://placehold.co/1920x1080.png"}
         bookNowText={heroBookButton}
         whatsappNumber={content.whatsapp_number}
         isComingSoon={content.status === 'coming_soon'}
@@ -163,7 +163,7 @@ export default async function RetreatDetailPage({ params }) {
       <RetreatOverview 
         title={overviewTitle}
         description={overview || displayDescription}
-        imageUrl={content.overview_image || "http://placehold.co/800x600.png"}
+        imageUrl={content.overview_image || "https://placehold.co/800x600.png"}
       />
 
       {content.status !== 'coming_soon' && (

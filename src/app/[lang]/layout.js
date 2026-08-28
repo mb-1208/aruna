@@ -3,7 +3,7 @@ import { LanguageProvider } from "@/contexts/LanguageContext";
 import { supabase } from "@/lib/supabase";
 import "../globals.css";
 
-export const revalidate = 0;
+export const revalidate = 300; // 5-minute ISR caching, instantly purged on CMS edit
 
 const inter = Inter({
   variable: "--font-inter",
@@ -38,13 +38,50 @@ export async function generateMetadata({ params }) {
   const { data } = await supabase.from('site_content').select('content').eq('id', 'global_settings').single();
   const globalContent = data?.content || {};
   
+  const siteTitle = globalContent?.title?.[lang] || "Aruna Travel Studio";
+  const siteDescription = globalContent?.description?.[lang] || "Curating bespoke journeys and soulful retreats in Bali.";
+  const ogImage = globalContent?.logo_url || "https://arunatravelstudio.com/og-image.jpg";
+
   return {
-    title: globalContent?.title?.[lang] || "Aruna - Travel & Retreats",
-    description: globalContent?.description?.[lang] || "Aruna Travel and Retreats in Bali",
+    metadataBase: new URL("https://arunatravelstudio.com"),
+    title: {
+      default: siteTitle,
+      template: `%s | ${siteTitle}`,
+    },
+    description: siteDescription,
+    alternates: {
+      canonical: `/${lang}`,
+      languages: {
+        en: "/en",
+        es: "/es",
+      },
+    },
+    openGraph: {
+      title: siteTitle,
+      description: siteDescription,
+      url: `/${lang}`,
+      siteName: "Aruna Travel Studio",
+      images: [
+        {
+          url: ogImage,
+          width: 1200,
+          height: 630,
+          alt: siteTitle,
+        },
+      ],
+      locale: lang === 'es' ? 'es_ES' : 'en_US',
+      type: 'website',
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title: siteTitle,
+      description: siteDescription,
+      images: [ogImage],
+    },
     appleWebApp: {
       capable: true,
       statusBarStyle: 'default',
-      title: globalContent?.title?.[lang] || "Aruna",
+      title: siteTitle,
     },
     formatDetection: {
       telephone: false,

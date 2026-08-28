@@ -18,11 +18,11 @@ async function ensureAdmin() {
     }
   );
 
-  const { data: { session } } = await supabase.auth.getSession();
-  if (!session) {
+  const { data: { user }, error } = await supabase.auth.getUser();
+  if (error || !user) {
     throw new Error('Unauthorized');
   }
-  return session;
+  return user;
 }
 
 export async function GET(request) {

@@ -58,23 +58,22 @@ export default function RetreatDetailHero({ title, subtitle, date, bgImage, book
     setSubmitMessage(result.message || result.error);
     
     if (result.success) {
-      const isEs = lang === 'es';
-      const itemTitle = title || "Travel Service";
-      const subject = isEs 
-        ? `[Consulta] ${itemTitle} - ${formData.name}` 
-        : `[Inquiry] ${itemTitle} - ${formData.name}`;
-      
-      const body = isEs
-        ? `Hola equipo de Aruna,\n\nMe gustaría solicitar información para ${itemTitle} con los siguientes detalles:\n\n• Nombre: ${formData.name}\n• Correo electrónico: ${formData.email}\n• Teléfono / WhatsApp: ${formData.phone}\n• Servicio: ${itemTitle}\n\n¡Muchas gracias!`
-        : `Hello Aruna Team,\n\nI would like to inquire about ${itemTitle} with the following details:\n\n• Name: ${formData.name}\n• Email: ${formData.email}\n• Phone / WhatsApp: ${formData.phone}\n• Service: ${itemTitle}\n\nThank you!`;
-
-      const mailtoLink = `mailto:hello@arunatravelstudio.com?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
-      window.location.href = mailtoLink;
+      setSubmitStatus("success");
+      setSubmitMessage(
+        lang === 'es'
+          ? "¡Gracias! Tu consulta ha sido enviada con éxito. Nuestro equipo se pondrá en contacto contigo a la brevedad."
+          : "Thank you! Your inquiry has been sent successfully. Our team will get in touch with you shortly."
+      );
 
       setTimeout(() => {
         setIsModalOpen(false);
         setFormData({ name: "", email: "", phone: "" });
-      }, 3000);
+        setSubmitStatus(null);
+        setSubmitMessage("");
+      }, 3500);
+    } else {
+      setSubmitStatus("error");
+      setSubmitMessage(result.error || (lang === 'es' ? "Error al enviar la consulta." : "Failed to submit inquiry."));
     }
   };
 
@@ -96,27 +95,22 @@ export default function RetreatDetailHero({ title, subtitle, date, bgImage, book
     setStatus("loading");
     
     const result = await joinWaitingList(email, title);
-    setStatus(result.success ? "success" : "error");
-    setMessage(result.message || result.error);
     if (result.success) {
-      const isEs = lang === 'es';
-      const itemTitle = title || "Retreat / Service";
-      const subject = isEs 
-        ? `[Lista de Espera] ${itemTitle} - ${email}` 
-        : `[Waiting List] ${itemTitle} - ${email}`;
-      
-      const body = isEs
-        ? `Hola equipo de Aruna,\n\nPor favor agrégame a la lista de espera para ${itemTitle}.\n\n• Correo electrónico: ${email}\n\n¡Muchas gracias!`
-        : `Hello Aruna Team,\n\nPlease add me to the waiting list for ${itemTitle}.\n\n• Email: ${email}\n\nThank you!`;
-
-      const mailtoLink = `mailto:hello@arunatravelstudio.com?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
-      window.location.href = mailtoLink;
+      setStatus("success");
+      setMessage(
+        lang === 'es'
+          ? "¡Gracias! Te hemos añadido a la lista de espera con éxito."
+          : "Thank you! You have been successfully added to the waiting list."
+      );
 
       setTimeout(() => {
         setEmail("");
         setStatus("idle");
         setMessage("");
-      }, 5000);
+      }, 4000);
+    } else {
+      setStatus("error");
+      setMessage(result.error || (lang === 'es' ? "Error al registrarse." : "Failed to join waiting list."));
     }
   };
 
@@ -126,7 +120,7 @@ export default function RetreatDetailHero({ title, subtitle, date, bgImage, book
       {/* Background Image */}
       <div
         className="absolute inset-0 bg-cover bg-center"
-        style={{ backgroundImage: `url("${bgImage || 'http://placehold.co/1920x1080.png'}")` }}
+        style={{ backgroundImage: `url("${bgImage || 'https://placehold.co/1920x1080.png'}")` }}
       />
       {/* Dark Overlay for text readability */}
       <div className="absolute inset-0 bg-black/40" />

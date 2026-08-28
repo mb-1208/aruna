@@ -26,22 +26,22 @@ export default function Testimonials({ subtitle, title, subtext, reviews, curren
       id: 1,
       name: "David & Sarah",
       review: "A transformative journey we will never forget. The details were impeccable.",
-      bgImage: "http://placehold.co/400x600.png",
-      avatar: "http://placehold.co/100x100.png"
+      bgImage: "https://placehold.co/400x600.png",
+      avatar: "https://placehold.co/100x100.png"
     },
     {
       id: 2,
       name: "Elena M.",
       review: "Aruna truly understands luxury and peace. Every moment was curated beautifully.",
-      bgImage: "http://placehold.co/400x600/444444/FFFFFF.png",
-      avatar: "http://placehold.co/100x100.png"
+      bgImage: "https://placehold.co/400x600/444444/FFFFFF.png",
+      avatar: "https://placehold.co/100x100.png"
     },
     {
       id: 3,
       name: "Michael T.",
       review: "The best retreat experience I've ever had. Highly recommend to everyone.",
-      bgImage: "http://placehold.co/400x600.png",
-      avatar: "http://placehold.co/100x100.png"
+      bgImage: "https://placehold.co/400x600.png",
+      avatar: "https://placehold.co/100x100.png"
     }
   ];
 
@@ -152,7 +152,7 @@ export default function Testimonials({ subtitle, title, subtext, reviews, curren
                   className="relative aspect-[3/4] overflow-hidden group cursor-default"
                 >
                   <Image
-                    src={r.image_url || r.bgImage || "http://placehold.co/400x600.png"}
+                    src={r.image_url || r.bgImage || "https://placehold.co/400x600.png"}
                     alt={`Review by ${r.author || r.name}`}
                     fill
                     className="object-cover transition-transform duration-700 group-hover:scale-105 pointer-events-none"
