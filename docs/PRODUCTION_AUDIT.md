@@ -26,7 +26,7 @@ Dokumen ini disusun sebagai panduan *checklist* dan *crosscheck* perbaikan.
 
 ### 1.3. Kredensial Admin Hardcoded di Repositori (`create-admin.js`) — [STATUS: ✅ FIXED]
 * **Lokasi:** `create-admin.js`
-* **Masalah:** Terdapat kredensial `admin@aruna.com` dan password `password123` yang tersimpan di repositori.
+* **Masalah:** Terdapat kredensial admin dan password yang sempat tersimpan di repositori.
 * **Tindakan yang Telah Dilakukan:** File `create-admin.js` telah **dihapus dari repositori**.
 
 ### 1.4. Validasi Token Lemah pada Admin Users API — [STATUS: ✅ FIXED]

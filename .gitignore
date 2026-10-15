@@ -30,11 +30,22 @@ yarn-debug.log*
 yarn-error.log*
 .pnpm-debug.log*
 
-# env files (can opt-in for committing if needed)
+# env files
 .env*
+!.env.example
 
-# scratch scripts
+# scratch scripts & temporary dumps
 scratch/
+temp_*
+scratch_*
+fix_*
+update_*.js
+extract_*
+*.dump
+*.sql.bak
+
+# binary assets & briefs (store in cloud storage / Notion / Drive instead)
+*.pdf
 
 # vercel
 .vercel
@@ -42,3 +53,4 @@ scratch/
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+

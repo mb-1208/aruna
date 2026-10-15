@@ -90,13 +90,13 @@ The Aruna CMS Dashboard is your private command center to edit copy, update pric
 ### 3.1. Admin Access & Login Credentials
 
 * **Dashboard URL:** `https://arunatravelstudio.com/dashboard/login`
-* **Default Admin Email:** `admin@arunatravelstudio.com`
-* **Default Admin Password:** `admin123`
+* **Admin Email:** `[ADMIN_EMAIL]` *(Configured via Supabase Auth)*
+* **Admin Password:** `[ADMIN_PASSWORD]` *(Configured via Supabase Auth)*
 * **Supported Devices:** **Desktop or Laptop Computer** *(The CMS interface requires a desktop screen to provide a comfortable side-by-side editing experience with the live website preview)*.
 
 #### How to Log In:
 1. Navigate to `https://arunatravelstudio.com/dashboard/login` on your laptop.
-2. Enter your email (`admin@arunatravelstudio.com`) and password (`admin123`).
+2. Enter your registered administrator email and secure password.
 3. Click **Sign In**. The system will securely verify your session and open the Dashboard Editor.
 
 ---
