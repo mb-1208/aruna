@@ -70,7 +70,7 @@ export async function saveProducts(products) {
       if (error) throw new Error(error.message);
     } else {
       // Insert new
-      const { error } = await supabaseAdmin.from('products')
+      const { data, error } = await supabaseAdmin.from('products')
         .insert({
           title: prod.title,
           date: prod.date,
@@ -78,8 +78,11 @@ export async function saveProducts(products) {
           slug: prod.slug,
           type: prod.type,
           content: prod.content
-        });
+        })
+        .select('id')
+        .single();
       if (error) throw new Error(error.message);
+      if (data?.id) prod.id = data.id;
     }
 
     if (prod.slug) {

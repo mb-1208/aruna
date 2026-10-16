@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useSyncExternalStore } from "react";
 import { IconLogout, IconDeviceFloppy, IconPlus, IconTrash, IconArrowLeft, IconLanguage, IconCheck, IconX, IconEye, IconInfoCircle, IconFile, IconWorld, IconKey, IconUsers, IconDownload, IconRefresh, IconDeviceMobile, IconDeviceTablet, IconDeviceLaptop, IconDeviceDesktop, IconMenu2, IconLayoutBottombar, IconMessageCircle, IconPhoto } from "@tabler/icons-react";
 import { saveSiteContent, saveProducts, saveReviews, fetchLeads } from "./actions";
 import TravelEditorForm from "./TravelEditorForm";
@@ -13,6 +13,16 @@ import LocalizationEditor from "./LocalizationEditor";
 import { createClient } from '@/utils/supabase/client';
 import { useRouter } from 'next/navigation';
 import { uploadImageToSupabase } from '@/lib/imageUpload';
+
+const emptySubscribe = () => () => {};
+const getIframeBaseUrl = () => {
+  if (typeof window === "undefined") return "";
+  const hostname = window.location.hostname;
+  const port = window.location.port ? `:${window.location.port}` : '';
+  const protocol = window.location.protocol;
+  const baseHost = hostname.startsWith('admin.') ? hostname.replace('admin.', '') : hostname;
+  return `${protocol}//${baseHost}${port}`;
+};
 
 const DashboardImageUpload = ({ label, value, onChange, hint }) => {
   const [isUploading, setIsUploading] = useState(false);
@@ -67,26 +77,12 @@ export default function DashboardEditor({ initialData }) {
   const [currentMenu, setCurrentMenu] = useState("main");
   const [isSaving, setIsSaving] = useState(false);
   const [previewUrl, setPreviewUrl] = useState("/");
-  const [iframeBaseUrl, setIframeBaseUrl] = useState("");
+  const iframeBaseUrl = useSyncExternalStore(emptySubscribe, getIframeBaseUrl, () => "");
   const [deviceMode, setDeviceMode] = useState("laptop"); // phone, tablet, laptop, monitor
   const [refreshKey, setRefreshKey] = useState(0);
   const [containerWidth, setContainerWidth] = useState(1000);
   const [containerHeight, setContainerHeight] = useState(800);
   const previewContainerRef = useRef(null);
-
-  useEffect(() => {
-    if (typeof window !== "undefined") {
-      const hostname = window.location.hostname;
-      const port = window.location.port ? `:${window.location.port}` : '';
-      const protocol = window.location.protocol;
-      
-      let baseHost = hostname;
-      if (hostname.startsWith('admin.')) {
-        baseHost = hostname.replace('admin.', '');
-      }
-      setIframeBaseUrl(`${protocol}//${baseHost}${port}`);
-    }
-  }, []);
 
   useEffect(() => {
     if (!previewContainerRef.current) return;
@@ -191,23 +187,6 @@ export default function DashboardEditor({ initialData }) {
   const [editingUser, setEditingUser] = useState(null);
   const [isUpdatingUser, setIsUpdatingUser] = useState(false);
 
-  // Fetch users when entering 'access' menu
-  useEffect(() => {
-    if (currentMenu === 'access') {
-      fetchUsers();
-    }
-    const checkUser = async () => {
-      const supabase = createClient();
-      const { data: { user } } = await supabase.auth.getUser();
-      setCurrentUser(user);
-    };
-    checkUser();
-    
-    if (currentMenu === 'information') {
-      fetchGlobalContent();
-    }
-  }, [currentMenu]);
-
   const fetchGlobalContent = async () => {
     setIsLoadingGlobal(true);
     try {
@@ -268,6 +247,25 @@ export default function DashboardEditor({ initialData }) {
       console.error(err);
     }
     setIsLoadingUsers(false);
+  };
+
+  // Check logged-in admin user on mount
+  useEffect(() => {
+    const checkUser = async () => {
+      const supabase = createClient();
+      const { data: { user } } = await supabase.auth.getUser();
+      setCurrentUser(user);
+    };
+    checkUser();
+  }, []);
+
+  const navigateToMenu = (menu) => {
+    setCurrentMenu(menu);
+    if (menu === 'access') {
+      fetchUsers();
+    } else if (menu === 'information') {
+      fetchGlobalContent();
+    }
   };
 
   const handleCreateUser = async (e) => {
@@ -339,14 +337,19 @@ export default function DashboardEditor({ initialData }) {
     }
   };
 
-  useEffect(() => {
-    // Update preview URL based on active tab
-    if (activeTab === "home_page") setPreviewUrl("/");
-    if (activeTab === "travel_page") setPreviewUrl("/travel");
-    if (activeTab === "retreats_page" || activeTab === "destinations") setPreviewUrl("/retreats");
-    if (activeTab === "reviews") setPreviewUrl("/travel#reviews");
-    if (activeTab === "contact_page") setPreviewUrl("/contact");
-  }, [activeTab]);
+  const handlePageTabChange = (tab) => {
+    setActiveTab(tab);
+    const tabUrls = {
+      home_page: "/",
+      travel_page: "/travel",
+      retreats_page: "/retreats",
+      contact_page: "/contact",
+      reviews: "/travel#reviews",
+      legal: "/legal",
+      privacy: "/privacy"
+    };
+    if (tabUrls[tab]) setPreviewUrl(tabUrls[tab]);
+  };
 
   const handleSave = async () => {
     setIsSaving(true);
@@ -480,7 +483,7 @@ export default function DashboardEditor({ initialData }) {
                 <div className="bg-gray-100 p-2 rounded-lg text-black"><IconWorld size={20} /></div>
                 <div>
                   <div className="font-bold uppercase tracking-widest text-sm">Products</div>
-                  <div className="text-xs text-gray-500 mt-1">Manage Retreats and Services destinations</div>
+                  <div className="text-xs text-gray-500 mt-1">Manage retreat dates, packages, photos, and services</div>
                 </div>
               </button>
               <button 
@@ -504,7 +507,7 @@ export default function DashboardEditor({ initialData }) {
                 </div>
               </button>
               <button 
-                onClick={() => setCurrentMenu("information")}
+                onClick={() => navigateToMenu("information")}
                 className="flex items-center gap-4 px-6 py-4 hover:bg-gray-50 transition-colors border-b border-gray-100 text-left"
               >
                 <div className="bg-gray-100 p-2 rounded-lg text-black"><IconInfoCircle size={20} /></div>
@@ -524,7 +527,7 @@ export default function DashboardEditor({ initialData }) {
                 </div>
               </button>
               <button 
-                onClick={() => setCurrentMenu("access")}
+                onClick={() => navigateToMenu("access")}
                 className="flex items-center gap-4 px-6 py-4 hover:bg-gray-50 transition-colors border-b border-gray-100 text-left"
               >
                 <div className="bg-gray-100 p-2 rounded-lg text-black"><IconKey size={20} /></div>
@@ -581,7 +584,7 @@ export default function DashboardEditor({ initialData }) {
             <div className="p-6 overflow-y-auto flex-1">
               <h2 className="text-lg font-bold uppercase tracking-widest mb-4">Subscribers</h2>
               <p className="text-sm text-gray-500 mb-6 leading-relaxed">
-                View all leads and email addresses collected from your website's subscription forms. Export the data to CSV for marketing campaigns.
+                View all leads and email addresses collected from your website&apos;s subscription forms. Export the data to CSV for marketing campaigns.
               </p>
             </div>
           </div>
@@ -644,31 +647,31 @@ export default function DashboardEditor({ initialData }) {
               </button>
               <div className="h-6 w-px bg-gray-200 mx-1"></div>
               <button 
-                onClick={() => setActiveTab("home_page")} 
+                onClick={() => handlePageTabChange("home_page")} 
                 className={`px-4 py-4 whitespace-nowrap border-b-2 transition-colors ${activeTab === 'home_page' ? 'border-black text-black' : 'border-transparent text-gray-400 hover:text-black'}`}
               >
                 Home
               </button>
               <button 
-                onClick={() => setActiveTab("travel_page")} 
+                onClick={() => handlePageTabChange("travel_page")} 
                 className={`px-4 py-4 whitespace-nowrap border-b-2 transition-colors ${activeTab === 'travel_page' ? 'border-black text-black' : 'border-transparent text-gray-400 hover:text-black'}`}
               >
                 Travel
               </button>
               <button 
-                onClick={() => setActiveTab("retreats_page")} 
+                onClick={() => handlePageTabChange("retreats_page")} 
                 className={`px-4 py-4 whitespace-nowrap border-b-2 transition-colors ${activeTab === 'retreats_page' ? 'border-black text-black' : 'border-transparent text-gray-400 hover:text-black'}`}
               >
                 Retreats
               </button>
               <button 
-                onClick={() => setActiveTab("contact_page")} 
+                onClick={() => handlePageTabChange("contact_page")} 
                 className={`px-4 py-4 whitespace-nowrap border-b-2 transition-colors ${activeTab === 'contact_page' ? 'border-black text-black' : 'border-transparent text-gray-400 hover:text-black'}`}
               >
                 Contact
               </button>
               <button 
-                onClick={() => setActiveTab("reviews")} 
+                onClick={() => handlePageTabChange("reviews")} 
                 className={`px-4 py-4 whitespace-nowrap border-b-2 transition-colors ${activeTab === 'reviews' ? 'border-black text-black' : 'border-transparent text-gray-400 hover:text-black'}`}
               >
                 Reviews
@@ -757,33 +760,6 @@ export default function DashboardEditor({ initialData }) {
           {/* Contact Page Form */}
           {activeTab === "contact_page" && (
             <ContactEditorForm content={contactContent} setContent={setContactContent} />
-          )}
-
-          {/* Destinations Form */}
-          {activeTab === "destinations" && (
-            <div className="space-y-8">
-              {destinations.map((dest, index) => (
-                <div key={dest.id || index} className="p-4 border border-gray-200 rounded-xl bg-gray-50 space-y-4">
-                  <h3 className="text-sm font-bold uppercase tracking-widest border-b border-gray-200 pb-2">Destination {index + 1}</h3>
-                  <div>
-                    <label className="block text-xs font-medium text-gray-500 mb-1">Title</label>
-                    <input type="text" value={dest.title} onChange={(e) => updateDestination(index, 'title', e.target.value)} className="w-full border border-gray-300 rounded p-2 text-sm" />
-                  </div>
-                  <div>
-                    <label className="block text-xs font-medium text-gray-500 mb-1">Date</label>
-                    <input type="text" value={dest.date} onChange={(e) => updateDestination(index, 'date', e.target.value)} className="w-full border border-gray-300 rounded p-2 text-sm" />
-                  </div>
-                  <div>
-                    <label className="block text-xs font-medium text-gray-500 mb-1">Description</label>
-                    <textarea rows={2} value={dest.description} onChange={(e) => updateDestination(index, 'description', e.target.value)} className="w-full border border-gray-300 rounded p-2 text-sm" />
-                  </div>
-                  <div>
-                    <label className="block text-xs font-medium text-gray-500 mb-1">Image URL</label>
-                    <input type="text" value={dest.image_url} onChange={(e) => updateDestination(index, 'image_url', e.target.value)} className="w-full border border-gray-300 rounded p-2 text-sm" />
-                  </div>
-                </div>
-              ))}
-            </div>
           )}
 
           {/* Reviews Form */}

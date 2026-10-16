@@ -86,12 +86,12 @@ export default function PoliciesEditorForm({ content, setContent }) {
   useEffect(() => {
     // Auto-migrate old structured content to new rich text on first load if rich text is empty
     if (!content.rich_text && content.content && content.content.length > 0) {
-      updateContent('rich_text', generateHtmlFromSections(content.content));
+      setContent(prev => ({ ...prev, rich_text: generateHtmlFromSections(prev.content) }));
     }
     if (!content.rich_text_es && content.content_es && content.content_es.length > 0) {
-      updateContent('rich_text_es', generateHtmlFromSections(content.content_es));
+      setContent(prev => ({ ...prev, rich_text_es: generateHtmlFromSections(prev.content_es) }));
     }
-  }, [content.rich_text, content.rich_text_es, content.content, content.content_es]);
+  }, [content.rich_text, content.rich_text_es, content.content, content.content_es, setContent]);
 
 
   return (
