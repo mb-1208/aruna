@@ -84,7 +84,7 @@ export default function Navbar() {
     const href = isSamePage ? link.hash : `${targetLocalized}${link.hash}`;
     const className = isMobile
       ? "text-gray-600 hover:text-black transition-colors"
-      : "hover:opacity-70 transition-opacity";
+      : "hover:opacity-70 transition-opacity whitespace-nowrap";
 
     if (isSamePage) {
       return (
@@ -118,11 +118,15 @@ export default function Navbar() {
         initial={{ opacity: 0, y: -20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.8, ease: "easeOut" }}
-        className={`fixed top-0 left-0 right-0 z-[60] flex items-center justify-between px-4 lg:px-6 2xl:px-8 py-4 lg:py-6 2xl:py-10 text-white font-sans transition-colors duration-300 border-b ${isScrolled ? "bg-[#d18529]/40 backdrop-blur-md border-[#feeedf]/10" : "bg-transparent border-transparent"}`}
+        className={`fixed top-0 left-0 right-0 z-[60] flex items-center justify-between px-4 sm:px-6 lg:px-6 2xl:px-8 transition-colors duration-300 border-b text-white font-sans ${
+          isScrolled
+            ? "py-3 lg:py-3.5 2xl:py-5 bg-[#d18529]/45 backdrop-blur-md border-[#feeedf]/10 shadow-sm"
+            : "py-3.5 lg:py-4 xl:py-5 2xl:py-7 bg-transparent border-transparent"
+        }`}
       >
-
-        {/* Left Links & Logo (Desktop) */}
-        <div className="hidden lg:flex flex-1 gap-1 xl:gap-4 2xl:gap-8 items-center text-[8px] xl:text-[12px] 2xl:text-sm tracking-normal xl:tracking-wide 2xl:tracking-widest capitalize overflow-visible">
+        {/* DESKTOP LAYOUT (lg+) */}
+        {/* 1. Left Group: Brand Logo + Page Section Menu Links */}
+        <div className="hidden lg:flex items-center gap-2 lg:gap-2.5 xl:gap-3 2xl:gap-5 z-10 text-[10px] xl:text-[11px] 2xl:text-[12px] tracking-normal xl:tracking-wide 2xl:tracking-widest capitalize font-medium">
           <Link
             href={`/${currentLang}`}
             onClick={(e) => {
@@ -131,17 +135,26 @@ export default function Navbar() {
                 window.location.href = `/${currentLang}`;
               }
             }}
-            className="flex-shrink-0 mr-1 2xl:mr-4"
+            className="flex-shrink-0 transition-transform hover:scale-[1.02] mr-0.5 xl:mr-1.5"
           >
-            <Image src={globalContent?.logo_url || logo} alt="Aruna Logo" className="h-10 2xl:h-16 w-auto object-contain drop-shadow-md" priority unoptimized={!!globalContent?.logo_url} width={180} height={80} />
+            <Image
+              src={globalContent?.logo_url || logo}
+              alt="Aruna Logo"
+              className="h-7 lg:h-7.5 xl:h-8.5 2xl:h-10 w-auto max-w-[105px] xl:max-w-[125px] 2xl:max-w-[150px] object-contain drop-shadow-md"
+              priority
+              unoptimized={!!globalContent?.logo_url}
+              width={180}
+              height={80}
+            />
           </Link>
-          <div className="flex items-center gap-1 xl:gap-4 2xl:gap-8 flex-nowrap whitespace-nowrap">
+
+          <div className="flex items-center gap-1.5 lg:gap-2 xl:gap-2.5 2xl:gap-4 flex-nowrap whitespace-nowrap">
             {leftLinks.map(link => renderNavLink(link, false))}
           </div>
         </div>
 
-        {/* Center Group: Travel - Retreats (Desktop) */}
-        <div className="hidden lg:flex flex-none items-center gap-2 xl:gap-6 2xl:gap-12 text-[8px] xl:text-[12px] 2xl:text-sm tracking-normal xl:tracking-wide 2xl:tracking-widest capitalize mx-1 xl:mx-4">
+        {/* 2. Center Group: Dedicated Switcher (Travel Design & Retreats) */}
+        <div className="hidden lg:flex absolute left-1/2 -translate-x-1/2 items-center gap-2.5 lg:gap-3 xl:gap-3.5 2xl:gap-5 text-[10px] xl:text-[11px] 2xl:text-[12px] tracking-normal xl:tracking-wide 2xl:tracking-widest capitalize font-medium z-10 whitespace-nowrap pointer-events-auto">
           <Link
             href={`/${currentLang}/travel`}
             onClick={(e) => {
@@ -150,7 +163,11 @@ export default function Navbar() {
                 window.location.href = `/${currentLang}/travel`;
               }
             }}
-            className={`hover:opacity-70 transition-all ${pathname === `/${currentLang}/travel` || (pathname.startsWith(`/${currentLang}/travel`) && pathname !== `/${currentLang}/travel`) ? "border-b border-white pb-1" : "pb-1 border-b border-transparent"}`}
+            className={`hover:opacity-70 transition-all ${
+              pathname === `/${currentLang}/travel` || (pathname.startsWith(`/${currentLang}/travel`) && pathname !== `/${currentLang}/travel`)
+                ? "border-b border-white pb-0.5 xl:pb-1 font-semibold"
+                : "pb-0.5 xl:pb-1 border-b border-transparent"
+            }`}
           >
             {navContent.travel || 'Travel'}
           </Link>
@@ -163,23 +180,20 @@ export default function Navbar() {
                 window.location.href = `/${currentLang}/retreats`;
               }
             }}
-            className={`hover:opacity-70 transition-all ${pathname === `/${currentLang}/retreats` || (pathname.startsWith(`/${currentLang}/retreats`) && pathname !== `/${currentLang}/retreats`) ? "border-b border-white pb-1" : "pb-1 border-b border-transparent"}`}
+            className={`hover:opacity-70 transition-all ${
+              pathname === `/${currentLang}/retreats` || (pathname.startsWith(`/${currentLang}/retreats`) && pathname !== `/${currentLang}/retreats`)
+                ? "border-b border-white pb-0.5 xl:pb-1 font-semibold"
+                : "pb-0.5 xl:pb-1 border-b border-transparent"
+            }`}
           >
             {navContent.retreats || 'Retreats'}
           </Link>
         </div>
 
-        {/* Mobile Logo (Visible only on Mobile) */}
-        <div className="lg:hidden flex items-center">
-          <Link href={`/${currentLang}`}>
-            <Image src={globalContent?.logo_url || logo} alt="Aruna Logo" className="h-16 w-auto object-contain drop-shadow-md" priority unoptimized={!!globalContent?.logo_url} width={160} height={80} />
-          </Link>
-        </div>
-
-        {/* Right Links & Icons (Desktop) */}
-        <div className="hidden lg:flex flex-1 gap-1 xl:gap-4 2xl:gap-6 items-center text-[8px] xl:text-[10px] 2xl:text-sm tracking-normal xl:tracking-wide 2xl:tracking-widest capitalize justify-end overflow-visible">
+        {/* 3. Right Group: Actions (Social Icons + Language Switcher) */}
+        <div className="hidden lg:flex items-center gap-1.5 lg:gap-2 xl:gap-3 2xl:gap-4 shrink-0 z-10 justify-end">
           {/* Social Icons */}
-          <div className="flex gap-2 xl:gap-3 items-center">
+          <div className="flex items-center gap-2 xl:gap-3 text-white">
             {socialLinks.whatsapp && (
               <a 
                 href={socialLinks.whatsapp.startsWith('http') ? socialLinks.whatsapp : `https://wa.me/${socialLinks.whatsapp.replace(/[^0-9]/g, '')}`} 
@@ -188,33 +202,36 @@ export default function Navbar() {
                 rel="noopener noreferrer"
                 aria-label="WhatsApp"
               >
-                <IconBrandWhatsapp size={18} stroke={1.5} />
+                <IconBrandWhatsapp size={17} stroke={1.5} />
               </a>
             )}
             {socialLinks.instagram && (
               <a href={socialLinks.instagram} className="hover:opacity-70 transition-opacity" target="_blank" rel="noopener noreferrer" aria-label="Instagram">
-                <IconBrandInstagram size={18} stroke={1.5} />
+                <IconBrandInstagram size={17} stroke={1.5} />
               </a>
             )}
             {socialLinks.tiktok && (
-              <a href={socialLinks.tiktok} className="hover:opacity-70 transition-opacity" target="_blank" rel="noopener noreferrer" aria-label="TikTok">
-                <IconBrandTiktok size={18} stroke={1.5} />
+              <a href={socialLinks.tiktok} className="hidden xl:inline-flex hover:opacity-70 transition-opacity" target="_blank" rel="noopener noreferrer" aria-label="TikTok">
+                <IconBrandTiktok size={17} stroke={1.5} />
               </a>
             )}
             {socialLinks.facebook && (
-              <a href={socialLinks.facebook} className="hover:opacity-70 transition-opacity" target="_blank" rel="noopener noreferrer" aria-label="Facebook">
-                <IconBrandFacebook size={18} stroke={1.5} />
+              <a href={socialLinks.facebook} className="hidden xl:inline-flex hover:opacity-70 transition-opacity" target="_blank" rel="noopener noreferrer" aria-label="Facebook">
+                <IconBrandFacebook size={17} stroke={1.5} />
               </a>
             )}
           </div>
 
-          {/* Language/Currency Dropdown */}
+          {/* Language Dropdown */}
           <div className="relative">
             <button
               onClick={() => setIsLangDropdownOpen(!isLangDropdownOpen)}
-              className="bg-white text-black rounded-full px-3 py-1 hover:bg-gray-200 transition-colors flex items-center gap-1 uppercase cursor-pointer font-medium"
+              className="bg-white text-black rounded-full px-2.5 xl:px-3 py-1 hover:bg-gray-200 transition-colors flex items-center gap-1 uppercase cursor-pointer font-medium text-[11px] xl:text-xs"
+              aria-expanded={isLangDropdownOpen}
+              aria-label="Select language"
             >
-              {isMounted ? currentLang.toUpperCase() : "EN"} <IconChevronDown size={14} className={`transform transition-transform ${isLangDropdownOpen ? 'rotate-180' : ''}`} />
+              {isMounted ? currentLang.toUpperCase() : "EN"}
+              <IconChevronDown size={13} className={`transform transition-transform ${isLangDropdownOpen ? 'rotate-180' : ''}`} />
             </button>
 
             <AnimatePresence>
@@ -223,7 +240,7 @@ export default function Navbar() {
                   initial={{ opacity: 0, y: -10 }}
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0, y: -10 }}
-                  className="absolute right-0 mt-2 bg-white text-black rounded-lg shadow-lg py-2 w-24 overflow-hidden"
+                  className="absolute right-0 mt-2 bg-white text-black rounded-lg shadow-lg py-2 w-24 overflow-hidden z-50"
                 >
                   <button onClick={() => handleLangChange("EN")} className="w-full text-left px-4 py-2 text-sm hover:bg-gray-100 transition-colors">EN</button>
                   <button onClick={() => handleLangChange("ES")} className="w-full text-left px-4 py-2 text-sm hover:bg-gray-100 transition-colors">ES</button>
@@ -233,11 +250,58 @@ export default function Navbar() {
           </div>
         </div>
 
-        {/* Mobile Hamburger Button */}
-        <div className="lg:hidden flex items-center">
-          <button onClick={() => setIsMobileMenuOpen(true)} className="text-white focus:outline-none pr-4">
-            <IconMenu2 size={28} />
-          </button>
+        {/* MOBILE / TABLET LAYOUT (< lg) */}
+        <div className="lg:hidden flex items-center justify-between w-full">
+          {/* Mobile Logo */}
+          <Link href={`/${currentLang}`}>
+            <Image
+              src={globalContent?.logo_url || logo}
+              alt="Aruna Logo"
+              className="h-10 sm:h-12 w-auto object-contain drop-shadow-md"
+              priority
+              unoptimized={!!globalContent?.logo_url}
+              width={160}
+              height={80}
+            />
+          </Link>
+
+          {/* Mobile Right Controls: Language pill + Hamburger */}
+          <div className="flex items-center gap-2.5">
+            {/* Quick Language Toggle on Mobile */}
+            <div className="relative">
+              <button
+                onClick={() => setIsLangDropdownOpen(!isLangDropdownOpen)}
+                className="bg-white/90 backdrop-blur-sm text-black rounded-full px-2.5 py-1 text-xs font-semibold flex items-center gap-1 uppercase cursor-pointer"
+                aria-expanded={isLangDropdownOpen}
+                aria-label="Select language"
+              >
+                {isMounted ? currentLang.toUpperCase() : "EN"}
+                <IconChevronDown size={12} className={`transform transition-transform ${isLangDropdownOpen ? 'rotate-180' : ''}`} />
+              </button>
+              <AnimatePresence>
+                {isLangDropdownOpen && (
+                  <motion.div
+                    initial={{ opacity: 0, y: -5 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -5 }}
+                    className="absolute right-0 mt-2 bg-white text-black rounded-lg shadow-lg py-1.5 w-20 overflow-hidden z-50 text-xs"
+                  >
+                    <button onClick={() => handleLangChange("EN")} className="w-full text-left px-3 py-1.5 hover:bg-gray-100">EN</button>
+                    <button onClick={() => handleLangChange("ES")} className="w-full text-left px-3 py-1.5 hover:bg-gray-100">ES</button>
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            </div>
+
+            {/* Hamburger Button */}
+            <button
+              onClick={() => setIsMobileMenuOpen(true)}
+              className="text-white p-1.5 hover:opacity-75 focus:outline-none transition-opacity cursor-pointer"
+              aria-label="Open navigation menu"
+            >
+              <IconMenu2 size={26} />
+            </button>
+          </div>
         </div>
       </motion.nav>
 

@@ -3,11 +3,11 @@ import { uploadImageToSupabase } from '@/lib/imageUpload';
 
 const Input = ({ label, value, onChange, type="text" }) => (
   <div className="mb-4">
-    <label className="block text-xs font-bold uppercase tracking-widest text-gray-500 mb-2">{label}</label>
+    <label className="block text-xs font-semibold uppercase tracking-wider text-[#63594f] mb-2">{label}</label>
     {type === "textarea" ? (
-      <textarea rows={4} value={value || ""} onChange={(e) => onChange(e.target.value)} className="w-full border border-gray-200 rounded-lg p-3 text-sm focus:outline-none focus:border-black transition-colors" />
+      <textarea rows={4} value={value || ""} onChange={(e) => onChange(e.target.value)} className="w-full border border-[#ebd8c0] rounded-lg p-3 text-sm focus:outline-none focus:border-[#d18529] focus:ring-1 focus:ring-[#d18529] transition-colors bg-[#faf7f3]/50 text-[#1c1917]" />
     ) : (
-      <input type="text" value={value || ""} onChange={(e) => onChange(e.target.value)} className="w-full border border-gray-200 rounded-lg p-3 text-sm focus:outline-none focus:border-black transition-colors" />
+      <input type="text" value={value || ""} onChange={(e) => onChange(e.target.value)} className="w-full border border-[#ebd8c0] rounded-lg p-3 text-sm focus:outline-none focus:border-[#d18529] focus:ring-1 focus:ring-[#d18529] transition-colors bg-[#faf7f3]/50 text-[#1c1917]" />
     )}
   </div>
 );
@@ -19,12 +19,12 @@ const ImageUpload = ({ label, value, onChange, hint }) => {
   return (
     <div className="mb-4">
       <div className="flex items-baseline gap-2 mb-2">
-        <label className="block text-xs font-bold uppercase tracking-widest text-gray-500">{label}</label>
-        {hint && <span className="text-[10px] text-gray-400 italic">Recommended: {hint}</span>}
+        <label className="block text-xs font-semibold uppercase tracking-wider text-[#63594f]">{label}</label>
+        {hint && <span className="text-[10px] text-[#9c9184] italic">Recommended: {hint}</span>}
       </div>
       <div className="flex items-center gap-4">
         {value && (
-          <div className="w-16 h-16 rounded-md overflow-hidden bg-gray-100 shrink-0 border border-gray-200 relative group">
+          <div className="w-16 h-16 rounded-xl overflow-hidden bg-[#faf6f0] shrink-0 border border-[#ebd8c0] relative group">
             <img src={value} alt="Preview" className="w-full h-full object-cover" />
           </div>
         )}
@@ -49,10 +49,10 @@ const ImageUpload = ({ label, value, onChange, hint }) => {
                 }
               }
             }}
-            className={`block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-xs file:font-bold file:uppercase file:tracking-widest ${isUploading ? 'file:bg-gray-300 file:text-gray-500 cursor-not-allowed' : 'file:bg-black file:text-white hover:file:bg-gray-800 cursor-pointer'} transition-colors`} 
+            className={`block w-full text-xs text-[#786e65] file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-xs file:font-semibold file:uppercase file:tracking-wider ${isUploading ? 'file:bg-stone-200 file:text-stone-400 cursor-not-allowed' : 'file:bg-[#d18529] file:text-white hover:file:bg-[#b8701d] cursor-pointer'} transition-colors`} 
           />
-          {isUploading && <div className="text-xs text-blue-500 mt-2 font-medium animate-pulse">Uploading and optimizing image...</div>}
-          {errorMsg && <div className="text-xs text-red-500 mt-2 font-medium">{errorMsg}</div>}
+          {isUploading && <div className="text-xs text-[#b8701d] mt-2 font-medium animate-pulse">Uploading and optimizing image...</div>}
+          {errorMsg && <div className="text-xs text-red-600 mt-2 font-medium">{errorMsg}</div>}
         </div>
       </div>
     </div>
@@ -60,8 +60,8 @@ const ImageUpload = ({ label, value, onChange, hint }) => {
 };
 
 const Section = ({ title, children }) => (
-  <div className="mb-8 border border-gray-200 p-6 rounded-xl bg-white shadow-sm">
-    <h3 className="text-lg font-bold mb-4">{title}</h3>
+  <div className="mb-8 border border-[#ebd8c0]/80 p-6 rounded-2xl bg-white shadow-2xs">
+    <h3 className="text-base font-semibold text-[#1c1917] mb-4">{title}</h3>
     <div className="space-y-4">
       {children}
     </div>

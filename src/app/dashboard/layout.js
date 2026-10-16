@@ -1,4 +1,4 @@
-import { Inter } from "next/font/google";
+import { Inter, Questrial } from "next/font/google";
 import "../globals.css";
 
 const inter = Inter({
@@ -6,15 +6,21 @@ const inter = Inter({
   subsets: ["latin"],
 });
 
+const questrial = Questrial({
+  weight: "400",
+  variable: "--font-questrial",
+  subsets: ["latin"],
+});
+
 export const metadata = {
-  title: "Aruna CMS Dashboard",
-  description: "Admin Dashboard for Aruna Retreats",
+  title: "Aruna Studio CMS",
+  description: "Admin Studio for Aruna Retreats & Travel",
 };
 
 export default function DashboardLayout({ children }) {
   return (
-    <html lang="en" className={`${inter.variable} antialiased h-full`}>
-      <body className="min-h-full m-0 bg-gray-50 text-black cms-admin-panel">
+    <html lang="en" className={`${inter.variable} ${questrial.variable} antialiased h-full`}>
+      <body className="min-h-full m-0 bg-[#faf6f0] text-[#1c1917] cms-admin-panel">
         {children}
       </body>
     </html>

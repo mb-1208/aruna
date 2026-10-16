@@ -40,19 +40,15 @@ export default function LoginForm() {
   };
 
   return (
-    <form className="space-y-6" onSubmit={handleLogin}>
+    <form className="space-y-5" onSubmit={handleLogin}>
       {error && (
-        <div className="bg-red-50 border-l-4 border-red-400 p-4">
-          <div className="flex">
-            <div className="ml-3">
-              <p className="text-sm text-red-700">{error}</p>
-            </div>
-          </div>
+        <div className="bg-red-50/90 border border-red-200/80 rounded-lg p-3.5">
+          <p className="text-xs text-red-800 leading-relaxed font-medium">{error}</p>
         </div>
       )}
 
       <div>
-        <label htmlFor="email" className="block text-sm font-medium text-gray-700">
+        <label htmlFor="email" className="block text-xs font-semibold uppercase tracking-wider text-[#63594f] mb-1.5">
           Email address
         </label>
         <div className="mt-1">
@@ -62,15 +58,16 @@ export default function LoginForm() {
             type="email"
             autoComplete="email"
             required
+            placeholder="admin@arunatravelstudio.com"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
-            className="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-black focus:border-black sm:text-sm text-black bg-white"
+            className="appearance-none block w-full px-3.5 py-2.5 border border-[#e2d8cb] rounded-lg shadow-2xs placeholder-[#aba095] focus:outline-none focus:ring-2 focus:ring-[#d18529]/20 focus:border-[#d18529] text-sm text-[#1c1917] bg-[#faf7f3]/50 transition-colors"
           />
         </div>
       </div>
 
       <div>
-        <label htmlFor="password" className="block text-sm font-medium text-gray-700">
+        <label htmlFor="password" className="block text-xs font-semibold uppercase tracking-wider text-[#63594f] mb-1.5">
           Password
         </label>
         <div className="mt-1">
@@ -80,20 +77,21 @@ export default function LoginForm() {
             type="password"
             autoComplete="current-password"
             required
+            placeholder="&bull;&bull;&bull;&bull;&bull;&bull;&bull;&bull;"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
-            className="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-black focus:border-black sm:text-sm text-black bg-white"
+            className="appearance-none block w-full px-3.5 py-2.5 border border-[#e2d8cb] rounded-lg shadow-2xs placeholder-[#aba095] focus:outline-none focus:ring-2 focus:ring-[#d18529]/20 focus:border-[#d18529] text-sm text-[#1c1917] bg-[#faf7f3]/50 transition-colors"
           />
         </div>
       </div>
 
-      <div>
+      <div className="pt-2">
         <button
           type="submit"
           disabled={loading}
-          className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-black hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-black disabled:opacity-50 transition-colors uppercase tracking-widest"
+          className="w-full flex justify-center py-3 px-4 rounded-lg shadow-xs text-xs font-semibold text-white bg-[#d18529] hover:bg-[#b8701d] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#d18529] disabled:opacity-50 transition-all duration-200 uppercase tracking-widest cursor-pointer"
         >
-          {loading ? 'Signing in...' : 'Sign in'}
+          {loading ? 'Signing in...' : 'Sign in to Dashboard'}
         </button>
       </div>
     </form>

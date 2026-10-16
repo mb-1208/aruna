@@ -53,21 +53,51 @@ export default function LocalizationEditor({
     setState({ ...state, [arrayName]: newArray });
   };
 
+  const [mobileLangView, setMobileLangView] = useState("all"); // 'all', 'en', 'es'
+
   return (
-    <div className="flex h-full bg-gray-50">
+    <div className="flex h-full bg-[#faf6f0]">
       
       {/* Split Screen Editor */}
-      <div className="flex-1 overflow-hidden flex flex-col md:flex-row relative">
-        
-        {/* Left Column: English (Master) */}
-        <div className="flex-1 border-r border-gray-200 bg-gray-50 p-10 overflow-y-auto pb-32">
-          <div className="flex items-center gap-2 mb-8">
-            <div className="w-6 h-6 rounded-full bg-blue-100 text-blue-800 flex items-center justify-center text-xs font-bold">EN</div>
-            <h3 className="font-bold text-lg">English (Master)</h3>
+      <div className="flex-1 overflow-hidden flex flex-col relative">
+        {/* Mobile Language Switcher */}
+        <div className="md:hidden flex items-center justify-between p-3 px-4 bg-[#f5ede2] border-b border-[#ebd8c0] gap-2">
+          <span className="text-[11px] font-semibold uppercase tracking-wider text-[#73685c]">View:</span>
+          <div className="flex items-center gap-1 bg-[#faf4ec] p-0.5 rounded-lg border border-[#ebd8c0]">
+            <button
+              type="button"
+              onClick={() => setMobileLangView("all")}
+              className={`px-2.5 py-1 rounded-md text-[11px] font-semibold uppercase tracking-wider transition-all cursor-pointer ${mobileLangView === "all" ? "bg-[#d18529] text-white shadow-xs" : "text-[#73685c]"}`}
+            >
+              Both
+            </button>
+            <button
+              type="button"
+              onClick={() => setMobileLangView("en")}
+              className={`px-2.5 py-1 rounded-md text-[11px] font-semibold uppercase tracking-wider transition-all cursor-pointer ${mobileLangView === "en" ? "bg-[#d18529] text-white shadow-xs" : "text-[#73685c]"}`}
+            >
+              EN Master
+            </button>
+            <button
+              type="button"
+              onClick={() => setMobileLangView("es")}
+              className={`px-2.5 py-1 rounded-md text-[11px] font-semibold uppercase tracking-wider transition-all cursor-pointer ${mobileLangView === "es" ? "bg-[#d18529] text-white shadow-xs" : "text-[#73685c]"}`}
+            >
+              ES Edit
+            </button>
           </div>
+        </div>
 
-          {/* HOME EN */}
-          {localizationTab === 'home_page' && (
+        <div className="flex-1 overflow-hidden flex flex-col md:flex-row relative">
+          {/* Left Column: English (Master) */}
+          <div className={`${mobileLangView === "es" ? "hidden" : "block"} md:block flex-1 border-r border-[#ebd8c0]/80 bg-[#faf6f0] p-4 sm:p-6 md:p-10 overflow-y-auto pb-32`}>
+            <div className="flex items-center gap-2 mb-8">
+              <div className="w-6 h-6 rounded-full bg-[#faf4ec] text-[#b8701d] border border-[#ebd8c0] flex items-center justify-center text-xs font-semibold">EN</div>
+              <h3 className="font-semibold text-lg text-[#1c1917]">English (Master)</h3>
+            </div>
+
+            {/* HOME EN */}
+            {localizationTab === 'home_page' && (
             <div className="space-y-6">
               <ReadOnlyField label="Travel Title" value={homeContent?.travelTitle} />
               <ReadOnlyField label="Travel Button" value={homeContent?.travelButton} />
@@ -91,10 +121,10 @@ export default function LocalizationEditor({
               <ReadOnlyField label="Testimonials Subtext" value={travelContent?.testimonialsSubtext} isTextarea />
               <ReadOnlyField label="FAQ Subtitle" value={travelContent?.faqSubtitle} />
               <ReadOnlyField label="FAQ Title" value={travelContent?.faqTitle} />
-              <div className="bg-white p-4 rounded-lg border border-gray-200 space-y-4">
+              <div className="bg-[#fdfcfb] p-5 rounded-xl border border-[#ebd8c0]/80 space-y-4">
                 <h4 className="text-xs font-bold uppercase text-gray-400">FAQ Items</h4>
                 {(travelContent?.faqItems || []).map((f, i) => (
-                  <div key={i} className="pl-4 border-l-2 border-gray-200">
+                  <div key={i} className="pl-4 border-l-2 border-[#d18529]/40">
                     <ReadOnlyField label={`Q${i+1}`} value={f.question} />
                     <ReadOnlyField label={`A${i+1}`} value={f.answer} isTextarea />
                   </div>
@@ -125,10 +155,10 @@ export default function LocalizationEditor({
               <ReadOnlyField label="Mosaic Title" value={retreatsContent?.mosaicTitle} />
               <ReadOnlyField label="FAQ Subtitle" value={retreatsContent?.faqSubtitle} />
               <ReadOnlyField label="FAQ Title" value={retreatsContent?.faqTitle} />
-              <div className="bg-white p-4 rounded-lg border border-gray-200 space-y-4">
+              <div className="bg-[#fdfcfb] p-5 rounded-xl border border-[#ebd8c0]/80 space-y-4">
                 <h4 className="text-xs font-bold uppercase text-gray-400">FAQ Items</h4>
                 {(retreatsContent?.faqItems || []).map((f, i) => (
-                  <div key={i} className="pl-4 border-l-2 border-gray-200">
+                  <div key={i} className="pl-4 border-l-2 border-[#d18529]/40">
                     <ReadOnlyField label={`Q${i+1}`} value={f.question} />
                     <ReadOnlyField label={`A${i+1}`} value={f.answer} isTextarea />
                   </div>
@@ -146,7 +176,7 @@ export default function LocalizationEditor({
           {localizationTab === 'contact_page' && (
             <div className="space-y-6">
               <ReadOnlyField label="Title" value={contactContent?.title} />
-              <div className="bg-white p-4 rounded-lg border border-gray-200 space-y-4">
+              <div className="bg-[#fdfcfb] p-5 rounded-xl border border-[#ebd8c0]/80 space-y-4">
                 <h4 className="text-xs font-bold uppercase text-gray-400">Form Labels</h4>
                 {Object.entries(contactContent?.labels || {}).map(([key, val]) => (
                   <ReadOnlyField key={key} label={key} value={val} />
@@ -158,36 +188,36 @@ export default function LocalizationEditor({
           {/* GLOBAL EN */}
           {localizationTab === 'information' && (
             <div className="space-y-6">
-              <div className="bg-white p-4 rounded-lg border border-gray-200 space-y-4">
+              <div className="bg-[#fdfcfb] p-5 rounded-xl border border-[#ebd8c0]/80 space-y-4">
                 <h4 className="text-xs font-bold uppercase text-gray-400">SEO & Meta Data</h4>
                 <ReadOnlyField label="Site Title" value={globalContent?.title?.en} />
                 <ReadOnlyField label="Site Description" value={globalContent?.description?.en} isTextarea />
               </div>
-              <div className="bg-white p-4 rounded-lg border border-gray-200 space-y-4">
+              <div className="bg-[#fdfcfb] p-5 rounded-xl border border-[#ebd8c0]/80 space-y-4">
                 <h4 className="text-xs font-bold uppercase text-gray-400">Footer Content</h4>
                 {['description', 'newsletter_title', 'newsletter_desc', 'subscribe_btn', 'retreats_newsletter_title', 'retreats_newsletter_desc', 'retreats_subscribe_btn', 'copyright', 'company_title', 'link_legal', 'link_contact', 'link_privacy'].map(key => (
                   globalContent?.footer?.en?.[key] && <ReadOnlyField key={key} label={key.replace('_', ' ')} value={globalContent.footer.en[key]} isTextarea={key.includes('desc')} />
                 ))}
               </div>
-              <div className="bg-white p-4 rounded-lg border border-gray-200 space-y-4">
+              <div className="bg-[#fdfcfb] p-5 rounded-xl border border-[#ebd8c0]/80 space-y-4">
                 <h4 className="text-xs font-bold uppercase text-gray-400">Travel Navbar Specific Links</h4>
                 {['services', 'about'].map(key => (
                   globalContent?.navbar?.en?.[key] && <ReadOnlyField key={key} label={key} value={globalContent.navbar.en[key]} />
                 ))}
               </div>
-              <div className="bg-white p-4 rounded-lg border border-gray-200 space-y-4">
+              <div className="bg-[#fdfcfb] p-5 rounded-xl border border-[#ebd8c0]/80 space-y-4">
                 <h4 className="text-xs font-bold uppercase text-gray-400">Retreats Navbar Specific Links</h4>
                 {['destinations', 'gallery'].map(key => (
                   globalContent?.navbar?.en?.[key] && <ReadOnlyField key={key} label={key} value={globalContent.navbar.en[key]} />
                 ))}
               </div>
-              <div className="bg-white p-4 rounded-lg border border-gray-200 space-y-4">
+              <div className="bg-[#fdfcfb] p-5 rounded-xl border border-[#ebd8c0]/80 space-y-4">
                 <h4 className="text-xs font-bold uppercase text-gray-400">Promo Popup</h4>
                 {Object.entries(globalContent?.promo?.en || {}).map(([key, val]) => (
                   <ReadOnlyField key={key} label={key} value={val} isTextarea={val.length > 50} />
                 ))}
               </div>
-              <div className="bg-white p-4 rounded-lg border border-gray-200 space-y-4">
+              <div className="bg-[#fdfcfb] p-5 rounded-xl border border-[#ebd8c0]/80 space-y-4">
                 <h4 className="text-xs font-bold uppercase text-gray-400">Products CTA Section</h4>
                 <ReadOnlyField label="Title" value={globalContent?.cta?.en?.title} />
                 <ReadOnlyField label="Box Title" value={globalContent?.cta?.en?.boxTitle} />
@@ -195,7 +225,7 @@ export default function LocalizationEditor({
                 <ReadOnlyField label="Button Text" value={globalContent?.cta?.en?.buttonText} />
                 <ReadOnlyField label="Email Label" value={globalContent?.cta?.en?.emailLabel} />
               </div>
-              <div className="bg-white p-4 rounded-lg border border-gray-200 space-y-4">
+              <div className="bg-[#fdfcfb] p-5 rounded-xl border border-[#ebd8c0]/80 space-y-4">
                 <h4 className="text-xs font-bold uppercase text-gray-400">Inquiry Modal</h4>
                 <ReadOnlyField label="Title" value={globalContent?.inquiry_modal?.en?.title} />
                 <ReadOnlyField label="Description" value={globalContent?.inquiry_modal?.en?.description} isTextarea />
@@ -212,8 +242,8 @@ export default function LocalizationEditor({
           {localizationTab === 'reviews' && (
             <div className="space-y-6">
               {reviews.map((rev, index) => (
-                <div key={rev.id || index} className="p-6 bg-white rounded-xl border border-gray-100">
-                  <h4 className="text-xs font-bold uppercase text-gray-400 mb-4">Review {index + 1} ({rev.category})</h4>
+                <div key={rev.id || index} className="p-6 bg-[#fdfcfb] rounded-xl border border-[#ebd8c0]/80">
+                  <h4 className="text-xs font-semibold uppercase tracking-wider text-[#918374] mb-4">Review {index + 1} ({rev.category})</h4>
                   <ReadOnlyField label="Name" value={rev.name} />
                   <ReadOnlyField label="Quote" value={rev.quote} isTextarea />
                 </div>
@@ -223,11 +253,11 @@ export default function LocalizationEditor({
         </div>
 
         {/* Right Column: Spanish (Translation) */}
-        <div className="flex-1 bg-white p-10 overflow-y-auto shadow-inner pb-32">
+        <div className={`${mobileLangView === "en" ? "hidden" : "block"} md:block flex-1 bg-[#fdfcfb] p-4 sm:p-6 md:p-10 overflow-y-auto pb-32`}>
           <div className="flex items-center gap-2 mb-8 justify-between">
             <div className="flex items-center gap-2">
-              <div className="w-6 h-6 rounded-full bg-yellow-100 text-yellow-800 flex items-center justify-center text-xs font-bold">ES</div>
-              <h3 className="font-bold text-lg">Spanish (Translation)</h3>
+              <div className="w-6 h-6 rounded-full bg-[#faf4ec] text-[#b8701d] border border-[#ebd8c0] flex items-center justify-center text-xs font-semibold">ES</div>
+              <h3 className="font-semibold text-lg text-[#1c1917]">Spanish (Translation)</h3>
             </div>
             {/* The Save button will be fixed at the bottom, but we keep the title row here */}
           </div>
@@ -256,7 +286,7 @@ export default function LocalizationEditor({
               <EditField label="Testimonials Subtext" value={esTravelContent?.testimonialsSubtext} isTextarea onChange={(val) => setEsTravelContent({...esTravelContent, testimonialsSubtext: val})} />
               <EditField label="FAQ Subtitle" value={esTravelContent?.faqSubtitle} onChange={(val) => setEsTravelContent({...esTravelContent, faqSubtitle: val})} />
               <EditField label="FAQ Title" value={esTravelContent?.faqTitle} onChange={(val) => setEsTravelContent({...esTravelContent, faqTitle: val})} />
-              <div className="bg-gray-50 p-4 rounded-lg border border-gray-200 space-y-4">
+              <div className="bg-[#faf6f0] p-5 rounded-xl border border-[#ebd8c0]/80 space-y-4">
                 <h4 className="text-xs font-bold uppercase text-gray-400">FAQ Items</h4>
                 {(travelContent?.faqItems || []).map((f, i) => (
                   <div key={i} className="pl-4 border-l-2 border-yellow-200 space-y-4 mb-4">
@@ -290,7 +320,7 @@ export default function LocalizationEditor({
               <EditField label="Mosaic Title" value={esRetreatsContent?.mosaicTitle} onChange={(val) => setEsRetreatsContent({...esRetreatsContent, mosaicTitle: val})} />
               <EditField label="FAQ Subtitle" value={esRetreatsContent?.faqSubtitle} onChange={(val) => setEsRetreatsContent({...esRetreatsContent, faqSubtitle: val})} />
               <EditField label="FAQ Title" value={esRetreatsContent?.faqTitle} onChange={(val) => setEsRetreatsContent({...esRetreatsContent, faqTitle: val})} />
-              <div className="bg-gray-50 p-4 rounded-lg border border-gray-200 space-y-4">
+              <div className="bg-[#faf6f0] p-5 rounded-xl border border-[#ebd8c0]/80 space-y-4">
                 <h4 className="text-xs font-bold uppercase text-gray-400">FAQ Items</h4>
                 {(retreatsContent?.faqItems || []).map((f, i) => (
                   <div key={i} className="pl-4 border-l-2 border-yellow-200 space-y-4 mb-4">
@@ -311,7 +341,7 @@ export default function LocalizationEditor({
           {localizationTab === 'contact_page' && (
             <div className="space-y-6">
               <EditField label="Title" value={esContactContent?.title} onChange={(val) => updateState('esContactContent', 'title', val)} />
-              <div className="bg-gray-50 p-4 rounded-lg border border-gray-200 space-y-4">
+              <div className="bg-[#faf6f0] p-5 rounded-xl border border-[#ebd8c0]/80 space-y-4">
                 <h4 className="text-xs font-bold uppercase text-gray-400">Form Labels</h4>
                 {Object.entries(contactContent?.labels || {}).map(([key, _]) => (
                   <EditField 
@@ -336,42 +366,42 @@ export default function LocalizationEditor({
           {/* GLOBAL ES */}
           {localizationTab === 'information' && (
             <div className="space-y-6">
-              <div className="bg-gray-50 p-4 rounded-lg border border-gray-200 space-y-4">
+              <div className="bg-[#faf6f0] p-5 rounded-xl border border-[#ebd8c0]/80 space-y-4">
                 <h4 className="text-xs font-bold uppercase text-gray-400">SEO & Meta Data</h4>
                 <EditField label="Site Title" value={globalContent?.title?.es} onChange={(val) => setGlobalContent(prev => ({...prev, title: {...(prev.title || {}), es: val}}))} />
                 <EditField label="Site Description" value={globalContent?.description?.es} isTextarea onChange={(val) => setGlobalContent(prev => ({...prev, description: {...(prev.description || {}), es: val}}))} />
               </div>
-              <div className="bg-gray-50 p-4 rounded-lg border border-gray-200 space-y-4">
+              <div className="bg-[#faf6f0] p-5 rounded-xl border border-[#ebd8c0]/80 space-y-4">
                 <h4 className="text-xs font-bold uppercase text-gray-400">Navbar Links (Shared)</h4>
                 {['travel', 'retreats', 'reviews', 'testimonials', 'faq'].map(key => (
                   globalContent?.navbar?.en?.[key] && <EditField key={key} label={key} value={globalContent?.navbar?.es?.[key]} onChange={(val) => updateGlobal('navbar', key, 'es', val)} />
                 ))}
               </div>
-              <div className="bg-gray-50 p-4 rounded-lg border border-gray-200 space-y-4">
+              <div className="bg-[#faf6f0] p-5 rounded-xl border border-[#ebd8c0]/80 space-y-4">
                 <h4 className="text-xs font-bold uppercase text-gray-400">Travel Navbar Specific Links</h4>
                 {['services', 'about'].map(key => (
                   globalContent?.navbar?.en?.[key] && <EditField key={key} label={key} value={globalContent?.navbar?.es?.[key]} onChange={(val) => updateGlobal('navbar', key, 'es', val)} />
                 ))}
               </div>
-              <div className="bg-gray-50 p-4 rounded-lg border border-gray-200 space-y-4">
+              <div className="bg-[#faf6f0] p-5 rounded-xl border border-[#ebd8c0]/80 space-y-4">
                 <h4 className="text-xs font-bold uppercase text-gray-400">Retreats Navbar Specific Links</h4>
                 {['destinations', 'gallery'].map(key => (
                   globalContent?.navbar?.en?.[key] && <EditField key={key} label={key} value={globalContent?.navbar?.es?.[key]} onChange={(val) => updateGlobal('navbar', key, 'es', val)} />
                 ))}
               </div>
-              <div className="bg-gray-50 p-4 rounded-lg border border-gray-200 space-y-4">
+              <div className="bg-[#faf6f0] p-5 rounded-xl border border-[#ebd8c0]/80 space-y-4">
                 <h4 className="text-xs font-bold uppercase text-gray-400">Footer Content</h4>
                 {['description', 'newsletter_title', 'newsletter_desc', 'subscribe_btn', 'retreats_newsletter_title', 'retreats_newsletter_desc', 'retreats_subscribe_btn', 'copyright', 'company_title', 'link_legal', 'link_contact', 'link_privacy'].map(key => (
                   globalContent?.footer?.en?.[key] && <EditField key={key} label={key.replace('_', ' ')} value={globalContent?.footer?.es?.[key]} isTextarea={key.includes('desc')} onChange={(val) => updateGlobal('footer', key, 'es', val)} />
                 ))}
               </div>
-              <div className="bg-gray-50 p-4 rounded-lg border border-gray-200 space-y-4">
+              <div className="bg-[#faf6f0] p-5 rounded-xl border border-[#ebd8c0]/80 space-y-4">
                 <h4 className="text-xs font-bold uppercase text-gray-400">Promo Popup</h4>
                 {Object.entries(globalContent?.promo?.en || {}).map(([key, val]) => (
                   <EditField key={key} label={key} value={globalContent?.promo?.es?.[key]} isTextarea={val.length > 50} onChange={(val) => updateGlobal('promo', key, 'es', val)} />
                 ))}
               </div>
-              <div className="bg-gray-50 p-4 rounded-lg border border-gray-200 space-y-4">
+              <div className="bg-[#faf6f0] p-5 rounded-xl border border-[#ebd8c0]/80 space-y-4">
                 <h4 className="text-xs font-bold uppercase text-gray-400">Products CTA Section</h4>
                 <EditField label="Title" value={globalContent?.cta?.es?.title} onChange={(val) => updateGlobal('cta', 'title', 'es', val)} />
                 <EditField label="Box Title" value={globalContent?.cta?.es?.boxTitle} onChange={(val) => updateGlobal('cta', 'boxTitle', 'es', val)} />
@@ -379,7 +409,7 @@ export default function LocalizationEditor({
                 <EditField label="Button Text" value={globalContent?.cta?.es?.buttonText} onChange={(val) => updateGlobal('cta', 'buttonText', 'es', val)} />
                 <EditField label="Email Label" value={globalContent?.cta?.es?.emailLabel} onChange={(val) => updateGlobal('cta', 'emailLabel', 'es', val)} />
               </div>
-              <div className="bg-gray-50 p-4 rounded-lg border border-gray-200 space-y-4">
+              <div className="bg-[#faf6f0] p-5 rounded-xl border border-[#ebd8c0]/80 space-y-4">
                 <h4 className="text-xs font-bold uppercase text-gray-400">Inquiry Modal</h4>
                 <EditField label="Title" value={globalContent?.inquiry_modal?.es?.title} onChange={(val) => updateGlobal('inquiry_modal', 'title', 'es', val)} />
                 <EditField label="Description" value={globalContent?.inquiry_modal?.es?.description} isTextarea onChange={(val) => updateGlobal('inquiry_modal', 'description', 'es', val)} />
@@ -396,8 +426,8 @@ export default function LocalizationEditor({
           {localizationTab === 'reviews' && (
             <div className="space-y-6">
               {reviews.map((rev, index) => (
-                <div key={rev.id || index} className="p-6 bg-white rounded-xl border border-gray-100">
-                  <h4 className="text-xs font-bold uppercase text-gray-400 mb-4">Review {index + 1} ({rev.category})</h4>
+                <div key={rev.id || index} className="p-6 bg-[#fdfcfb] rounded-xl border border-[#ebd8c0]/80">
+                  <h4 className="text-xs font-semibold uppercase tracking-wider text-[#918374] mb-4">Review {index + 1} ({rev.category})</h4>
                   <EditField label="Name" value={rev.name_es || rev.name} onChange={(val) => {
                     const newRevs = [...reviews];
                     newRevs[index] = { ...newRevs[index], name_es: val };
@@ -416,11 +446,11 @@ export default function LocalizationEditor({
         </div>
 
         {/* Floating Save Button Area */}
-        <div className="absolute bottom-0 left-0 right-0 p-6 bg-white border-t border-gray-200 flex justify-end shadow-[0_-10px_20px_rgba(0,0,0,0.05)]">
+        <div className="absolute bottom-0 left-0 right-0 px-8 py-4 bg-[#faf6f0]/95 backdrop-blur-xs border-t border-[#ebd8c0]/80 flex justify-end shadow-xs">
             <button 
               onClick={handleSaveTranslations}
               disabled={isSaving}
-              className="bg-black text-white px-8 py-3 rounded-md text-xs font-bold uppercase tracking-widest hover:bg-gray-800 transition-colors disabled:opacity-50"
+              className="bg-[#d18529] text-white px-8 py-2.5 rounded-lg text-xs font-semibold uppercase tracking-wider hover:bg-[#b8701d] transition-colors disabled:opacity-50 shadow-xs cursor-pointer"
             >
               {isSaving ? "Saving..." : "Save Translations"}
             </button>
@@ -428,14 +458,15 @@ export default function LocalizationEditor({
 
       </div>
     </div>
-  );
+  </div>
+);
 }
 
 function ReadOnlyField({ label, value, isTextarea = false }) {
   return (
     <div className="mb-4">
-      <label className="block text-xs font-bold uppercase tracking-widest text-gray-500 mb-2">{label}</label>
-      <div className={`w-full bg-gray-100 border border-gray-200 rounded-lg p-3 text-sm text-gray-600 ${isTextarea ? 'min-h-[80px] whitespace-pre-wrap' : 'min-h-[46px]'}`}>
+      <label className="block text-xs font-semibold uppercase tracking-wider text-[#73685c] mb-2">{label}</label>
+      <div className={`w-full bg-[#f4ece1]/60 border border-[#ebd8c0]/70 rounded-lg p-3 text-sm text-[#443d35] ${isTextarea ? 'min-h-[80px] whitespace-pre-wrap' : 'min-h-[46px]'}`}>
         {value || ''}
       </div>
     </div>
@@ -445,20 +476,20 @@ function ReadOnlyField({ label, value, isTextarea = false }) {
 function EditField({ label, value, onChange, isTextarea = false }) {
   return (
     <div className="mb-4">
-      <label className="block text-xs font-bold uppercase tracking-widest text-gray-500 mb-2">{label}</label>
+      <label className="block text-xs font-semibold uppercase tracking-wider text-[#443d35] mb-2">{label}</label>
       {isTextarea ? (
         <textarea 
           rows={3}
           value={value || ''}
           onChange={(e) => onChange(e.target.value)}
-          className="w-full border border-gray-200 rounded-lg p-3 text-sm focus:outline-none focus:border-black focus:ring-1 focus:ring-black transition-colors" 
+          className="w-full bg-white border border-[#e2d8cb] rounded-lg p-3 text-sm text-[#1c1917] placeholder-[#aba095] focus:outline-none focus:border-[#d18529] focus:ring-1 focus:ring-[#d18529] transition-colors" 
         />
       ) : (
         <input 
           type="text" 
           value={value || ''}
           onChange={(e) => onChange(e.target.value)}
-          className="w-full border border-gray-200 rounded-lg p-3 text-sm focus:outline-none focus:border-black focus:ring-1 focus:ring-black transition-colors" 
+          className="w-full bg-white border border-[#e2d8cb] rounded-lg p-3 text-sm text-[#1c1917] placeholder-[#aba095] focus:outline-none focus:border-[#d18529] focus:ring-1 focus:ring-[#d18529] transition-colors" 
         />
       )}
     </div>

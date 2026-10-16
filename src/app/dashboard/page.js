@@ -25,7 +25,7 @@ export default async function DashboardPage() {
   };
 
   return (
-    <main className="h-screen w-full overflow-hidden bg-gray-50 text-black font-sans flex">
+    <main className="h-screen h-[100dvh] w-full overflow-hidden bg-[#faf6f0] text-[#1c1917] font-sans flex flex-col lg:flex-row">
       <DashboardEditor initialData={initialData} />
     </main>
   );
