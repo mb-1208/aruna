@@ -40,6 +40,7 @@ export default function TravelClient({ initialContent }) {
         text={content.aboutText}
         quote={content.aboutQuote}
         image={content.aboutImage}
+        image2={content.aboutImage2}
       />
 
       {/* Image Divider */}

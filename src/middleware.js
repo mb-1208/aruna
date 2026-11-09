@@ -71,7 +71,7 @@ export async function middleware(request) {
 
   if (!pathnameHasLocale) {
     url.pathname = `/${defaultLocale}${url.pathname}`;
-    const redirectResponse = NextResponse.redirect(url);
+    const redirectResponse = NextResponse.redirect(url, 308);
     
     supabaseResponse.cookies.getAll().forEach(cookie => {
       redirectResponse.cookies.set(cookie.name, cookie.value, cookie);

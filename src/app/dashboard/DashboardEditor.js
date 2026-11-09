@@ -1467,7 +1467,7 @@ export default function DashboardEditor({ initialData }) {
                                 },
                               })
                             }
-                            placeholder="e.g. Aruna Retreats"
+                            placeholder="e.g. Travel Experiences - Aruna Travel Studio | Transformative Journeys & Retreats in Bali"
                             className="w-full border border-gray-200 rounded-lg p-3 text-sm focus:outline-none focus:border-black transition-colors"
                           />
                         </div>
@@ -1487,7 +1487,7 @@ export default function DashboardEditor({ initialData }) {
                                 },
                               })
                             }
-                            placeholder="e.g. The best holistic retreats..."
+                            placeholder="e.g. Helping you discover your own Bali through thoughtfully designed journeys and retreats. Contact us at +62 877 4543 7915 or hello@arunatravelstudio.com."
                             className="w-full border border-gray-200 rounded-lg p-3 text-sm focus:outline-none focus:border-black transition-colors"
                           />
                         </div>

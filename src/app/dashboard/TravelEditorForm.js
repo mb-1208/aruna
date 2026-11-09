@@ -12,15 +12,26 @@ const Input = ({ label, value, onChange, type="text" }) => (
   </div>
 );
 
-const ImageUpload = ({ label, value, onChange, hint }) => {
+const ImageUpload = ({ label, value, onChange, hint, allowClear = false }) => {
   const [isUploading, setIsUploading] = useState(false);
   const [errorMsg, setErrorMsg] = useState('');
 
   return (
     <div className="mb-4">
-      <div className="flex items-baseline gap-2 mb-2">
-        <label className="block text-xs font-semibold uppercase tracking-wider text-[#63594f]">{label}</label>
-        {hint && <span className="text-[10px] text-[#9c9184] italic">Recommended: {hint}</span>}
+      <div className="flex items-baseline justify-between gap-2 mb-2">
+        <div className="flex items-baseline gap-2">
+          <label className="block text-xs font-semibold uppercase tracking-wider text-[#63594f]">{label}</label>
+          {hint && <span className="text-[10px] text-[#9c9184] italic">Recommended: {hint}</span>}
+        </div>
+        {allowClear && value && (
+          <button
+            type="button"
+            onClick={() => onChange('')}
+            className="text-[10px] font-bold uppercase tracking-wider text-red-500 hover:text-red-700 cursor-pointer"
+          >
+            Remove Image
+          </button>
+        )}
       </div>
       <div className="flex items-center gap-4">
         {value && (
@@ -105,6 +116,7 @@ export default function TravelEditorForm({ content, setContent }) {
         <Input label="Paragraph Text" type="textarea" value={content.aboutText} onChange={(val) => updateContent('aboutText', val)} />
         <Input label="Quote" type="textarea" value={content.aboutQuote} onChange={(val) => updateContent('aboutQuote', val)} />
         <ImageUpload label="Side Image" hint="800x1200 (Portrait)" value={content.aboutImage} onChange={(val) => updateContent('aboutImage', val)} />
+        <ImageUpload label="Second Side Image (Below Main Image)" hint="800x1200 (Portrait)" value={content.aboutImage2} onChange={(val) => updateContent('aboutImage2', val)} allowClear />
       </Section>
 
       <Section title="Image Divider">

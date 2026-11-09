@@ -3,7 +3,7 @@
 import Image from "next/image";
 import { motion } from "framer-motion";
 
-export default function AboutSection({ subtitle, title, text, quote, image }) {
+export default function AboutSection({ subtitle, title, text, quote, image, image2 }) {
   return (
     <section id="about" className="w-full max-w-7xl mx-auto px-8 py-24 md:py-40 flex flex-col md:flex-row items-start gap-16 font-sans">
       {/* Left Text Column */}
@@ -35,12 +35,25 @@ export default function AboutSection({ subtitle, title, text, quote, image }) {
         <div className="relative aspect-[3/4] w-full max-w-[600px] overflow-hidden">
           <Image
             src={image || "https://placehold.co/800x1200.png"}
-            alt="About Aruna"
+            alt="About Aruna Travel Studio"
             fill
             className="object-cover"
             unoptimized
           />
         </div>
+
+        {image2 && (
+          <div className="mt-8 relative aspect-[3/4] w-full max-w-[600px] overflow-hidden">
+            <Image
+              src={image2}
+              alt="Aruna Travel Studio Team in Bali"
+              fill
+              className="object-cover"
+              unoptimized
+            />
+          </div>
+        )}
+
         {/* Founder Quote */}
         <div className="mt-8 w-full max-w-[600px]">
           <div className="text-3xl font-allura leading-relaxed text-brand-dark-brown text-justify whitespace-pre-wrap">

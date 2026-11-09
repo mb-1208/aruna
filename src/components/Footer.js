@@ -52,13 +52,13 @@ export default function Footer() {
 
   const foot = globalContent?.footer?.[lang] || {
     description: "Aruna brings you to exotic destinations with a personal, refined touch.",
-    phone: "+62 851 2222 3333",
+    phone: "+62 877 4543 7915",
     email: "hello@arunatravelstudio.com",
     company_title: "The Company",
     newsletter_title: "Stay Connected",
     newsletter_desc: "Join our newsletter for exclusive travel tips and early access to our curated retreats.",
     subscribe_btn: "Subscribe",
-    copyright: `© ${new Date().getFullYear()} Aruna. All rights reserved.`,
+    copyright: `© ${new Date().getFullYear()} Aruna Travel Studio. All rights reserved.`,
     link_contact: "Contact Us",
     link_legal: "Legal",
     link_privacy: "Privacy Policy"
@@ -71,7 +71,7 @@ export default function Footer() {
         {/* Column 1: Logo & Info */}
         <div className="flex-1 md:pr-12 mb-12 md:mb-0">
           <Link href={`/${lang}`} className="inline-block mb-2">
-            <Image src={globalContent?.footer_logo_url || globalContent?.logo_url || logo} alt="Aruna Logo" className="h-20 2xl:h-44 w-auto opacity-80" unoptimized priority width={180} height={80} />
+            <Image src={globalContent?.footer_logo_url || globalContent?.logo_url || logo} alt="Aruna Travel Studio" className="h-20 2xl:h-44 w-auto opacity-80" unoptimized priority width={180} height={80} />
           </Link>
           <p className="pl-2 text-white/90 text-lg leading-relaxed mb-8">
             {foot.description}

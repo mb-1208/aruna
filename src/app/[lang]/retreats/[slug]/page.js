@@ -7,20 +7,61 @@ import RetreatLocation from "@/components/retreats/detail/RetreatLocation";
 import FAQ from "@/components/FAQ";
 import RetreatCTA from "@/components/retreats/RetreatCTA";
 import { supabase } from "@/lib/supabase";
+import {
+  SITE_URL,
+  SITE_NAME,
+  buildAlternates,
+  stripHtml,
+  getBreadcrumbSchema,
+  getFaqSchema,
+  serializeJsonLd,
+} from "@/lib/seo";
 import { notFound } from "next/navigation";
 
 export async function generateMetadata({ params }) {
   const resolvedParams = await params;
+  const lang = resolvedParams.lang || "en";
+  const isEs = lang === "es";
+
   const { data: dest } = await supabase
-    .from('products')
-    .select('title')
-    .eq('slug', resolvedParams.slug)
-    .eq('type', 'retreat')
+    .from("products")
+    .select("title, description, content")
+    .eq("slug", resolvedParams.slug)
+    .eq("type", "retreat")
     .single();
 
+  if (!dest) {
+    return {
+      title: isEs ? "Detalle de Retiro" : "Retreat Detail",
+      alternates: buildAlternates(lang, `/retreats/${resolvedParams.slug}`),
+    };
+  }
+
+  const content = dest.content || {};
+  const displayTitle = isEs ? content.title_es || dest.title : dest.title;
+  const rawDesc = isEs
+    ? content.description_es || content.overview_es || dest.description || content.overview
+    : dest.description || content.overview;
+  const cleanDesc =
+    stripHtml(rawDesc) ||
+    (isEs
+      ? `Descubre el retiro ${displayTitle} en Bali con ${SITE_NAME}.`
+      : `Immerse yourself in ${displayTitle}, a transformative Bali retreat curated by ${SITE_NAME}.`);
+  const ogImage = content.hero_image || content.cover_image;
+
   return {
-    title: dest ? `${dest.title} - Aruna Retreats` : "Retreat Detail - Aruna",
-    description: "Immerse yourself in a transformative journey of peace and restoration.",
+    title: displayTitle,
+    description: cleanDesc.slice(0, 160),
+    alternates: buildAlternates(lang, `/retreats/${resolvedParams.slug}`),
+    openGraph: {
+      title: `${displayTitle} - ${SITE_NAME}`,
+      description: cleanDesc.slice(0, 160),
+      url: `${SITE_URL}/${lang}/retreats/${resolvedParams.slug}`,
+      siteName: SITE_NAME,
+      ...(ogImage ? { images: [{ url: ogImage, alt: displayTitle }] } : {}),
+      locale: isEs ? "es_ES" : "en_US",
+      type: "website",
+    },
   };
 }
 
@@ -141,8 +182,56 @@ export default async function RetreatDetailPage({ params }) {
   }
   const isSoldOut = !hasAvailableDates;
 
+  const breadcrumbJsonLd = getBreadcrumbSchema([
+    { name: SITE_NAME, url: `${SITE_URL}/${lang}` },
+    {
+      name: isEs ? "Retiros en Bali" : "Transformative Bali Retreats",
+      url: `${SITE_URL}/${lang}/retreats`,
+    },
+    {
+      name: displayTitle,
+      url: `${SITE_URL}/${lang}/retreats/${resolvedParams.slug}`,
+    },
+  ]);
+
+  const faqJsonLd = getFaqSchema(finalFaqs);
+
+  const retreatJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "TouristTrip",
+    name: displayTitle,
+    description: stripHtml(overview || displayDescription),
+    url: `${SITE_URL}/${lang}/retreats/${resolvedParams.slug}`,
+    image: content.hero_image || content.cover_image || undefined,
+    provider: {
+      "@type": "TravelAgency",
+      "@id": `${SITE_URL}/#organization`,
+      name: SITE_NAME,
+    },
+  };
+
   return (
     <main className="min-h-screen font-sans overflow-x-hidden">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: serializeJsonLd(breadcrumbJsonLd),
+        }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: serializeJsonLd(retreatJsonLd),
+        }}
+      />
+      {faqJsonLd && (
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: serializeJsonLd(faqJsonLd),
+          }}
+        />
+      )}
       {/* Navigation */}
       <Navbar />
 

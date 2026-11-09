@@ -24,7 +24,7 @@ function ReviewSlide({ rev }) {
       )}
       <div className="mb-8 mx-auto max-w-5xl flex flex-col items-center">
         <h3 className={`text-gray-700 text-xs 2xl:text-base font-light leading-relaxed uppercase text-black transition-all duration-300 ${!isExpanded ? 'line-clamp-4' : ''}`}>
-          "{rev.quote}"
+          &ldquo;{rev.quote}&rdquo;
         </h3>
         {rev.quote && rev.quote.length > 250 && (
           <button

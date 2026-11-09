@@ -7,20 +7,61 @@ import ServiceProcess from "@/components/services/ServiceProcess";
 import FAQ from "@/components/FAQ";
 import RetreatCTA from "@/components/retreats/RetreatCTA";
 import { supabase } from "@/lib/supabase";
+import {
+  SITE_URL,
+  SITE_NAME,
+  buildAlternates,
+  stripHtml,
+  getBreadcrumbSchema,
+  getFaqSchema,
+  serializeJsonLd,
+} from "@/lib/seo";
 import { notFound } from "next/navigation";
 
 export async function generateMetadata({ params }) {
   const resolvedParams = await params;
+  const lang = resolvedParams.lang || "en";
+  const isEs = lang === "es";
+
   const { data: dest } = await supabase
-    .from('products')
-    .select('title')
-    .eq('slug', resolvedParams.slug)
-    .eq('type', 'service')
+    .from("products")
+    .select("title, description, content")
+    .eq("slug", resolvedParams.slug)
+    .eq("type", "service")
     .single();
 
+  if (!dest) {
+    return {
+      title: isEs ? "Servicio de Viaje" : "Travel Service Detail",
+      alternates: buildAlternates(lang, `/services/${resolvedParams.slug}`),
+    };
+  }
+
+  const content = dest.content || {};
+  const displayTitle = isEs ? content.title_es || dest.title : dest.title;
+  const rawDesc = isEs
+    ? content.description_es || content.overview_es || dest.description || content.overview
+    : dest.description || content.overview;
+  const cleanDesc =
+    stripHtml(rawDesc) ||
+    (isEs
+      ? `Servicio de diseño de viajes ${displayTitle} en Bali con ${SITE_NAME}.`
+      : `Discover ${displayTitle}, bespoke Bali travel design curated by ${SITE_NAME}.`);
+  const ogImage = content.hero_image || content.cover_image;
+
   return {
-    title: dest ? `${dest.title} - Aruna Services` : "Service Detail - Aruna",
-    description: "Immerse yourself in a transformative journey of peace and restoration.",
+    title: displayTitle,
+    description: cleanDesc.slice(0, 160),
+    alternates: buildAlternates(lang, `/services/${resolvedParams.slug}`),
+    openGraph: {
+      title: `${displayTitle} - ${SITE_NAME}`,
+      description: cleanDesc.slice(0, 160),
+      url: `${SITE_URL}/${lang}/services/${resolvedParams.slug}`,
+      siteName: SITE_NAME,
+      ...(ogImage ? { images: [{ url: ogImage, alt: displayTitle }] } : {}),
+      locale: isEs ? "es_ES" : "en_US",
+      type: "website",
+    },
   };
 }
 
@@ -148,8 +189,60 @@ export default async function ServiceDetailPage({ params }) {
   if (travelPageContent.faqTitle) finalFaqTitle = travelPageContent.faqTitle;
   if (travelPageContent.faqSubtitle) finalFaqSubtitle = travelPageContent.faqSubtitle;
 
+  const breadcrumbJsonLd = getBreadcrumbSchema([
+    { name: SITE_NAME, url: `${SITE_URL}/${lang}` },
+    {
+      name: isEs ? "Diseño de Viajes en Bali" : "Bespoke Travel Design in Bali",
+      url: `${SITE_URL}/${lang}/travel`,
+    },
+    {
+      name: displayTitle,
+      url: `${SITE_URL}/${lang}/services/${resolvedParams.slug}`,
+    },
+  ]);
+
+  const faqJsonLd = getFaqSchema(finalFaqs);
+
+  const serviceJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "Service",
+    name: displayTitle,
+    description: stripHtml(overview || displayDescription),
+    url: `${SITE_URL}/${lang}/services/${resolvedParams.slug}`,
+    image: content.hero_image || content.cover_image || undefined,
+    provider: {
+      "@type": "TravelAgency",
+      "@id": `${SITE_URL}/#organization`,
+      name: SITE_NAME,
+    },
+    areaServed: {
+      "@type": "Place",
+      name: "Bali, Indonesia",
+    },
+  };
+
   return (
     <main className="min-h-screen font-sans overflow-x-hidden">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: serializeJsonLd(breadcrumbJsonLd),
+        }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: serializeJsonLd(serviceJsonLd),
+        }}
+      />
+      {faqJsonLd && (
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: serializeJsonLd(faqJsonLd),
+          }}
+        />
+      )}
       {/* Navigation */}
       <Navbar />
 

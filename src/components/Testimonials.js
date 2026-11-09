@@ -73,19 +73,16 @@ export default function Testimonials({ subtitle, title, subtext, reviews, curren
   }
 
   // Ensure index is within bounds if screen size changes
-  useEffect(() => {
-    if (currentIndex >= totalPages && totalPages > 0) {
-      setCurrentIndex(totalPages - 1);
-    }
-  }, [totalPages, currentIndex]);
+  const safeCurrentIndex =
+    totalPages > 0 ? Math.min(currentIndex, totalPages - 1) : 0;
 
   const handleDragEnd = (e, { offset, velocity }) => {
     const swipe = swipePower(offset.x, velocity.x);
 
     if (swipe < -swipeConfidenceThreshold) {
-      setCurrentIndex((prev) => Math.min(prev + 1, totalPages - 1));
+      setCurrentIndex(Math.min(safeCurrentIndex + 1, totalPages - 1));
     } else if (swipe > swipeConfidenceThreshold) {
-      setCurrentIndex((prev) => Math.max(prev - 1, 0));
+      setCurrentIndex(Math.max(safeCurrentIndex - 1, 0));
     }
   };
 
@@ -112,15 +109,15 @@ export default function Testimonials({ subtitle, title, subtext, reviews, curren
           {subtext && <p className="text-gray-600 text-xl leading-relaxed font-allura">{subtext}</p>}
           <div className="flex gap-4">
             <button
-              onClick={() => setCurrentIndex(prev => Math.max(prev - 1, 0))}
-              disabled={currentIndex === 0}
+              onClick={() => setCurrentIndex(Math.max(safeCurrentIndex - 1, 0))}
+              disabled={safeCurrentIndex === 0}
               className="p-2 border border-gray-200 rounded-full hover:bg-gray-50 disabled:opacity-30 transition-colors"
             >
               <IconChevronLeft stroke={1.5} />
             </button>
             <button
-              onClick={() => setCurrentIndex(prev => Math.min(prev + 1, totalPages - 1))}
-              disabled={currentIndex === totalPages - 1}
+              onClick={() => setCurrentIndex(Math.min(safeCurrentIndex + 1, totalPages - 1))}
+              disabled={safeCurrentIndex === totalPages - 1}
               className="p-2 border border-gray-200 rounded-full hover:bg-gray-50 disabled:opacity-30 transition-colors"
             >
               <IconChevronRight stroke={1.5} />
@@ -133,7 +130,7 @@ export default function Testimonials({ subtitle, title, subtext, reviews, curren
       <div className="relative w-full overflow-hidden touch-pan-y">
         <motion.div
           className="flex"
-          animate={{ x: `-${currentIndex * 100}%` }}
+          animate={{ x: `-${safeCurrentIndex * 100}%` }}
           transition={{ type: "tween", ease: "easeInOut", duration: 0.5 }}
           drag="x"
           dragConstraints={{ left: 0, right: 0 }}
@@ -169,7 +166,7 @@ export default function Testimonials({ subtitle, title, subtext, reviews, curren
                         className={`text-white text-sm leading-relaxed italic transition-all duration-300 w-full ${expandedReviews[r.id] ? 'max-h-[50vh] overflow-y-auto pr-2' : 'line-clamp-3'}`}
                         onPointerDown={(e) => expandedReviews[r.id] && e.stopPropagation()}
                       >
-                        "{r.review || r.quote}"
+                        &ldquo;{r.review || r.quote}&rdquo;
                       </div>
                       {((r.review || r.quote)?.length > 120) && (
                         <button 

@@ -1,6 +1,14 @@
 import { Inter, Playfair_Display, Questrial, Cormorant_Garamond, Allura } from "next/font/google";
 import { LanguageProvider } from "@/contexts/LanguageContext";
 import { supabase } from "@/lib/supabase";
+import {
+  SITE_URL,
+  SITE_NAME,
+  resolveHomeTitle,
+  resolveHomeDescription,
+  getGlobalSchemaGraph,
+  serializeJsonLd,
+} from "@/lib/seo";
 import "../globals.css";
 
 export const revalidate = 300; // 5-minute ISR caching, instantly purged on CMS edit
@@ -35,53 +43,56 @@ const allura = Allura({
 
 export async function generateMetadata({ params }) {
   const { lang } = await params;
-  const { data } = await supabase.from('site_content').select('content').eq('id', 'global_settings').single();
+  const { data } = await supabase
+    .from("site_content")
+    .select("content")
+    .eq("id", "global_settings")
+    .single();
   const globalContent = data?.content || {};
-  
-  const siteTitle = globalContent?.title?.[lang] || "Aruna Travel Studio";
-  const siteDescription = globalContent?.description?.[lang] || "Curating bespoke journeys and soulful retreats in Bali.";
-  const ogImage = globalContent?.logo_url || "https://arunatravelstudio.com/og-image.jpg";
+
+  const siteTitle = resolveHomeTitle(globalContent?.title?.[lang], lang);
+  const siteDescription = resolveHomeDescription(
+    globalContent?.description?.[lang],
+    lang
+  );
+  const ogImage =
+    globalContent?.cta?.en?.image ||
+    globalContent?.logo_url ||
+    `${SITE_URL}/favicon.ico`;
 
   return {
-    metadataBase: new URL("https://arunatravelstudio.com"),
+    metadataBase: new URL(SITE_URL),
     title: {
       default: siteTitle,
-      template: `%s | ${siteTitle}`,
+      template: `%s - ${SITE_NAME}`,
     },
     description: siteDescription,
-    alternates: {
-      canonical: `/${lang}`,
-      languages: {
-        en: "/en",
-        es: "/es",
-      },
-    },
     openGraph: {
       title: siteTitle,
       description: siteDescription,
-      url: `/${lang}`,
-      siteName: "Aruna Travel Studio",
+      url: `${SITE_URL}/${lang}`,
+      siteName: SITE_NAME,
       images: [
         {
           url: ogImage,
           width: 1200,
           height: 630,
-          alt: siteTitle,
+          alt: SITE_NAME,
         },
       ],
-      locale: lang === 'es' ? 'es_ES' : 'en_US',
-      type: 'website',
+      locale: lang === "es" ? "es_ES" : "en_US",
+      type: "website",
     },
     twitter: {
-      card: 'summary_large_image',
+      card: "summary_large_image",
       title: siteTitle,
       description: siteDescription,
       images: [ogImage],
     },
     appleWebApp: {
       capable: true,
-      statusBarStyle: 'default',
-      title: siteTitle,
+      statusBarStyle: "default",
+      title: SITE_NAME,
     },
     formatDetection: {
       telephone: false,
@@ -91,8 +102,13 @@ export async function generateMetadata({ params }) {
 
 export default async function RootLayout({ children, params }) {
   const { lang } = await params;
-  const { data } = await supabase.from('site_content').select('content').eq('id', 'global_settings').single();
+  const { data } = await supabase
+    .from("site_content")
+    .select("content")
+    .eq("id", "global_settings")
+    .single();
   const globalContent = data?.content || {};
+  const globalJsonLd = getGlobalSchemaGraph(globalContent, lang);
 
   return (
     <html
@@ -100,6 +116,12 @@ export default async function RootLayout({ children, params }) {
       className={`${inter.variable} ${playfair.variable} ${questrial.variable} ${cormorant.variable} ${allura.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col m-0 aruna-public">
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: serializeJsonLd(globalJsonLd),
+          }}
+        />
         <LanguageProvider globalContent={globalContent} lang={lang}>
           {children}
         </LanguageProvider>

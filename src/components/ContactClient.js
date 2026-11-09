@@ -11,20 +11,16 @@ export default function ContactClient({ data }) {
   const lang = currentLang || 'en';
   const isEs = lang === 'es';
 
-  const [defaultSubject, setDefaultSubject] = useState("");
+  const [defaultSubject, setDefaultSubject] = useState(() => {
+    if (typeof window !== "undefined") {
+      const params = new URLSearchParams(window.location.search);
+      return params.get("subject") || "";
+    }
+    return "";
+  });
   const [status, setStatus] = useState("idle");
   const [message, setMessage] = useState("");
   const [mailtoUrl, setMailtoUrl] = useState("");
-
-  useEffect(() => {
-    if (typeof window !== "undefined") {
-      const params = new URLSearchParams(window.location.search);
-      const subjectParam = params.get("subject");
-      if (subjectParam) {
-        setDefaultSubject(subjectParam);
-      }
-    }
-  }, []);
 
   const handleSubmit = async (e) => {
     e.preventDefault();

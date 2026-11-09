@@ -113,8 +113,9 @@ export default function Navbar() {
   };
 
   return (
-    <>
+    <header>
       <motion.nav
+        aria-label="Main Navigation"
         initial={{ opacity: 0, y: -20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.8, ease: "easeOut" }}
@@ -139,7 +140,7 @@ export default function Navbar() {
           >
             <Image
               src={globalContent?.logo_url || logo}
-              alt="Aruna Logo"
+              alt="Aruna Travel Studio"
               className="h-7 lg:h-7.5 xl:h-8.5 2xl:h-10 w-auto max-w-[105px] xl:max-w-[125px] 2xl:max-w-[150px] object-contain drop-shadow-md"
               priority
               unoptimized={!!globalContent?.logo_url}
@@ -252,11 +253,12 @@ export default function Navbar() {
 
         {/* MOBILE / TABLET LAYOUT (< lg) */}
         <div className="lg:hidden flex items-center justify-between w-full">
-          {/* Mobile Logo */}
-          <Link href={`/${currentLang}`}>
+          {/* Mobile Logo (aria-hidden on image to prevent duplicate "Aruna" alt text in DOM) */}
+          <Link href={`/${currentLang}`} aria-label="Aruna Travel Studio">
             <Image
               src={globalContent?.logo_url || logo}
-              alt="Aruna Logo"
+              alt=""
+              aria-hidden="true"
               className="h-10 sm:h-12 w-auto object-contain drop-shadow-md"
               priority
               unoptimized={!!globalContent?.logo_url}
@@ -394,6 +396,6 @@ export default function Navbar() {
           </div>
         )}
       </AnimatePresence>
-    </>
+    </header>
   );
 }

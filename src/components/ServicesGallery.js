@@ -55,8 +55,13 @@ export default function ServicesGallery({ data, fallbackData, currentLang }) {
           {/* Content */}
           <div className="absolute inset-0 flex flex-col items-center justify-center z-10 text-white p-6">
             <h3 className="text-3xl md:text-4xl font-light tracking-widest mb-6">{service.title}</h3>
-            <Link href={service.link} className="flex items-center justify-center border border-white/80 rounded-full px-10 py-2.5 text-white text-sm tracking-widest transition-all duration-300 hover:bg-white hover:text-black hover:scale-105 uppercase">
-              {service.subtitle}
+            <Link
+              href={service.link}
+              aria-label={`${service.subtitle} - ${service.title}`}
+              className="flex items-center justify-center border border-white/80 rounded-full px-10 py-2.5 text-white text-sm tracking-widest transition-all duration-300 hover:bg-white hover:text-black hover:scale-105 uppercase"
+            >
+              <span>{service.subtitle}</span>
+              <span className="sr-only"> - {service.title}</span>
             </Link>
           </div>
         </motion.div>
