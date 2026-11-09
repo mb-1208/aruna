@@ -99,6 +99,8 @@ export async function saveProducts(products) {
   revalidatePath('/es/retreats');
   revalidatePath('/en/travel');
   revalidatePath('/es/travel');
+  revalidatePath('/sitemap.xml');
+  revalidatePath('/llms.txt');
   return true;
 }
 
@@ -110,6 +112,8 @@ export async function deleteProduct(id) {
   revalidatePath('/es/retreats');
   revalidatePath('/en/travel');
   revalidatePath('/es/travel');
+  revalidatePath('/sitemap.xml');
+  revalidatePath('/llms.txt');
   return true;
 }
 

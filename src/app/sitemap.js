@@ -39,7 +39,8 @@ export default async function sitemap() {
   try {
     const { data: products } = await supabase
       .from("products")
-      .select("slug, type, updated_at");
+      .select("slug, type, created_at")
+      .order("created_at", { ascending: true });
     if (products && products.length > 0) {
       for (const prod of products) {
         if (!prod.slug) continue;
@@ -47,7 +48,7 @@ export default async function sitemap() {
         for (const lang of languages) {
           sitemapEntries.push({
             url: `${baseUrl}/${lang}/${routePrefix}/${prod.slug}`,
-            lastModified: prod.updated_at ? new Date(prod.updated_at) : now,
+            lastModified: prod.created_at ? new Date(prod.created_at) : now,
             changeFrequency: "weekly",
             priority: 0.8,
             alternates: {
